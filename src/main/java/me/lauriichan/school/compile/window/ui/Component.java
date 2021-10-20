@@ -1,7 +1,6 @@
 package me.lauriichan.school.compile.window.ui;
 
-import java.awt.Graphics2D;
-
+import me.lauriichan.school.compile.window.ui.input.InputProvider;
 import me.lauriichan.school.compile.window.ui.util.Area;
 import me.lauriichan.school.compile.window.ui.util.Point;
 
@@ -9,6 +8,40 @@ public abstract class Component {
 
     private final Point position = new Point(0, 0);
     private final Point size = new Point(0, 0);
+
+    private boolean hidden = false;
+
+    private InputProvider input;
+
+    protected final void setInput(Component component) {
+        if (isRoot()) {
+            throw new IllegalStateException("Can't set InputProvider to root component!");
+        }
+        if (component == null) {
+            input = null;
+            return;
+        }
+        if (component.getInput() == null) {
+            throw new IllegalArgumentException("Component isn't initialised (no InputProvider)");
+        }
+        input = component.getInput();
+    }
+
+    public InputProvider getInput() {
+        return input;
+    }
+
+    public boolean isRoot() {
+        return false;
+    }
+
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
+    }
 
     public int getX() {
         return position.getX();
@@ -24,6 +57,11 @@ public abstract class Component {
 
     public void setY(int y) {
         position.setY(y);
+    }
+
+    public void setPosition(int x, int y) {
+        setX(x);
+        setY(y);
     }
 
     public int getWidth() {
@@ -42,12 +80,13 @@ public abstract class Component {
         size.setY(height);
     }
 
-    protected final void draw(Graphics2D graphics) {
-        draw(new Area(graphics, position.getX(), position.getY(), size.getX(), size.getY()));
+    public void setSize(int width, int height) {
+        setWidth(width);
+        setHeight(height);
     }
 
-    protected abstract void draw(Area area);
+    protected void render(Area area) {}
 
-    protected abstract boolean mouseClick(int x, int y, int button);
+    protected void update(long deltaTime) {}
 
 }

@@ -15,17 +15,30 @@ public final class Area {
     private final Point size;
 
     public Area(Graphics2D graphics, int x, int y, int width, int height) {
-        this.graphics = graphics;
-        this.position = new Point(x, y);
+        this.graphics = (x == -1 && y == -1) ? graphics : (Graphics2D) graphics.create(x, y, width, height);
+        this.graphics.setColor(DEFAULT);
+        this.position = new Point(Math.max(0, x), Math.max(0, y));
         this.size = new Point(width, height);
     }
 
-    public Point getPosition() {
-        return position;
+    public int getX() {
+        return position.getX();
     }
 
-    public Point getSize() {
-        return size;
+    public int getY() {
+        return position.getY();
+    }
+
+    public int getWidth() {
+        return size.getX();
+    }
+
+    public int getHeight() {
+        return size.getY();
+    }
+
+    public Graphics2D getGraphics() {
+        return graphics;
     }
 
     public void drawRectangle(int x, int y, int width, int height) {
@@ -133,6 +146,10 @@ public final class Area {
         System.arraycopy(characters, last, chars, wordBound, length);
         characters.add(chars);
         return characters;
+    }
+
+    public Area create(int x, int y, int width, int height) {
+        return new Area(graphics, x, y, width, height);
     }
 
 }
