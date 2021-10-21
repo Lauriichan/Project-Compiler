@@ -16,6 +16,7 @@ import me.lauriichan.school.compile.window.ui.RootBar;
 import me.lauriichan.school.compile.window.ui.bar.BarBox;
 import me.lauriichan.school.compile.window.ui.bar.BoxRenderers;
 import me.lauriichan.school.compile.window.ui.component.Button;
+import me.lauriichan.school.compile.window.ui.component.TextField;
 
 public final class Main {
 
@@ -25,7 +26,6 @@ public final class Main {
         registerConverters();
         loadData();
         initSingletons();
-        testTemplate();
         testUi();
     }
 
@@ -47,12 +47,12 @@ public final class Main {
 
     }
 
-    private static void testTemplate() {
+    public static void testTemplate() {
         Project.create("test", "we.got.a.test", new File("projects/test"), Template.TEMPLATES.get(0));
         Project.get("test").open();
     }
 
-    private static void testUi() {
+    public static void testUi() {
         Panel panel = new Panel();
         panel.setWidth(800);
         panel.setHeight(600);
@@ -78,6 +78,11 @@ public final class Main {
         button.setText("Test\nTTT");
         button.setSize(200, 100);
         pane.addChild(button);
+        
+        TextField field = new TextField();
+        field.setPosition(0, 120);
+        field.setSize(300, 200);
+        pane.addChild(field);
 
         panel.center();
         panel.show();
