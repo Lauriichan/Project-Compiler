@@ -10,6 +10,7 @@ import com.syntaxphoenix.syntaxapi.json.JsonEntry;
 import com.syntaxphoenix.syntaxapi.json.JsonObject;
 import com.syntaxphoenix.syntaxapi.json.JsonValue;
 import com.syntaxphoenix.syntaxapi.json.ValueType;
+import com.syntaxphoenix.syntaxapi.utils.java.Exceptions;
 import com.syntaxphoenix.syntaxapi.utils.java.Files;
 
 import me.lauriichan.school.compile.data.json.JsonIO;
@@ -95,6 +96,7 @@ public final class Settings {
             }
             object = (JsonObject) value;
         } catch (IOException | IllegalArgumentException e) {
+            System.out.println(Exceptions.stackTraceToString(e));
             return;
         }
         this.root = object;

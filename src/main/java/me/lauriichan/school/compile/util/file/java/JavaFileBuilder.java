@@ -60,7 +60,7 @@ public class JavaFileBuilder extends FileBuilder<JavaFileBuilder> {
     }
 
     public JavaFileBuilder setPackage(String packet) {
-        return add("package ").add(packet).add(';').next();
+        return add("package ").add(packet).add(';').next().next();
     }
 
     public JavaFileBuilder wildImport(Class<?> clazz) {
@@ -117,8 +117,36 @@ public class JavaFileBuilder extends FileBuilder<JavaFileBuilder> {
         return add(builder.substring(0, builder.length() - 2));
     }
 
+    public JavaFileBuilder ifStatement(String statement) {
+        return add("if(").add(statement).add(')').open();
+    }
+
+    public JavaFileBuilder keyReturn() {
+        return add("return;");
+    }
+
+    public JavaFileBuilder keyReturn(String variable) {
+        return add("return ").add(variable).add(';');
+    }
+
+    public JavaFileBuilder keyBreak() {
+        return add("break;");
+    }
+
+    public JavaFileBuilder keyContinue() {
+        return add("continue;");
+    }
+
     public JavaFileBuilder loopForMax(String name, String target) {
-        return add("for(int ").add(name).add(" = 0; ").add(name).add(" < ").add(target).add("; ").add(name).add("(++) ").open();
+        return add("for(int ").add(name).add(" = 0; ").add(name).add(" < ").add(target).add("; ").add(name).add("++)").open();
+    }
+
+    public JavaFileBuilder loopForMin(String name, String start) {
+        return add("for(int ").add(name).add(" = ").add(start).add("; ").add(name).add(" >= 0").add("; ").add(name).add("--)").open();
+    }
+
+    public JavaFileBuilder loopForMin(String name, String start, String min) {
+        return add("for(int ").add(name).add(" = ").add(start).add("; ").add(name).add(" >= ").add(min).add("; ").add(name).add("--)").open();
     }
 
     public JavaFileBuilder loopForEach(Class<?> clazz, String name, String target) {
@@ -139,6 +167,54 @@ public class JavaFileBuilder extends FileBuilder<JavaFileBuilder> {
 
     public JavaFileBuilder field(Class<?> clazz, String name) {
         return varType(clazz).add('.').add(name);
+    }
+
+    public JavaFileBuilder variableCallField(Class<?> type, String name, Class<?> clazz, String field, String target, String... params) {
+        return varType(type).space().setCallField(name, clazz, field, target, params);
+    }
+
+    public JavaFileBuilder variableCall(Class<?> type, String name, Class<?> clazz, String target, String... params) {
+        return varType(type).space().setCall(name, clazz, target, params);
+    }
+
+    public JavaFileBuilder variableCall(Class<?> type, String name, String varName, String target, String... params) {
+        return varType(type).space().setCall(name, varName, target, params);
+    }
+
+    public JavaFileBuilder variableSmartIf(Class<?> clazz, String name, String statement, String first, String second) {
+        return varType(clazz).space().setSmartIf(name, statement, first, second);
+    }
+
+    public JavaFileBuilder variable(Class<?> clazz, String name, String value) {
+        return varType(clazz).space().set(name, value);
+    }
+
+    public JavaFileBuilder setCallField(String name, Class<?> clazz, String field, String target, String... params) {
+        return add(name).add(" = ").callField(clazz, field, target, params);
+    }
+
+    public JavaFileBuilder setCall(String name, Class<?> clazz, String target, String... params) {
+        return add(name).add(" = ").call(clazz, target, params);
+    }
+
+    public JavaFileBuilder setCall(String name, String varName, String target, String... params) {
+        return add(name).add(" = ").call(varName, target, params);
+    }
+    
+    public JavaFileBuilder setSmartIf(String name, String statement, String first, String second) {
+        return add(name).add(" = ").add(statement).add(" ? ").add(first).add(" : ").add(second).add(';');
+    }
+
+    public JavaFileBuilder set(String name, String value) {
+        return add(name).add(" = ").add(value).add(';');
+    }
+
+    public JavaFileBuilder construct(Class<?> clazz, String... params) {
+        return add("new ").varType(clazz).add('(').params(params).add(");");
+    }
+
+    public JavaFileBuilder constructVar(Class<?> clazz, String name, String... params) {
+        return varType(clazz).space().add(name).add(" = new ").varType(clazz).add('(').params(params).add(");");
     }
 
     public JavaFileBuilder open() {

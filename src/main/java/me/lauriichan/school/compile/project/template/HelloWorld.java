@@ -9,7 +9,7 @@ import me.lauriichan.school.compile.util.file.java.JavaFileBuilder;
 final class HelloWorld extends JavaTemplate {
 
     public HelloWorld() {
-        super("Hello World");
+        super("Hallo Welt");
     }
 
     @Override
@@ -19,9 +19,10 @@ final class HelloWorld extends JavaTemplate {
         File source = new File(directory, "src");
         
         JavaFileBuilder builder = new JavaFileBuilder(source, "Main");
-        builder.setPackage(packet).next().security(PUBLIC).add("class ").name().open();
-        builder.next().security(PUBLIC).modStatic().type(Void.class).add("main(").param(String[].class, "args").add(')').open();
-        builder.callField(System.class, "out", "println", "\"Hello World\"").close();
+        builder.setPackage(packet);
+        builder.security(PUBLIC).add("class ").name().open();
+        builder.next().security(PUBLIC).modStatic().type(Void.class).add("main(").param(String[].class, "args").add(") throws Exception").open();
+        builder.callField(System.class, "out", "println", "\"Hallo Welt\"").close();
         builder.next().close().exit();
     }
 

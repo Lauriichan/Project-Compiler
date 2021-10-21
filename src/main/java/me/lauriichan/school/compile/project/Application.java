@@ -61,7 +61,7 @@ public final class Application {
         String command = builder.substring(0, builder.length() - 1);
         try {
             Process process = Runtime.getRuntime().exec(command);
-            Thread.sleep(4000);
+            Thread.sleep(3000);
             return process.isAlive();
         } catch (IOException | InterruptedException e) {
             return false;

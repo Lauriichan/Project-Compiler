@@ -9,7 +9,7 @@ import me.lauriichan.school.compile.util.file.java.JavaFileBuilder;
 final class Empty extends JavaTemplate {
 
     public Empty() {
-        super("Empty");
+        super("Leer");
     }
 
     @Override
@@ -19,8 +19,9 @@ final class Empty extends JavaTemplate {
         File source = new File(directory, "src");
         
         JavaFileBuilder builder = new JavaFileBuilder(source, "Main");
-        builder.setPackage(packet).next().security(PUBLIC).add("class ").name().open();
-        builder.next().security(PUBLIC).modStatic().type(Void.class).add("main(").param(String[].class, "args").add(')').open();
+        builder.setPackage(packet);
+        builder.security(PUBLIC).add("class ").name().open();
+        builder.next().security(PUBLIC).modStatic().type(Void.class).add("main(").param(String[].class, "args").add(") throws Exception").open();
         builder.close().next().close().exit();
     }
 

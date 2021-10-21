@@ -12,6 +12,10 @@ public abstract class JavaTemplate extends Template {
         super(name);
     }
 
+    public JavaTemplate(String name, boolean hidden) {
+        super(name, hidden);
+    }
+
     protected void buildJava(String packet, File directory) {
         File source = new File(directory, "src");
         Files.createFolder(source);
