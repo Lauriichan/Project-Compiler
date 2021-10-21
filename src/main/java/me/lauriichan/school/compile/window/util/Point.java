@@ -1,4 +1,4 @@
-package me.lauriichan.school.compile.window.ui.util;
+package me.lauriichan.school.compile.window.util;
 
 public final class Point {
 

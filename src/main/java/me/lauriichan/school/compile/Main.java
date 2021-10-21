@@ -1,13 +1,20 @@
 package me.lauriichan.school.compile;
 
+import java.awt.Color;
+
 import me.lauriichan.school.compile.data.Settings;
 import me.lauriichan.school.compile.data.converter.*;
 import me.lauriichan.school.compile.project.Application;
 import me.lauriichan.school.compile.project.Project;
 import me.lauriichan.school.compile.util.Singleton;
-import me.lauriichan.school.compile.window.ui.Button;
+import me.lauriichan.school.compile.window.input.mouse.MouseButton;
 import me.lauriichan.school.compile.window.ui.Pane;
-import me.lauriichan.school.compile.window.ui.RootPanel;
+import me.lauriichan.school.compile.window.ui.Panel;
+import me.lauriichan.school.compile.window.ui.RootBar;
+import me.lauriichan.school.compile.window.ui.bar.BarBox;
+import me.lauriichan.school.compile.window.ui.bar.BoxRenderers;
+import me.lauriichan.school.compile.window.ui.component.Button;
+import me.lauriichan.school.compile.window.ui.component.TextField;
 
 public final class Main {
 
@@ -40,23 +47,40 @@ public final class Main {
     }
 
     private static void test() {
-        RootPanel panel = new RootPanel();
-        Pane pane = panel.getPane();
-        Button button = new Button();
-        button.setWidth(200);
-        button.setHeight(100);
-        pane.addChild(button);
+        Panel panel = new Panel();
         panel.setWidth(800);
         panel.setHeight(600);
+        panel.setBarHeight(40);
+        panel.setBackground(Color.GRAY);
+        
+        // Bar
+        RootBar bar = panel.getBar();
+        BarBox close = bar.createBox(BoxRenderers.CLOSE);
+        close.setIcon(Color.GRAY, Color.decode("#F26161"));
+        close.setIconFade(0.3, 0.15);
+        close.setBox(Color.DARK_GRAY);
+        close.setAction(MouseButton.LEFT, () -> System.exit(0));
+        BarBox minimize = bar.createBox(BoxRenderers.MINIMIZE);
+        minimize.setIcon(Color.GRAY, Color.WHITE);
+        minimize.setIconFade(0.3, 0.15);
+        minimize.setBox(Color.DARK_GRAY);
+        minimize.setAction(MouseButton.LEFT, () -> panel.minimize());
+        
+        // Pane
+        Pane pane = panel.getPane();
+        Button button = new Button();
+        button.setText("Test\nTTT");
+        button.setSize(200, 100);
+        pane.addChild(button);
+        
+        TextField field = new TextField();
+        field.setPosition(0, 200);
+        field.setSize(200, 150);
+        pane.addChild(field);
+        
+        panel.center();
         panel.show();
-        while (true) {
-            panel.render();
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException exp) {
-                break;
-            }
-        }
+
     }
 
 }

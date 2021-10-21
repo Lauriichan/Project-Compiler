@@ -1,4 +1,4 @@
-package me.lauriichan.school.compile.window.ui.input.mouse;
+package me.lauriichan.school.compile.window.input.mouse;
 
 public enum MouseButton {
 

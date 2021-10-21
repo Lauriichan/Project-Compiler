@@ -1,10 +1,10 @@
-package me.lauriichan.school.compile.window.ui.input.mouse;
+package me.lauriichan.school.compile.window.input.mouse;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
-import me.lauriichan.school.compile.window.ui.input.InputProvider;
+import me.lauriichan.school.compile.window.input.InputProvider;
 
 public final class MouseListener extends MouseAdapter {
 

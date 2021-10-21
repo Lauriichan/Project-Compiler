@@ -1,4 +1,4 @@
-package me.lauriichan.school.compile.window.ui.input;
+package me.lauriichan.school.compile.window.input;
 
 import java.awt.Frame;
 import java.awt.event.InputEvent;
@@ -7,19 +7,20 @@ import java.util.HashMap;
 
 import com.syntaxphoenix.syntaxapi.utils.java.tools.Container;
 
+import me.lauriichan.school.compile.window.input.keyboard.KeyboardListener;
+import me.lauriichan.school.compile.window.input.mouse.MouseListener;
+import me.lauriichan.school.compile.window.ui.Panel;
 import me.lauriichan.school.compile.window.ui.Component;
-import me.lauriichan.school.compile.window.ui.RootPanel;
-import me.lauriichan.school.compile.window.ui.input.keyboard.KeyboardListener;
-import me.lauriichan.school.compile.window.ui.input.mouse.MouseListener;
+import me.lauriichan.school.compile.window.ui.RootBar;
 
 public final class InputProvider {
 
     private final Container<InputEvent> last = Container.of();
 
     private final HashMap<Class<?>, ArrayList<InputReceiver<?>>> listeners = new HashMap<>();
-    private final RootPanel panel;
+    private final Panel panel;
 
-    public InputProvider(RootPanel panel) {
+    public InputProvider(Panel panel) {
         this.panel = panel;
         Frame frame = panel.getFrame();
         MouseListener listener = new MouseListener(this);
@@ -29,8 +30,15 @@ public final class InputProvider {
         frame.addKeyListener(new KeyboardListener(this));
     }
 
-    public RootPanel getPanel() {
+    public Panel getPanel() {
         return panel;
+    }
+
+    public void register(RootBar bar) {
+        InputReceiver<?>[] receivers = InputReceiver.find(bar);
+        for (InputReceiver<?> receiver : receivers) {
+            listeners.computeIfAbsent(receiver.getType(), clz -> new ArrayList<>()).add(0, receiver);
+        }
     }
 
     public void register(Component component) {

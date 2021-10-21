@@ -1,7 +1,7 @@
-package me.lauriichan.school.compile.window.ui.input.keyboard;
+package me.lauriichan.school.compile.window.input.keyboard;
 
-import me.lauriichan.school.compile.window.ui.input.Input;
-import me.lauriichan.school.compile.window.ui.input.InputProvider;
+import me.lauriichan.school.compile.window.input.Input;
+import me.lauriichan.school.compile.window.input.InputProvider;
 
 public class KeyboardPress extends Input {
 

@@ -1,56 +1,100 @@
 package me.lauriichan.school.compile.window.ui;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import me.lauriichan.school.compile.window.ui.util.Area;
+import me.lauriichan.school.compile.window.util.Area;
 
 public final class BasicPane extends Pane {
 
     private final ArrayList<Component> components = new ArrayList<>();
 
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+    private final Lock read = lock.readLock();
+    private final Lock write = lock.writeLock();
+
     public boolean addChild(Component component) {
-        if (component.isRoot() || components.contains(component)) {
-            return false;
+        read.lock();
+        try {
+            if (component.isRoot() || components.contains(component)) {
+                return false;
+            }
+        } finally {
+            read.unlock();
         }
         component.setInput(this);
-        return components.add(component);
+        write.lock();
+        try {
+            return components.add(component);
+        } finally {
+            write.unlock();
+        }
     }
 
     public boolean removeChild(Component component) {
-        if (component.isRoot() || !components.contains(component)) {
-            return false;
+        read.lock();
+        try {
+            if (component.isRoot() || !components.contains(component)) {
+                return false;
+            }
+        } finally {
+            read.unlock();
         }
         component.setInput(null);
-        return components.remove(component);
+        write.lock();
+        try {
+            return components.remove(component);
+        } finally {
+            write.unlock();
+        }
     }
 
     public int getChildrenCount() {
-        return components.size();
+        read.lock();
+        try {
+            return components.size();
+        } finally {
+            read.unlock();
+        }
     }
 
     public Component getChild(int index) {
-        return components.get(index);
+        read.lock();
+        try {
+            return components.get(index);
+        } finally {
+            read.unlock();
+        }
     }
 
     @Override
-    public Iterator<Component> iterator() {
-        return components.iterator();
+    public Component[] getChildren() {
+        read.lock();
+        try {
+            return components.toArray(new Component[components.size()]);
+        } finally {
+            read.unlock();
+        }
     }
 
     @Override
     protected void render(Area area) {
-        for (Component component : components) {
+        Component[] children = getChildren();
+        for (Component component : children) {
             if (component.isHidden()) {
                 continue;
             }
-            component.render(area.create(component.getX(), component.getY(), component.getWidth(), component.getHeight()));
+            Area current = area.create(component.getX(), component.getY(), component.getWidth(), component.getHeight());
+            current.clear();
+            component.render(current);
         }
     }
 
     @Override
     protected void update(long deltaTime) {
-        for (Component component : components) {
+        Component[] children = getChildren();
+        for (Component component : children) {
             if (component.isHidden()) {
                 continue;
             }

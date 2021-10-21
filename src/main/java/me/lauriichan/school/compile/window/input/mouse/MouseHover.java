@@ -1,8 +1,8 @@
-package me.lauriichan.school.compile.window.ui.input.mouse;
+package me.lauriichan.school.compile.window.input.mouse;
 
-import me.lauriichan.school.compile.window.ui.input.Input;
-import me.lauriichan.school.compile.window.ui.input.InputProvider;
-import me.lauriichan.school.compile.window.ui.util.Point;
+import me.lauriichan.school.compile.window.input.Input;
+import me.lauriichan.school.compile.window.input.InputProvider;
+import me.lauriichan.school.compile.window.util.Point;
 
 public class MouseHover extends Input {
 

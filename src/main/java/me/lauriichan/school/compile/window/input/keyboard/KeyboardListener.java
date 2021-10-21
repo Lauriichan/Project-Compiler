@@ -1,9 +1,9 @@
-package me.lauriichan.school.compile.window.ui.input.keyboard;
+package me.lauriichan.school.compile.window.input.keyboard;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-import me.lauriichan.school.compile.window.ui.input.InputProvider;
+import me.lauriichan.school.compile.window.input.InputProvider;
 
 public final class KeyboardListener extends KeyAdapter {
 

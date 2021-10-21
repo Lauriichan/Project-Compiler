@@ -1,4 +1,4 @@
-package me.lauriichan.school.compile.window.ui.input;
+package me.lauriichan.school.compile.window.input;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;

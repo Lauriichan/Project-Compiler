@@ -1,4 +1,4 @@
-package me.lauriichan.school.compile.window.ui.input;
+package me.lauriichan.school.compile.window.input;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

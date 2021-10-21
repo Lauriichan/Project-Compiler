@@ -1,55 +1,58 @@
 package me.lauriichan.school.compile.window.ui;
 
-import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.HeadlessException;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 
-import me.lauriichan.school.compile.window.ui.util.Area;
+import javax.swing.JFrame;
 
-final class TransferFrame extends Frame {
+import me.lauriichan.school.compile.window.util.Area;
+
+final class TransferFrame extends JFrame {
 
     private static final long serialVersionUID = 6321910456035043734L;
 
-    private final Component component;
+    private final Panel component;
 
-    public TransferFrame(Component component) throws HeadlessException {
+    private BufferedImage image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+    private Graphics2D buffer = image.createGraphics();
+
+    public TransferFrame(Panel component) throws HeadlessException {
         super();
-        if (!component.isRoot()) {
-            throw new IllegalArgumentException("Component has to be root!");
-        }
         this.component = component;
+
     }
 
-    public TransferFrame(Component component, GraphicsConfiguration config) {
+    public TransferFrame(Panel component, GraphicsConfiguration config) {
         super(config);
-        if (!component.isRoot()) {
-            throw new IllegalArgumentException("Component has to be root!");
-        }
         this.component = component;
     }
 
-    public TransferFrame(Component component, String title) throws HeadlessException {
+    public TransferFrame(Panel component, String title) throws HeadlessException {
         super(title);
-        if (!component.isRoot()) {
-            throw new IllegalArgumentException("Component has to be root!");
-        }
         this.component = component;
     }
 
-    public TransferFrame(Component component, String title, GraphicsConfiguration config) {
+    public TransferFrame(Panel component, String title, GraphicsConfiguration config) {
         super(title, config);
-        if (!component.isRoot()) {
-            throw new IllegalArgumentException("Component has to be root!");
-        }
         this.component = component;
     }
 
     @Override
+    public void setSize(int width, int height) {
+        super.setSize(width, height);
+        image = new BufferedImage(Math.max(1, width), Math.max(1, height), BufferedImage.TYPE_INT_ARGB);
+        buffer = image.createGraphics();
+        buffer.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+    }
+
+    @Override
     public void paint(Graphics graphics) {
-        graphics.clearRect(getX(), getY(), getWidth(), getHeight());
-        component.render(new Area((Graphics2D) graphics, -1, -1, getWidth(), getHeight()));
+        graphics.drawImage(image, 0, 0, null);
+        component.render(new Area(buffer, component.getBackground(), -1, -1, getWidth(), getHeight()));
     }
 
 }
