@@ -7,7 +7,7 @@ import me.lauriichan.school.compile.util.ArrayIterator;
 import me.lauriichan.school.compile.window.input.InputProvider;
 import me.lauriichan.school.compile.window.ui.bar.BarBox;
 import me.lauriichan.school.compile.window.ui.bar.IBoxRenderer;
-import me.lauriichan.school.compile.window.util.Area;
+import me.lauriichan.school.compile.window.ui.util.Area;
 
 public abstract class RootBar implements Iterable<BarBox> {
 

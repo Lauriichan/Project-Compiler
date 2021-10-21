@@ -20,9 +20,6 @@ public final class KeyboardListener extends KeyAdapter {
     @Override
     public void keyPressed(KeyEvent event) {
         event.consume();
-        if (event.getKeyChar() == KeyEvent.CHAR_UNDEFINED) {
-            return;
-        }
         provider.receive(new KeyboardPress(provider, event.getKeyCode(), event.getKeyChar()), event);
     }
 

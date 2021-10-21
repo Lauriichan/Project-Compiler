@@ -52,15 +52,20 @@ public final class MouseListener extends MouseAdapter {
     @Override
     public void mouseDragged(MouseEvent event) {
         event.consume();
-        provider.receive(new MouseDrag(provider, motionX, motionY, event.getX(), event.getY(), event.getXOnScreen(),
-            event.getYOnScreen(), button), event);
+        int btn = button;
+        MouseDrag drag = new MouseDrag(provider, motionX, motionY, event.getX(), event.getY(), event.getXOnScreen(), event.getYOnScreen(),
+            btn);
+        provider.receive(drag, event);
+        if (drag.isConsumed() || btn == MouseEvent.NOBUTTON) {
+            return;
+        }
+        provider.receive(new MouseClick(provider, drag.getOldX(), drag.getOldY(), drag.getScreenX(), drag.getScreenY(), btn), event);
     }
 
     @Override
     public void mouseMoved(MouseEvent event) {
         event.consume();
-        MouseHover hover = new MouseHover(provider, hoverX, hoverY, event.getX(), event.getY(), event.getXOnScreen(),
-            event.getYOnScreen());
+        MouseHover hover = new MouseHover(provider, hoverX, hoverY, event.getX(), event.getY(), event.getXOnScreen(), event.getYOnScreen());
         hoverX = event.getX();
         hoverY = event.getY();
         provider.receive(hover, event);

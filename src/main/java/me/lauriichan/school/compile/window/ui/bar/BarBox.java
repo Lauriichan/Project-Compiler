@@ -7,7 +7,7 @@ import java.util.function.BiConsumer;
 import me.lauriichan.school.compile.window.ui.animation.Animators;
 import me.lauriichan.school.compile.window.input.mouse.MouseButton;
 import me.lauriichan.school.compile.window.ui.animation.FadeAnimation;
-import me.lauriichan.school.compile.window.util.Area;
+import me.lauriichan.school.compile.window.ui.util.Area;
 
 public final class BarBox {
 

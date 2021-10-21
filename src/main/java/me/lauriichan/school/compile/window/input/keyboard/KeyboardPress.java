@@ -1,5 +1,7 @@
 package me.lauriichan.school.compile.window.input.keyboard;
 
+import java.awt.event.KeyEvent;
+
 import me.lauriichan.school.compile.window.input.Input;
 import me.lauriichan.school.compile.window.input.InputProvider;
 
@@ -17,8 +19,12 @@ public class KeyboardPress extends Input {
     public int getCode() {
         return code;
     }
+    
+    public boolean hasChar() {
+        return character != KeyEvent.CHAR_UNDEFINED;
+    }
 
-    public char getCharacter() {
+    public char getChar() {
         return character;
     }
 

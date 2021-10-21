@@ -2,7 +2,7 @@ package me.lauriichan.school.compile.window.ui.bar;
 
 import java.awt.Color;
 
-import me.lauriichan.school.compile.window.util.Area;
+import me.lauriichan.school.compile.window.ui.util.Area;
 
 @FunctionalInterface
 public interface IBoxRenderer {

@@ -1,6 +1,7 @@
 package me.lauriichan.school.compile.window.ui;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
@@ -10,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import me.lauriichan.school.compile.window.input.InputProvider;
 import me.lauriichan.school.compile.window.ui.bar.SimpleBar;
-import me.lauriichan.school.compile.window.util.Area;
+import me.lauriichan.school.compile.window.ui.util.Area;
 import me.lauriichan.school.compile.window.util.tick.Ticker;
 
 public final class Panel extends Component {
@@ -29,6 +30,7 @@ public final class Panel extends Component {
     private final Ticker updateTick = new Ticker("Update - " + id);
 
     private Color background = Color.BLACK;
+    private Font font = new Font("Open Sans", Font.PLAIN, 12);
 
     public Panel() {
         this(new BasicPane());
@@ -127,6 +129,14 @@ public final class Panel extends Component {
             frame.setVisible(!hidden);
         }
     }
+    
+    public Font getFont() {
+        return font;
+    }
+    
+    public void setFont(Font font) {
+        this.font = font;
+    }
 
     public Color getBackground() {
         return background;
@@ -203,7 +213,6 @@ public final class Panel extends Component {
         area.fill(background);
         bar.render(area.create(0, 0, area.getWidth(), bar.getHeight()));
         pane.render(area.create(0, bar.getHeight(), area.getWidth(), area.getHeight() - bar.getHeight()));
-//        area.drawText(10, 12, "" + getFps() + " / " + getTps());
     }
     
     public void center() {

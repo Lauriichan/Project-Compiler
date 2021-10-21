@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import me.lauriichan.school.compile.window.util.Area;
+import me.lauriichan.school.compile.window.ui.util.Area;
 
 public final class BasicPane extends Pane {
 

@@ -12,7 +12,7 @@ import me.lauriichan.school.compile.window.input.mouse.MouseDrag;
 import me.lauriichan.school.compile.window.input.mouse.MouseHover;
 import me.lauriichan.school.compile.window.ui.Panel;
 import me.lauriichan.school.compile.window.ui.RootBar;
-import me.lauriichan.school.compile.window.util.Area;
+import me.lauriichan.school.compile.window.ui.util.Area;
 
 public final class SimpleBar extends RootBar {
 

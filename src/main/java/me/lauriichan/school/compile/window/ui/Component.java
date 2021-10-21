@@ -1,7 +1,7 @@
 package me.lauriichan.school.compile.window.ui;
 
 import me.lauriichan.school.compile.window.input.InputProvider;
-import me.lauriichan.school.compile.window.util.Area;
+import me.lauriichan.school.compile.window.ui.util.Area;
 import me.lauriichan.school.compile.window.util.Point;
 
 public abstract class Component {

@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 
-import me.lauriichan.school.compile.window.util.Area;
+import me.lauriichan.school.compile.window.ui.util.Area;
 
 final class TransferFrame extends JFrame {
 
