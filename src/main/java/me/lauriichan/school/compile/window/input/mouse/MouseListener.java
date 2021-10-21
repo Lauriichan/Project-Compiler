@@ -32,6 +32,8 @@ public final class MouseListener extends MouseAdapter {
         button = event.getButton();
         motionX = event.getX();
         motionY = event.getY();
+        provider.receive(
+            new MousePress(provider, event.getX(), event.getY(), event.getXOnScreen(), event.getYOnScreen(), event.getButton()), event);
     }
 
     @Override
@@ -47,6 +49,11 @@ public final class MouseListener extends MouseAdapter {
     @Override
     public void mouseReleased(MouseEvent event) {
         event.consume();
+        if (event.getButton() == MouseEvent.NOBUTTON) {
+            return;
+        }
+        provider.receive(
+            new MouseRelease(provider, event.getX(), event.getY(), event.getXOnScreen(), event.getYOnScreen(), event.getButton()), event);
     }
 
     @Override

@@ -9,10 +9,10 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import me.lauriichan.school.compile.util.tick.Ticker;
 import me.lauriichan.school.compile.window.input.InputProvider;
 import me.lauriichan.school.compile.window.ui.bar.SimpleBar;
 import me.lauriichan.school.compile.window.ui.util.Area;
-import me.lauriichan.school.compile.window.util.tick.Ticker;
 
 public final class Panel extends Component {
 

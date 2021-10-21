@@ -1,4 +1,4 @@
-package me.lauriichan.school.compile.window.util.tick;
+package me.lauriichan.school.compile.util.tick;
 
 @FunctionalInterface
 public interface ITickReceiver {

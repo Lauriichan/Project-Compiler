@@ -14,7 +14,6 @@ import me.lauriichan.school.compile.window.ui.RootBar;
 import me.lauriichan.school.compile.window.ui.bar.BarBox;
 import me.lauriichan.school.compile.window.ui.bar.BoxRenderers;
 import me.lauriichan.school.compile.window.ui.component.Button;
-import me.lauriichan.school.compile.window.ui.component.TextField;
 
 public final class Main {
 
@@ -72,11 +71,6 @@ public final class Main {
         button.setText("Test\nTTT");
         button.setSize(200, 100);
         pane.addChild(button);
-        
-        TextField field = new TextField();
-        field.setPosition(0, 200);
-        field.setSize(200, 150);
-        pane.addChild(field);
         
         panel.center();
         panel.show();

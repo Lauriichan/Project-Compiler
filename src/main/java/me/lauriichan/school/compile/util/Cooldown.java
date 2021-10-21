@@ -1,4 +1,4 @@
-package me.lauriichan.school.compile.window.util;
+package me.lauriichan.school.compile.util;
 
 public class Cooldown {
 
