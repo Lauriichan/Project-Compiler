@@ -41,8 +41,23 @@ public abstract class Component {
         return false;
     }
 
+    public Component getParent() {
+        return parent;
+    }
+
     public boolean hasParent() {
         return parent != null;
+    }
+
+    public Component getRoot() {
+        if (isRoot()) {
+            return this;
+        }
+        return hasParent() ? parent.getRoot() : null;
+    }
+
+    public boolean hasRoot() {
+        return getRoot() != null;
     }
 
     public boolean isHidden() {
@@ -117,8 +132,8 @@ public abstract class Component {
         setHeight(height);
     }
 
-    protected void render(Area area) {}
+    public void render(Area area) {}
 
-    protected void update(long deltaTime) {}
+    public void update(long deltaTime) {}
 
 }

@@ -6,6 +6,7 @@ import java.awt.Frame;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -129,11 +130,11 @@ public final class Panel extends Component {
             frame.setVisible(!hidden);
         }
     }
-    
+
     public Font getFont() {
         return font;
     }
-    
+
     public void setFont(Font font) {
         this.font = font;
     }
@@ -209,12 +210,12 @@ public final class Panel extends Component {
     }
 
     @Override
-    protected void render(Area area) {
+    public void render(Area area) {
         area.fill(background);
         bar.render(area.create(0, 0, area.getWidth(), bar.getHeight()));
         pane.render(area.create(0, bar.getHeight(), area.getWidth(), area.getHeight() - bar.getHeight()));
     }
-    
+
     public void center() {
         center(0);
     }
@@ -230,6 +231,22 @@ public final class Panel extends Component {
 
     public void minimize() {
         frame.setExtendedState(frame.getExtendedState() | Frame.ICONIFIED);
+    }
+
+    public String getTitle() {
+        return frame.getTitle();
+    }
+
+    public void setTitle(String name) {
+        frame.setTitle(name);
+    }
+
+    public Image getIcon() {
+        return frame.getIconImage();
+    }
+
+    public void setIcon(Image image) {
+        frame.setIconImage(image);
     }
 
 }

@@ -75,6 +75,10 @@ public final class Main {
         // Pane
         Pane pane = panel.getPane();
         Button button = new Button();
+        button.setHover(Color.LIGHT_GRAY, Color.DARK_GRAY);
+        button.setHoverFade(0.25, 0.15);
+        button.setHoverShadow(Color.DARK_GRAY, Color.LIGHT_GRAY);
+        button.setHoverShadowFade(0.35, 0.25);
         button.setText("Test\nTTT");
         button.setSize(200, 100);
         pane.addChild(button);

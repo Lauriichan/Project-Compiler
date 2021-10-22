@@ -15,9 +15,7 @@ final class HelloName extends JavaTemplate {
 
     @Override
     public void setup(String packet, File directory) {
-        buildJava(packet, directory);
-
-        File source = new File(directory, "src");
+        File source = buildJava(packet, directory);
 
         JavaFileBuilder builder = new JavaFileBuilder(source, "Main");
         builder.setPackage(packet).normalImport(Scanner.class);

@@ -16,15 +16,16 @@ public abstract class JavaTemplate extends Template {
         super(name, hidden);
     }
 
-    protected void buildJava(String packet, File directory) {
-        File source = new File(directory, "src");
+    protected File buildJava(String packet, File directory) {
+        File source = new File(directory, packet.replace('.', '/') + "/src");
         Files.createFolder(source);
         File resource = new File(directory, "resources");
         Files.createFolder(resource);
 
         DefaultFileBuilder manifest = new DefaultFileBuilder(directory, "MANIFEST.MF");
         manifest.add("Manifest-Version: 1.0").next();
-        manifest.add("Main-Class: ").add(packet).add(".Main");
+        manifest.add("Main-Class: ").add(packet).add(".Main").exit();
+        return source;
     }
 
 }

@@ -46,7 +46,7 @@ public final class TextField extends Component {
     }
 
     @Override
-    protected void render(Area area) {
+    public void render(Area area) {
         TextRender render = area.drawText(10, 12, buffer.toString(), 20);
         renderCursor(10, 12, area, render);
     }
@@ -69,7 +69,7 @@ public final class TextField extends Component {
     }
 
     @Override
-    protected void update(long deltaTime) {
+    public void update(long deltaTime) {
         blink.tick(deltaTime);
     }
 

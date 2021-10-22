@@ -79,7 +79,7 @@ public final class BasicPane extends Pane {
     }
 
     @Override
-    protected void render(Area area) {
+    public void render(Area area) {
         Component[] children = getChildren();
         for (Component component : children) {
             if (component.isHidden()) {
@@ -92,7 +92,7 @@ public final class BasicPane extends Pane {
     }
 
     @Override
-    protected void update(long deltaTime) {
+    public void update(long deltaTime) {
         Component[] children = getChildren();
         for (Component component : children) {
             if (component.isHidden()) {

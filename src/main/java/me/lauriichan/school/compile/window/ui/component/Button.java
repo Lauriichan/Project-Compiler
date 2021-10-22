@@ -39,7 +39,7 @@ public final class Button extends Component {
     private boolean centerText = false;
 
     @Override
-    protected void render(Area area) {
+    public void render(Area area) {
         renderBackground(area);
         renderText(area);
     }
@@ -67,8 +67,9 @@ public final class Button extends Component {
     }
 
     @Override
-    protected void update(long deltaTime) {
+    public void update(long deltaTime) {
         hover.tick(deltaTime);
+        hoverShadow.tick(deltaTime);
     }
 
     public void setTextCentered(boolean centered) {
@@ -91,8 +92,89 @@ public final class Button extends Component {
         this.text = (text == null ? "" : text);
         textRender = null;
     }
-    
-    
+
+    public String getFontName() {
+        return fontName;
+    }
+
+    public void setFontName(String fontName) {
+        this.fontName = fontName;
+    }
+
+    public Color getFontColor() {
+        return fontColor;
+    }
+
+    public void setFontColor(Color fontColor) {
+        this.fontColor = fontColor;
+    }
+
+    public int getFontSize() {
+        return fontSize;
+    }
+
+    public void setFontSize(int fontSize) {
+        this.fontSize = fontSize;
+    }
+
+    public int getFontStyle() {
+        return fontStyle;
+    }
+
+    public void setFontStyle(int fontStyle) {
+        this.fontStyle = fontStyle;
+    }
+
+    public Color getShadow() {
+        return shadow;
+    }
+
+    public void setShadow(Color shadow) {
+        this.shadow = shadow;
+    }
+
+    public Color getPress() {
+        return press;
+    }
+
+    public void setPress(Color press) {
+        this.press = press;
+    }
+
+    public int getShadowThickness() {
+        return shadowThickness;
+    }
+
+    public void setShadowThickness(int shadowThickness) {
+        this.shadowThickness = shadowThickness;
+    }
+
+    public void setHover(Color color) {
+        setHover(color, color);
+    }
+
+    public void setHover(Color start, Color end) {
+        hover.setStart(start);
+        hover.setEnd(end);
+    }
+
+    public void setHoverFade(double fadeIn, double fadeOut) {
+        hover.setFade(fadeIn, fadeOut);
+    }
+
+    public void setHoverShadow(Color color) {
+        setHoverShadow(color, color);
+    }
+
+    public void setHoverShadow(Color start, Color end) {
+        hoverShadow.setStart(start);
+        hoverShadow.setEnd(end);
+    }
+
+    public void setHoverShadowFade(double fadeIn, double fadeOut) {
+        hoverShadow.setFade(fadeIn, fadeOut);
+    }
+
     /*
      * 
      */
