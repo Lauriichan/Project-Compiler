@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import me.lauriichan.school.compile.util.tick.Ticker;
 import me.lauriichan.school.compile.window.input.InputProvider;
-import me.lauriichan.school.compile.window.ui.bar.SimpleRootBar;
+import me.lauriichan.school.compile.window.ui.component.bar.SimpleRootBar;
 import me.lauriichan.school.compile.window.ui.util.Area;
 
 public final class Panel extends Component {

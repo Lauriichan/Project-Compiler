@@ -16,6 +16,16 @@ public abstract class Pane extends Component implements Iterable<Component> {
 
     public abstract Component[] getChildren();
 
+    public abstract boolean hasBar();
+
+    public abstract void setBar(Bar<?> bar);
+
+    public abstract Bar<?> getBar();
+
+    public int getAddition() {
+        return 0;
+    }
+
     @Override
     public Iterator<Component> iterator() {
         return new ArrayIterator<>(getChildren());

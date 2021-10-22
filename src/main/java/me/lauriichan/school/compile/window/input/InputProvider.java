@@ -10,8 +10,7 @@ import com.syntaxphoenix.syntaxapi.utils.java.tools.Container;
 import me.lauriichan.school.compile.window.input.keyboard.KeyboardListener;
 import me.lauriichan.school.compile.window.input.mouse.MouseListener;
 import me.lauriichan.school.compile.window.ui.Panel;
-import me.lauriichan.school.compile.window.ui.Bar;
-import me.lauriichan.school.compile.window.ui.Component;
+import me.lauriichan.school.compile.window.ui.IComponent;
 
 public final class InputProvider {
 
@@ -34,21 +33,14 @@ public final class InputProvider {
         return panel;
     }
 
-    public void register(Bar<?> bar) {
-        InputReceiver<?>[] receivers = InputReceiver.find(bar);
-        for (InputReceiver<?> receiver : receivers) {
-            listeners.computeIfAbsent(receiver.getType(), clz -> new ArrayList<>()).add(0, receiver);
-        }
-    }
-
-    public void register(Component component) {
+    public void register(IComponent component) {
         InputReceiver<?>[] receivers = InputReceiver.find(component);
         for (InputReceiver<?> receiver : receivers) {
             listeners.computeIfAbsent(receiver.getType(), clz -> new ArrayList<>()).add(0, receiver);
         }
     }
 
-    public void unregister(Component component) {
+    public void unregister(IComponent component) {
         for (Class<?> clazz : listeners.keySet()) {
             ArrayList<InputReceiver<?>> list = listeners.get(clazz);
             for (int index = 0; index < list.size(); index++) {

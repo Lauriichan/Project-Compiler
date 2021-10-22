@@ -146,6 +146,10 @@ public abstract class Component implements IComponent {
         setWidth(width);
         setHeight(height);
     }
+    
+    public void updateChildren() {}
+    
+    public void updateChildren(int width, int height) {}
 
     public void render(Area area) {}
 

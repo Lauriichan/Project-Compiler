@@ -137,6 +137,7 @@ public final class TextField extends Component {
         switch (press.getCode()) {
         case KeyEvent.VK_LEFT:
         case KeyEvent.VK_KP_LEFT:
+            System.out.println(cursor);
             if (cursor != 0) {
                 cursor--;
             }

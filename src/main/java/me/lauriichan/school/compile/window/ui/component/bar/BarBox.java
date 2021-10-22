@@ -1,4 +1,4 @@
-package me.lauriichan.school.compile.window.ui.bar;
+package me.lauriichan.school.compile.window.ui.component.bar;
 
 import java.awt.Color;
 import java.util.EnumMap;

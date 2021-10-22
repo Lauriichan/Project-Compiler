@@ -5,17 +5,18 @@ import java.util.Iterator;
 
 import me.lauriichan.school.compile.util.ArrayIterator;
 import me.lauriichan.school.compile.window.input.InputProvider;
-import me.lauriichan.school.compile.window.ui.util.Area;
 
-public abstract class Bar<E extends IComponent> implements Iterable<E> {
+public abstract class Bar<E extends IComponent> implements IComponent, Iterable<E> {
 
     private Component parent;
 
     private int height = 0;
     private InputProvider input;
 
-    final void setInput(Component component) {
+    protected final void setInput(Component component) {
         if (component == null) {
+            parent = null;
+            input.unregister(this);
             return;
         }
         if (component.getInput() == null) {
@@ -54,8 +55,19 @@ public abstract class Bar<E extends IComponent> implements Iterable<E> {
         return hasParent() ? parent.getRoot() : null;
     }
 
+    public int getGlobalY() {
+        return hasParent() ? getParent().getGlobalY() : 0;
+    }
+
+    public int getGlobalX() {
+        return hasParent() ? getParent().getGlobalX() : 0;
+    }
+
     public void setHeight(int height) {
         this.height = height;
+        if (hasParent()) {
+            parent.updateChildren(0, height);
+        }
     }
 
     public int getHeight() {
@@ -78,9 +90,5 @@ public abstract class Bar<E extends IComponent> implements Iterable<E> {
     public Iterator<E> iterator() {
         return new ArrayIterator<>(getAll());
     }
-
-    public void render(Area area) {}
-
-    public void update(long deltaTime) {}
 
 }

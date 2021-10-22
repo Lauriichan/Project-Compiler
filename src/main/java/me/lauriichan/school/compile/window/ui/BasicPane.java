@@ -14,6 +14,9 @@ public final class BasicPane extends Pane {
     private final Lock read = lock.readLock();
     private final Lock write = lock.writeLock();
 
+    private Bar<?> bar;
+    private int previous = 0;
+
     public boolean addChild(Component component) {
         read.lock();
         try {
@@ -26,6 +29,7 @@ public final class BasicPane extends Pane {
         component.setInput(this);
         write.lock();
         try {
+            component.setY(component.getY() + previous);
             return components.add(component);
         } finally {
             write.unlock();
@@ -44,6 +48,7 @@ public final class BasicPane extends Pane {
         component.setInput(null);
         write.lock();
         try {
+            component.setY(component.getY() - previous);
             return components.remove(component);
         } finally {
             write.unlock();
@@ -79,7 +84,51 @@ public final class BasicPane extends Pane {
     }
 
     @Override
+    public boolean hasBar() {
+        return bar != null;
+    }
+
+    @Override
+    public void setBar(Bar<?> bar) {
+        if(this.bar != null) {
+            this.bar.setInput(null);
+            updateChildren(0, 0);
+        }
+        this.bar = bar;
+        if(bar != null) {
+            bar.setInput(this);
+            updateChildren(0, bar.getHeight());
+        }
+    }
+
+    @Override
+    public Bar<?> getBar() {
+        return bar;
+    }
+
+    @Override
+    public int getAddition() {
+        return previous;
+    }
+
+    @Override
+    public void updateChildren(int width, int height) {
+        if (width != 0 || height == previous) {
+            return;
+        }
+        int diff = height - previous;
+        previous = height;
+        Component[] children = getChildren();
+        for (Component child : children) {
+            child.setY(child.getY() + diff);
+        }
+    }
+
+    @Override
     public void render(Area area) {
+        if (bar != null) {
+            bar.render(area.create(0, 0, area.getWidth(), bar.getHeight()));
+        }
         Component[] children = getChildren();
         for (Component component : children) {
             if (component.isHidden()) {
@@ -93,6 +142,9 @@ public final class BasicPane extends Pane {
 
     @Override
     public void update(long deltaTime) {
+        if (bar != null) {
+            bar.update(deltaTime);
+        }
         Component[] children = getChildren();
         for (Component component : children) {
             if (component.isHidden()) {

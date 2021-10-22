@@ -1,7 +1,7 @@
 package me.lauriichan.school.compile.window.ui;
 
-import me.lauriichan.school.compile.window.ui.bar.BarBox;
-import me.lauriichan.school.compile.window.ui.bar.IBoxRenderer;
+import me.lauriichan.school.compile.window.ui.component.bar.BarBox;
+import me.lauriichan.school.compile.window.ui.component.bar.IBoxRenderer;
 
 public abstract class RootBar extends TriggerBar<BarBox> {
 

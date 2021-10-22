@@ -1,20 +1,15 @@
-package me.lauriichan.school.compile.window.ui.component;
+package me.lauriichan.school.compile.window.ui.component.tab;
 
 import java.awt.Color;
 
-import me.lauriichan.school.compile.window.input.Listener;
 import me.lauriichan.school.compile.window.input.mouse.MouseButton;
-import me.lauriichan.school.compile.window.input.mouse.MouseHover;
-import me.lauriichan.school.compile.window.input.mouse.MousePress;
-import me.lauriichan.school.compile.window.input.mouse.MouseRelease;
-import me.lauriichan.school.compile.window.ui.Component;
+import me.lauriichan.school.compile.window.ui.ITriggerComponent;
 import me.lauriichan.school.compile.window.ui.animation.Animators;
 import me.lauriichan.school.compile.window.ui.animation.FadeAnimation;
 import me.lauriichan.school.compile.window.ui.util.Area;
-import me.lauriichan.school.compile.window.ui.util.InputHelper;
 import me.lauriichan.school.compile.window.ui.util.TextRender;
 
-public final class Button extends Component {
+public class TabButton implements ITriggerComponent {
 
     private final FadeAnimation<Color> hover = new FadeAnimation<>(Animators.COLOR);
     private final FadeAnimation<Color> hoverShadow = new FadeAnimation<>(Animators.COLOR);
@@ -24,19 +19,18 @@ public final class Button extends Component {
     private int textWidth;
     private int textHeight;
     private String textLine;
-    private TextRender textRender;
+    private TextRender textRender = null;
 
-    private String fontName;
-    private int fontSize;
-    private int fontStyle;
-    private Color fontColor;
+    private String fontName = "Open Sans";
+    private int fontSize = 14;
+    private int fontStyle = 0;
+    private Color fontColor = Color.WHITE;
 
-    private Color press = Color.WHITE;
+    private Color press = Color.GRAY;
     private Color shadow = Color.BLACK;
     private int shadowThickness = 2;
 
     private boolean pressed = false;
-    private boolean centerText = false;
 
     @Override
     public void render(Area area) {
@@ -47,15 +41,12 @@ public final class Button extends Component {
     private void renderText(Area area) {
         if (textRender == null) {
             textRender = area.analyseText(0, 0, text, fontName, fontSize, fontStyle);
-            textLine = textRender.getLine(0);
+            textLine = textRender.getLines() == 0 ? "" : textRender.getLine(0);
             textWidth = textRender.getMetrics().stringWidth(textLine);
             textHeight = textRender.getHeight();
         }
-        if (!centerText) {
-            area.drawText(10, 12, textLine, fontColor, fontName, fontSize, fontStyle);
-            return;
-        }
-        area.drawText((getWidth() - textWidth) / 2, (getHeight() - textHeight) / 2, textLine, fontColor, fontName, fontSize, fontStyle);
+        area.drawText((area.getWidth() - textWidth) / 2, (area.getHeight() - textHeight / 2) / 2, textLine, fontColor, fontName, fontSize,
+            fontStyle);
     }
 
     private void renderBackground(Area area) {
@@ -70,14 +61,6 @@ public final class Button extends Component {
     public void update(long deltaTime) {
         hover.tick(deltaTime);
         hoverShadow.tick(deltaTime);
-    }
-
-    public void setTextCentered(boolean centered) {
-        this.centerText = centered;
-    }
-
-    public boolean isTextCentered() {
-        return centerText;
     }
 
     public String getShownText() {
@@ -179,27 +162,28 @@ public final class Button extends Component {
      * 
      */
 
-    @Listener
-    public void onMove(MouseHover hover) {
-        InputHelper.hover(hover, this, hoverShadow);
-        this.hover.setTriggered(hoverShadow.isTriggered());
+    @Override
+    public void setTriggered(boolean triggered) {
+        hover.setTriggered(triggered);
+        hoverShadow.setTriggered(triggered);
     }
 
-    @Listener
-    public void onPress(MousePress press) {
-        if (!isInside(press.getX(), press.getY()) || press.getButton() != MouseButton.LEFT) {
+    @Override
+    public boolean isTriggered() {
+        return hover.isTriggered();
+    }
+
+    public void press(MouseButton button) {
+        if (button != MouseButton.LEFT) {
             return;
         }
-        press.consume();
         pressed = true;
     }
 
-    @Listener
-    public void onRelease(MouseRelease release) {
-        if (!pressed || release.getButton() != MouseButton.LEFT) {
+    public void release(MouseButton button) {
+        if (!pressed || button != MouseButton.LEFT) {
             return;
         }
-        release.consume();
         pressed = false;
     }
 

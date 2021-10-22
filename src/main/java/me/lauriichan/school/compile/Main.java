@@ -13,10 +13,11 @@ import me.lauriichan.school.compile.window.input.mouse.MouseButton;
 import me.lauriichan.school.compile.window.ui.Pane;
 import me.lauriichan.school.compile.window.ui.Panel;
 import me.lauriichan.school.compile.window.ui.RootBar;
-import me.lauriichan.school.compile.window.ui.bar.BarBox;
-import me.lauriichan.school.compile.window.ui.bar.BoxRenderers;
-import me.lauriichan.school.compile.window.ui.component.Button;
 import me.lauriichan.school.compile.window.ui.component.TextField;
+import me.lauriichan.school.compile.window.ui.component.bar.BarBox;
+import me.lauriichan.school.compile.window.ui.component.bar.BoxRenderers;
+import me.lauriichan.school.compile.window.ui.component.tab.SimpleTabBar;
+import me.lauriichan.school.compile.window.ui.component.tab.TabButton;
 
 public final class Main {
 
@@ -74,23 +75,31 @@ public final class Main {
 
         // Pane
         Pane pane = panel.getPane();
-        Button button = new Button();
-        button.setHover(Color.LIGHT_GRAY, Color.DARK_GRAY);
-        button.setHoverFade(0.25, 0.15);
-        button.setHoverShadow(Color.DARK_GRAY, Color.LIGHT_GRAY);
-        button.setHoverShadowFade(0.35, 0.25);
-        button.setText("Test\nTTT");
-        button.setSize(200, 100);
-        pane.addChild(button);
+        SimpleTabBar btar = new SimpleTabBar();
+        btar.setHeight(20);
+        btar.setSize(80);
+        for(int index = 0; index < 6; index++) {
+            TabButton button = new TabButton();
+            button.setText("Test " + index);
+            button.setPress(Color.LIGHT_GRAY);
+            button.setShadow(Color.LIGHT_GRAY);
+            button.setHover(Color.DARK_GRAY, Color.GRAY);
+            button.setHoverFade(0.4, 0.2);
+            button.setHoverShadow(Color.DARK_GRAY, Color.GRAY);
+            button.setHoverShadowFade(0.4, 0.2);
+            btar.add(button);
+        }
+        btar.setSelectEnabled(true);
+        btar.setSelected(0);
+        pane.setBar(btar);
         
         TextField field = new TextField();
-        field.setPosition(0, 120);
-        field.setSize(300, 200);
+        field.setSize(800, 400);
+        field.setReturnAllowed(true);
         pane.addChild(field);
-
+        
         panel.center();
         panel.show();
-
     }
 
 }

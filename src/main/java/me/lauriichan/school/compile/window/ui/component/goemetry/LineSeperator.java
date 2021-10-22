@@ -8,6 +8,7 @@ public final class LineSeperator extends Seperator {
 
     private Color color;
     private int thickness = 2;
+    private int offset = 3;
 
     public LineSeperator() {
         super();
@@ -32,14 +33,22 @@ public final class LineSeperator extends Seperator {
     public void setThickness(int thickness) {
         this.thickness = thickness;
     }
+    
+    public int getOffset() {
+        return offset;
+    }
+    
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
 
     @Override
     public void render(Area area) {
         if (isVertical()) {
-            area.drawLine(0, area.getHeight() / 2, area.getWidth(), area.getHeight() / 2, thickness);
+            area.drawLine(area.getWidth() / 2, offset, area.getWidth() / 2, area.getHeight() - offset, thickness);
             return;
         }
-        area.drawLine(area.getWidth() / 2, 0, area.getWidth() / 2, area.getHeight(), thickness);
+        area.drawLine(offset, area.getHeight() / 2, area.getWidth() - offset, area.getHeight() / 2, thickness);
     }
 
 }
