@@ -19,7 +19,7 @@ import me.lauriichan.school.compile.window.ui.component.tab.SimpleTabBar;
 import me.lauriichan.school.compile.window.ui.component.tab.TabButton;
 import me.lauriichan.school.compile.window.view.CompileView;
 import me.lauriichan.school.compile.window.view.MainView;
-import me.lauriichan.school.compile.window.view.ProjectView;
+import me.lauriichan.school.compile.window.view.SettingView;
 import me.lauriichan.school.compile.window.view.TemplateView;
 import me.lauriichan.school.compile.window.view.View;
 import me.lauriichan.school.compile.window.view.ViewManager;
@@ -84,15 +84,15 @@ public final class Main {
         viewManager.setSize(pane.getWidth(), pane.getHeight());
         viewManager.add(new MainView());
         viewManager.add(new TemplateView());
-        viewManager.add(new ProjectView());
         viewManager.add(new CompileView());
+        viewManager.add(new SettingView());
         viewManager.select(0);
         pane.addChild(viewManager);
 
         // Bar
         SimpleTabBar btar = new SimpleTabBar();
         btar.setHeight(20);
-        btar.setSize(80);
+        btar.setSize(120);
         for (int viewId = 0; viewId < viewManager.getViewCount(); viewId++) {
             View view = viewManager.get(viewId);
             TabButton button = new TabButton();

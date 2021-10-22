@@ -10,7 +10,7 @@ final class RandomTemplate extends Template {
     private final RandomNumberGenerator random = NumberGeneratorType.MURMUR.create(System.currentTimeMillis());
 
     public RandomTemplate() {
-        super("Zufälliges Template");
+        super("Zufällig");
     }
 
     @Override

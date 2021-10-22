@@ -26,10 +26,10 @@ public final class Button extends Component {
     private String textLine;
     private TextRender textRender;
 
-    private String fontName;
-    private int fontSize;
-    private int fontStyle;
-    private Color fontColor;
+    private String fontName = "Open Sans";
+    private int fontSize = 12;
+    private int fontStyle = 0;
+    private Color fontColor = Color.WHITE;
 
     private Color press = Color.WHITE;
     private Color shadow = Color.BLACK;
@@ -47,7 +47,7 @@ public final class Button extends Component {
     private void renderText(Area area) {
         if (textRender == null) {
             textRender = area.analyseText(0, 0, text, fontName, fontSize, fontStyle);
-            textLine = textRender.getLine(0);
+            textLine = textRender.getLines() == 0 ? "" : textRender.getLine(0);
             textWidth = textRender.getMetrics().stringWidth(textLine);
             textHeight = textRender.getHeight();
         }

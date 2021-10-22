@@ -3,6 +3,8 @@ package me.lauriichan.school.compile.window.ui.util;
 import java.awt.Color;
 import java.util.HashMap;
 
+import com.syntaxphoenix.syntaxapi.logging.color.ColorTools;
+
 public final class ColorCache {
 
     public static final ColorCache INSTANCE = new ColorCache();
@@ -22,7 +24,7 @@ public final class ColorCache {
     public Color getOrBuild(String hex, int alpha) {
         String combine = (hex.startsWith("#") ? hex.substring(1) : hex) + '$' + alpha;
         if (!colors.containsKey(combine)) {
-            Color color = Color.decode('#' + hex);
+            Color color = ColorTools.hex2rgba(hex, alpha);
             color = new Color(color.getRed(), color.getBlue(), color.getBlue(), alpha);
             colors.put(combine, color);
             return color;

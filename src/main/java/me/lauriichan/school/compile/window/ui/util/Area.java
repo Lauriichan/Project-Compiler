@@ -91,8 +91,9 @@ public final class Area {
     }
 
     public void fillShadow(Color color, int thickness, Color shadow) {
+        int half = thickness / 2;
         drawRectangle(0, 0, getWidth(), getHeight(), shadow);
-        drawRectangle(0, 0, getWidth() - thickness, getHeight() - thickness, color);
+        drawRectangle(half, half, getWidth() - thickness - half, getHeight() - thickness - half, color);
     }
 
     public void drawLine(int x1, int y1, int x2, int y2, float thickness) {
