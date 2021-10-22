@@ -211,7 +211,6 @@ public final class Panel extends Component {
 
     @Override
     public void render(Area area) {
-        area.fill(background);
         bar.render(area.create(0, 0, area.getWidth(), bar.getHeight()));
         pane.render(area.create(0, bar.getHeight(), area.getWidth(), area.getHeight() - bar.getHeight()));
     }

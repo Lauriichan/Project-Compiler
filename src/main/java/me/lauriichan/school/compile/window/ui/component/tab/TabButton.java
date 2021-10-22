@@ -32,6 +32,8 @@ public class TabButton implements ITriggerComponent {
 
     private boolean pressed = false;
 
+    private Runnable action;
+
     @Override
     public void render(Area area) {
         renderBackground(area);
@@ -158,6 +160,18 @@ public class TabButton implements ITriggerComponent {
         hoverShadow.setFade(fadeIn, fadeOut);
     }
 
+    public Runnable getAction() {
+        return action;
+    }
+
+    public void setAction(Runnable action) {
+        this.action = action;
+    }
+
+    public boolean hasAction() {
+        return action != null;
+    }
+
     /*
      * 
      */
@@ -185,6 +199,10 @@ public class TabButton implements ITriggerComponent {
             return;
         }
         pressed = false;
+        if (action == null) {
+            return;
+        }
+        action.run();
     }
 
 }

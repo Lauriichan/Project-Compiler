@@ -90,12 +90,12 @@ public final class BasicPane extends Pane {
 
     @Override
     public void setBar(Bar<?> bar) {
-        if(this.bar != null) {
+        if (this.bar != null) {
             this.bar.setInput(null);
             updateChildren(0, 0);
         }
         this.bar = bar;
-        if(bar != null) {
+        if (bar != null) {
             bar.setInput(this);
             updateChildren(0, bar.getHeight());
         }
@@ -129,6 +129,9 @@ public final class BasicPane extends Pane {
         if (bar != null) {
             bar.render(area.create(0, 0, area.getWidth(), bar.getHeight()));
         }
+        if (getChildrenCount() == 0) {
+            return;
+        }
         Component[] children = getChildren();
         for (Component component : children) {
             if (component.isHidden()) {
@@ -144,6 +147,9 @@ public final class BasicPane extends Pane {
     public void update(long deltaTime) {
         if (bar != null) {
             bar.update(deltaTime);
+        }
+        if (getChildrenCount() == 0) {
+            return;
         }
         Component[] children = getChildren();
         for (Component component : children) {

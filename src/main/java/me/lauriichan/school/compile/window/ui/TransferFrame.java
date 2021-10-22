@@ -52,6 +52,7 @@ final class TransferFrame extends JFrame {
     @Override
     public void paint(Graphics graphics) {
         graphics.drawImage(image, 0, 0, null);
+        buffer.clearRect(0, 0, component.getWidth(), component.getHeight());
         component.render(new Area(buffer, component.getBackground(), -1, -1, getWidth(), getHeight()));
     }
 

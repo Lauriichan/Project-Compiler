@@ -197,6 +197,9 @@ public class SimpleTabBar extends TabBar {
             if (box == null) {
                 break;
             }
+            if(selectEnabled && selected == index) {
+                break;
+            }
             box.press(press.getButton());
             if (selected != index && selected != -1 && selected < count) {
                 if (selectEnabled) {

@@ -15,7 +15,7 @@ public abstract class Component implements IComponent {
     private Component parent;
     private InputProvider input;
 
-    protected final void setInput(Component component) {
+    public void setInput(Component component) {
         if (isRoot()) {
             throw new IllegalStateException("Can't set InputProvider to root component!");
         }

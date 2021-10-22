@@ -1,20 +1,22 @@
 package me.lauriichan.school.compile.window.view;
 
-import me.lauriichan.school.compile.window.ui.component.Button;
-import me.lauriichan.school.compile.window.ui.component.TextField;
+import java.awt.Color;
 
-final class ProjectView extends View {
-    
-    private final Button newBtn = new Button();
-    private final Button saveBtn = new Button();
-    private final Button openBtn = new Button();
-    private final Button compileBtn = new Button();
-    
-    private final TextField nameTxt = new TextField();
-    private final TextField packageTxt = new TextField();
+import me.lauriichan.school.compile.window.ui.BasicPane;
+import me.lauriichan.school.compile.window.ui.component.goemetry.Rectangle;
+
+public final class ProjectView extends View {
 
     public ProjectView() {
-        super("Compiler - Project");
+        super("Project");
+    }
+
+    @Override
+    protected void onSetup(BasicPane pane, int width, int height) {
+        Rectangle rectangle = new Rectangle(Color.GREEN);
+        rectangle.setSize(width, height);
+        System.out.println(width + " / " + height);
+        pane.addChild(rectangle);
     }
 
 }

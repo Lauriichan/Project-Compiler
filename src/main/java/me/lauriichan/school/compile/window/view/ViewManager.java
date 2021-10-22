@@ -1,9 +1,11 @@
 package me.lauriichan.school.compile.window.view;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import me.lauriichan.school.compile.window.ui.BasicPane;
 import me.lauriichan.school.compile.window.ui.Component;
+import me.lauriichan.school.compile.window.ui.Pane;
 import me.lauriichan.school.compile.window.ui.util.Area;
 
 public final class ViewManager extends Component {
@@ -16,6 +18,30 @@ public final class ViewManager extends Component {
             return;
         }
         views.add(view);
+        view.setManager(this);
+        view.getPane().setSize(getWidth(), getHeight());
+        if (getInput() != null) {
+            view.getPane().setInput(this);
+            view.setup();
+        }
+    }
+
+    public <E extends View> Optional<E> get(Class<E> clazz) {
+        return views.stream().filter(view -> clazz.isAssignableFrom(view.getClass())).findFirst().map(clazz::cast);
+    }
+
+    @Override
+    public void setInput(Component component) {
+        super.setInput(component);
+        for (int index = 0; index < views.size(); index++) {
+            View view = views.get(index);
+            Pane pane = view.getPane();
+            if (pane.getInput() != null) {
+                continue;
+            }
+            pane.setInput(this);
+            view.setup();
+        }
     }
 
     public void remove(View view) {
@@ -25,13 +51,18 @@ public final class ViewManager extends Component {
         }
         if (views.size() == 1) {
             current = 0;
+            views.get(0).getPane().setInput(null);
             views.clear();
             return;
         }
         if (index >= current) {
             current--;
         }
-        views.remove(index);
+        views.remove(index).getPane().setInput(null);
+    }
+
+    public View get(int index) {
+        return views.get(index);
     }
 
     public int getViewCount() {
@@ -50,6 +81,22 @@ public final class ViewManager extends Component {
     @Override
     public boolean isUpdating() {
         return !views.isEmpty();
+    }
+
+    @Override
+    public void setWidth(int width) {
+        for (int index = 0; index < views.size(); index++) {
+            views.get(index).getPane().setWidth(width);
+        }
+        super.setWidth(width);
+    }
+
+    @Override
+    public void setHeight(int height) {
+        for (int index = 0; index < views.size(); index++) {
+            views.get(index).getPane().setHeight(height);
+        }
+        super.setHeight(height);
     }
 
     @Override

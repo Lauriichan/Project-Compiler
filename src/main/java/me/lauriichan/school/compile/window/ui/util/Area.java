@@ -27,6 +27,7 @@ public final class Area {
 
     public Area(Graphics2D graphics, Color color, int x, int y, int width, int height) {
         this.graphics = (x == -1 && y == -1) ? graphics : (Graphics2D) graphics.create(x, y, width, height);
+        this.graphics.setBackground(color);
         this.graphics.setColor(color);
         this.color = color;
         this.size = new Point(width, height);
