@@ -4,12 +4,13 @@ import java.awt.Color;
 import java.util.EnumMap;
 import java.util.function.BiConsumer;
 
+import me.lauriichan.school.compile.window.ui.ITriggerComponent;
 import me.lauriichan.school.compile.window.ui.animation.Animators;
 import me.lauriichan.school.compile.window.input.mouse.MouseButton;
 import me.lauriichan.school.compile.window.ui.animation.FadeAnimation;
 import me.lauriichan.school.compile.window.ui.util.Area;
 
-public final class BarBox {
+public final class BarBox implements ITriggerComponent {
 
     private final FadeAnimation<Color> iconColor = new FadeAnimation<>(Animators.COLOR);
     private final FadeAnimation<Color> boxColor = new FadeAnimation<>(Animators.COLOR);
@@ -21,11 +22,13 @@ public final class BarBox {
         this.iconDrawer = iconDrawer;
     }
 
+    @Override
     public void render(Area area) {
         area.fill(boxColor.getValue());
         iconDrawer.accept(area, iconColor.getValue());
     }
 
+    @Override
     public void update(long deltaTime) {
         iconColor.tick(deltaTime);
         boxColor.tick(deltaTime);
@@ -101,5 +104,5 @@ public final class BarBox {
     public boolean isTriggered() {
         return iconColor.isTriggered();
     }
-    
+
 }

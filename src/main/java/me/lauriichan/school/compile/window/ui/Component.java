@@ -4,7 +4,7 @@ import me.lauriichan.school.compile.window.input.InputProvider;
 import me.lauriichan.school.compile.window.ui.util.Area;
 import me.lauriichan.school.compile.window.util.Point;
 
-public abstract class Component {
+public abstract class Component implements IComponent {
 
     private final Point position = new Point(0, 0);
     private final Point size = new Point(0, 0);
@@ -39,6 +39,21 @@ public abstract class Component {
 
     public boolean isRoot() {
         return false;
+    }
+
+    public boolean isContainer() {
+        return false;
+    }
+
+    public Component getContainer() {
+        if (isContainer()) {
+            return this;
+        }
+        return hasParent() ? parent.getContainer() : null;
+    }
+
+    public boolean hasContainer() {
+        return getContainer() != null;
     }
 
     public Component getParent() {
