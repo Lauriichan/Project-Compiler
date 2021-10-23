@@ -21,6 +21,8 @@ public final class Button extends Component {
 
     private String text = "";
 
+    private Runnable action = null;
+
     private int textWidth;
     private int textHeight;
     private String textLine;
@@ -37,6 +39,8 @@ public final class Button extends Component {
 
     private boolean pressed = false;
     private boolean centerText = false;
+    
+    private boolean locked = false;
 
     @Override
     public void render(Area area) {
@@ -55,7 +59,8 @@ public final class Button extends Component {
             area.drawText(10, 12, textLine, fontColor, fontName, fontSize, fontStyle);
             return;
         }
-        area.drawText((getWidth() - textWidth) / 2, (getHeight() - textHeight) / 2, textLine, fontColor, fontName, fontSize, fontStyle);
+        area.drawText((area.getWidth() - textWidth) / 2, (area.getHeight() - textHeight / 2) / 2, textLine, fontColor, fontName, fontSize,
+            fontStyle);
     }
 
     private void renderBackground(Area area) {
@@ -70,6 +75,22 @@ public final class Button extends Component {
     public void update(long deltaTime) {
         hover.tick(deltaTime);
         hoverShadow.tick(deltaTime);
+    }
+    
+    public boolean isLocked() {
+        return locked;
+    }
+    
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+    }
+
+    public void setAction(Runnable action) {
+        this.action = action;
+    }
+
+    public Runnable getAction() {
+        return action;
     }
 
     public void setTextCentered(boolean centered) {
@@ -191,6 +212,9 @@ public final class Button extends Component {
             return;
         }
         press.consume();
+        if(locked) {
+            return;
+        }
         pressed = true;
     }
 
@@ -201,6 +225,9 @@ public final class Button extends Component {
         }
         release.consume();
         pressed = false;
+        if (action != null) {
+            action.run();
+        }
     }
 
 }

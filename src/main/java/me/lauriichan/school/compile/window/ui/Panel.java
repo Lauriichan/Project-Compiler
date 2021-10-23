@@ -62,6 +62,14 @@ public final class Panel extends Component {
         renderTick.add(this::render);
         updateTick.add(this::update);
     }
+    
+    public Ticker getRenderTick() {
+        return renderTick;
+    }
+    
+    public Ticker getUpdateTick() {
+        return updateTick;
+    }
 
     @Override
     public final boolean isRoot() {
@@ -117,6 +125,7 @@ public final class Panel extends Component {
     public void setBarHeight(int height) {
         bar.setHeight(height);
         pane.setY(height);
+        pane.setHeight(getHeight() - height);
     }
 
     public int getBarHeight() {
