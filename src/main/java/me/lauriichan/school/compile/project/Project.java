@@ -17,16 +17,24 @@ public final class Project {
     public static final Category PROJECTS = new Category("projects");
 
     public static String getDefaultName() {
-        ISetting setting = Singleton.get(Settings.class).put(Settings.USER_SETTINGS.of("project", String.class, true));
+        ISetting setting = Singleton.get(Settings.class).get("project", Settings.USER_SETTINGS);
         if (!setting.isValid()) {
             return null;
         }
         return setting.getAs(String.class);
     }
 
+    public static void setDefaultName(String name) {
+        Singleton.get(Settings.class).put(Settings.USER_SETTINGS.of("project", String.class, true)).set(name);
+    }
+
     public static Project getDefault() {
         String name = getDefaultName();
         return name == null ? null : get(name);
+    }
+    
+    public static void setDefault(Project project) {
+        setDefaultName(project.getName());
     }
 
     public static Project get(String name) {
@@ -63,6 +71,10 @@ public final class Project {
         this.directory = directory;
         this.name = name;
         this.packet = packet;
+    }
+    
+    public String getName() {
+        return name;
     }
 
     public File getDirectory() {

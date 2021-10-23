@@ -18,6 +18,7 @@ import me.lauriichan.school.compile.window.ui.component.bar.BoxRenderers;
 import me.lauriichan.school.compile.window.ui.component.tab.SimpleTabBar;
 import me.lauriichan.school.compile.window.ui.component.tab.TabButton;
 import me.lauriichan.school.compile.window.view.CompileView;
+import me.lauriichan.school.compile.window.view.ConsoleView;
 import me.lauriichan.school.compile.window.view.MainView;
 import me.lauriichan.school.compile.window.view.SettingView;
 import me.lauriichan.school.compile.window.view.TemplateView;
@@ -85,6 +86,7 @@ public final class Main {
         viewManager.add(new MainView());
         viewManager.add(new TemplateView());
         viewManager.add(new CompileView());
+        viewManager.add(new ConsoleView());
         viewManager.add(new SettingView());
         viewManager.select(0);
         pane.addChild(viewManager);

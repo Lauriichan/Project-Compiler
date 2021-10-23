@@ -24,6 +24,7 @@ import me.lauriichan.school.compile.window.ui.component.Label;
 import me.lauriichan.school.compile.window.ui.component.TextField;
 import me.lauriichan.school.compile.window.ui.component.bar.BarBox;
 import me.lauriichan.school.compile.window.ui.component.bar.BoxRenderers;
+import me.lauriichan.school.compile.window.ui.util.Area;
 
 public final class TemplateView extends View {
 
@@ -161,6 +162,16 @@ public final class TemplateView extends View {
         panel.setHeight(340);
         panel.setBarHeight(40);
         panel.setBackground(Color.GRAY);
+        
+        Component outline = new Component() {
+            @Override
+            public void render(Area area) {
+                area.fillOutline(panel.getBackground(), 2, Color.DARK_GRAY);
+            }
+        };
+        outline.setWidth(panel.getWidth());
+        outline.setHeight(pane.getHeight());
+        pane.addChild(outline);
 
         // Root bar
         RootBar bar = panel.getBar();

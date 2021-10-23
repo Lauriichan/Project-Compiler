@@ -7,7 +7,7 @@ public final class Animators {
     private Animators() {}
 
     public static final IAnimator<Integer> INTEGER = (start, end, percentage) -> start + (int) Math.floor((end - start) * percentage);
-    public static final IAnimator<Double> DOUBLE = (start, end, percentage) -> start + ((start - end) * percentage);
+    public static final IAnimator<Double> DOUBLE = (start, end, percentage) -> start + ((end - start) * percentage);
 
     public static final IAnimator<Color> COLOR = (start, end, percentage) -> new Color(
         INTEGER.update(start.getRed(), end.getRed(), percentage), INTEGER.update(start.getGreen(), end.getGreen(), percentage),

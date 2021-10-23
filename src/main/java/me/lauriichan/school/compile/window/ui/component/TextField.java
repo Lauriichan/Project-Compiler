@@ -7,6 +7,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.util.function.Consumer;
 
 import me.lauriichan.school.compile.window.input.Listener;
 import me.lauriichan.school.compile.window.input.keyboard.KeyboardPress;
@@ -28,6 +29,8 @@ public final class TextField extends Component {
     private ICharFilter filter = null;
     private ICharMapper mapper = null;
     private IStringValidator validator = null;
+
+    private Consumer<TextField> action = null;
 
     private boolean returnAllowed = false;
     private boolean spaceAllowed = true;
@@ -96,7 +99,7 @@ public final class TextField extends Component {
         String line = render.getLine(id);
         int length = line.length();
         String subLine = line.substring(0, index > length ? length : index);
-        int tx = render.getMetrics().stringWidth(subLine) + x;
+        int tx = render.getMetrics().stringWidth(subLine) + x + 3;
         int amount = height * id;
         area.drawLine(tx, ((y / 3) * 2) + amount, tx, y + amount + curHeight, 2, blink.getValue());
     }
@@ -120,6 +123,7 @@ public final class TextField extends Component {
     public void setContent(String content) {
         if (buffer.length() != 0) {
             buffer.delete(0, buffer.length());
+            cursor = 0;
         }
         buffer.append(content);
         validate();
@@ -143,6 +147,23 @@ public final class TextField extends Component {
 
     public int getLimit() {
         return limit;
+    }
+
+    public void setBlink(Color color) {
+        setBlink(color, color);
+    }
+
+    public void setBlink(Color on, Color off) {
+        blink.setStart(on);
+        blink.setEnd(off);
+    }
+
+    public void setBlinkHidden(Color color) {
+        blink.setHidden(color);
+    }
+
+    public void setBlinkTime(double on, double off) {
+        blink.setBlink(on, off);
     }
 
     public void setFontName(String fontName) {
@@ -248,6 +269,14 @@ public final class TextField extends Component {
 
     public IStringValidator getValidator() {
         return validator;
+    }
+
+    public void setAction(Consumer<TextField> action) {
+        this.action = action;
+    }
+
+    public Consumer<TextField> getAction() {
+        return action;
     }
 
     public void setMapper(ICharMapper mapper) {
@@ -374,6 +403,9 @@ public final class TextField extends Component {
         }
         append(press.getChar());
         validate();
+        if (press.getChar() == '\n' && action != null) {
+            action.accept(this);
+        }
     }
 
     private void append(char character) {

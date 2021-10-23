@@ -24,6 +24,7 @@ public final class ViewManager extends Component {
             view.getPane().setInput(this);
             view.setup();
         }
+        view.setLocked(true);
     }
 
     public <E extends View> Optional<E> get(Class<E> clazz) {

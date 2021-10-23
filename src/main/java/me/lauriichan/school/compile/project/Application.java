@@ -15,12 +15,17 @@ public final class Application {
     public static final Category APPLICATIONS = new Category("applications");
 
     public static String getDefault() {
-        ISetting setting = Singleton.get(Settings.class).put(Settings.USER_SETTINGS.of("application", String.class, true));
+        ISetting setting = Singleton.get(Settings.class).get("application", Settings.USER_SETTINGS);
         if (!setting.isValid()) {
             return "Atom";
         }
         String value = setting.getAs(String.class);
         return value == null ? "Atom" : value;
+    }
+
+    public static void setDefault(String name, File executable) {
+        put(name, executable);
+        Singleton.get(Settings.class).put(Settings.USER_SETTINGS.of("application", String.class, true)).set(name);
     }
 
     public static Application get(String name) {
