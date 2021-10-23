@@ -4,26 +4,17 @@ import static me.lauriichan.school.compile.window.ui.util.ColorCache.color;
 
 import java.awt.Color;
 import java.io.File;
-import java.util.function.Predicate;
-import java.util.regex.Pattern;
 
-import jnafilechooser.api.JnaFileChooser;
-import jnafilechooser.api.JnaFileChooser.Mode;
 import me.lauriichan.school.compile.data.Settings;
 import me.lauriichan.school.compile.data.converter.*;
 import me.lauriichan.school.compile.project.Application;
 import me.lauriichan.school.compile.project.Project;
-import me.lauriichan.school.compile.project.ProjectInfo;
 import me.lauriichan.school.compile.project.template.Template;
 import me.lauriichan.school.compile.util.Singleton;
 import me.lauriichan.school.compile.window.input.mouse.MouseButton;
-import me.lauriichan.school.compile.window.ui.Dialog;
 import me.lauriichan.school.compile.window.ui.Pane;
 import me.lauriichan.school.compile.window.ui.Panel;
 import me.lauriichan.school.compile.window.ui.RootBar;
-import me.lauriichan.school.compile.window.ui.component.Button;
-import me.lauriichan.school.compile.window.ui.component.Label;
-import me.lauriichan.school.compile.window.ui.component.TextField;
 import me.lauriichan.school.compile.window.ui.component.bar.BarBox;
 import me.lauriichan.school.compile.window.ui.component.bar.BoxRenderers;
 import me.lauriichan.school.compile.window.ui.component.tab.SimpleTabBar;

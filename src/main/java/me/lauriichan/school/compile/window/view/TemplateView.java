@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 
 import jnafilechooser.api.JnaFileChooser;
 import jnafilechooser.api.JnaFileChooser.Mode;
-import me.lauriichan.school.compile.Main;
 import me.lauriichan.school.compile.project.Project;
 import me.lauriichan.school.compile.project.ProjectInfo;
 import me.lauriichan.school.compile.project.template.Template;
