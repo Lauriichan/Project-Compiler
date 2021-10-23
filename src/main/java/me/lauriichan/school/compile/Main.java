@@ -3,13 +3,11 @@ package me.lauriichan.school.compile;
 import static me.lauriichan.school.compile.window.ui.util.ColorCache.color;
 
 import java.awt.Color;
-import java.io.File;
 
 import me.lauriichan.school.compile.data.Settings;
 import me.lauriichan.school.compile.data.converter.*;
 import me.lauriichan.school.compile.project.Application;
 import me.lauriichan.school.compile.project.Project;
-import me.lauriichan.school.compile.project.template.Template;
 import me.lauriichan.school.compile.util.Singleton;
 import me.lauriichan.school.compile.window.input.mouse.MouseButton;
 import me.lauriichan.school.compile.window.ui.Pane;
@@ -34,15 +32,21 @@ public final class Main {
         registerConverters();
         loadData();
         initSingletons();
+        buildUi();
+        Runtime.getRuntime().addShutdownHook(new Thread(Main::shutdown));
+    }
+    
+    private static void shutdown() {
+        Singleton.get(Settings.class).save();
     }
 
     private static void loadData() {
         Settings settings = Singleton.get(Settings.class);
         settings.load();
+        Settings.USER_SETTINGS.load(settings, String.class);
         Project.PROJECTS.load(settings, Project.class);
         Application.APPLICATIONS.load(settings, Application.class);
         settings.save();
-
     }
 
     private static void registerConverters() {
@@ -52,11 +56,6 @@ public final class Main {
 
     private static void initSingletons() {
 
-    }
-
-    public static void testTemplate() {
-        Project.create("test", "we.got.a.test", new File("projects/test"), Template.TEMPLATES.get(0));
-        Project.get("test").open();
     }
 
     public static Panel buildUi() {

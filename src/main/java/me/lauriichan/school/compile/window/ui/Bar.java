@@ -12,6 +12,8 @@ public abstract class Bar<E extends IComponent> implements IComponent, Iterable<
 
     private int height = 0;
     private InputProvider input;
+    
+    private boolean hidden = false;
 
     protected final void setInput(Component component) {
         if (component == null) {
@@ -29,6 +31,16 @@ public abstract class Bar<E extends IComponent> implements IComponent, Iterable<
 
     public InputProvider getInput() {
         return input;
+    }
+    
+    @Override
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    @Override
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
     }
 
     public boolean hasParent() {

@@ -16,6 +16,19 @@ public final class Project {
 
     public static final Category PROJECTS = new Category("projects");
 
+    public static String getDefaultName() {
+        ISetting setting = Singleton.get(Settings.class).put(Settings.USER_SETTINGS.of("project", String.class, true));
+        if (!setting.isValid()) {
+            return null;
+        }
+        return setting.getAs(String.class);
+    }
+
+    public static Project getDefault() {
+        String name = getDefaultName();
+        return name == null ? null : get(name);
+    }
+
     public static Project get(String name) {
         ISetting setting = Singleton.get(Settings.class).get(name, PROJECTS.getName());
         if (!setting.isValid()) {

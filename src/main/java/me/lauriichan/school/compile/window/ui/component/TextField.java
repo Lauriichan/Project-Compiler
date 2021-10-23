@@ -118,11 +118,8 @@ public final class TextField extends Component {
     }
 
     public void setContent(String content) {
-        if (!locked) {
-            return;
-        }
         if (buffer.length() != 0) {
-            buffer.delete(0, buffer.length() - 1);
+            buffer.delete(0, buffer.length());
         }
         buffer.append(content);
         validate();

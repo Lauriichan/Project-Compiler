@@ -70,7 +70,14 @@ public final class ViewManager extends Component {
     }
 
     public void select(int id) {
-        current = Math.min(views.size() - 1, Math.max(0, id));
+        int tmp = Math.min(views.size() - 1, Math.max(0, id));
+        if(tmp != current) {
+            if(current < views.size()) {
+                views.get(current).lock();
+            }
+            views.get(tmp).unlock();
+        }
+        current = tmp;
     }
 
     @Override

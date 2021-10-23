@@ -83,6 +83,9 @@ public final class InputProvider {
         }
         InputReceiver<?>[] receivers = list.toArray(new InputReceiver<?>[list.size()]);
         for (InputReceiver<?> receiver : receivers) {
+            if (receiver.getInstance().isHidden()) {
+                continue;
+            }
             receiver.accept(input);
         }
     }

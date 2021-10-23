@@ -54,6 +54,9 @@ public final class JsonIO {
             return JsonNull.get();
         }
         Class<?> clazz = object.getClass();
+        if(Primitives.isInstance(object)) {
+            return JsonValue.fromPrimitive(object);
+        }
         ArrayList<Field> fields = new ArrayList<>();
         putClass(fields, clazz);
         if (fields.isEmpty()) {
@@ -74,6 +77,9 @@ public final class JsonIO {
     }
 
     public static Object toObject(JsonValue<?> value, Class<?> clazz) {
+        if(Primitives.isInstance(clazz)) {
+            return value.getValue();
+        }
         ArrayList<Field> fields = new ArrayList<>();
         putClass(fields, clazz);
         try {

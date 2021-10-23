@@ -45,7 +45,7 @@ public final class TemplateView extends View {
                 continue;
             }
             Button button = createTemplateButton();
-            button.setText(template.getName());
+            button.setText(template.getName() + "\n(" + template.getType() + ')');
             button.setAction(() -> createProject(template));
             pane.addChild(button);
             possible--;
@@ -55,7 +55,9 @@ public final class TemplateView extends View {
         }
         int offset = width / 16;
         Button random = createButton(offset, (height / 3) * 2 + offset, (width / 4) * 3 + offset * 2, offset);
-        random.setText(Template.TEMPLATES.get(0).getName());
+        Template template = Template.TEMPLATES.get(0);
+        random.setText(template.getName());
+        random.setAction(() -> createProject(template));
         pane.addChild(random);
     }
 
@@ -67,16 +69,28 @@ public final class TemplateView extends View {
         if (isLocked()) {
             return;
         }
-        setLocked(true);
+        setButtonLocked(true);
+        Pane pane = dialog.getPanel().getPane();
+        for (int index = 3; index < 6; index++) {
+            Component component = pane.getChild(index);
+            if (!(component instanceof TextField)) {
+                continue;
+            }
+            ((TextField) component).setContent("");
+        }
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+        }
         dialog.show((state, input) -> createProject(state, input, template));
     }
 
     private void createProject(Boolean state, Object input, Template template) {
         if (!state || input == null || !(input instanceof ProjectInfo)) {
-            setLocked(false);
+            setButtonLocked(false);
             return;
         }
-        setLocked(false);
+        setButtonLocked(false);
         ProjectInfo info = (ProjectInfo) input;
         Project.create(info.getName(), info.getPackageName(), new File(info.getDirectory()), template);
         Project project = Project.get(info.getName());
@@ -86,7 +100,7 @@ public final class TemplateView extends View {
         project.open();
     }
 
-    public void setLocked(boolean locked) {
+    public void setButtonLocked(boolean locked) {
         if (this.locked == locked) {
             return;
         }
@@ -99,7 +113,7 @@ public final class TemplateView extends View {
         }
     }
 
-    public boolean isLocked() {
+    public boolean isButtonLocked() {
         return locked;
     }
 
@@ -115,6 +129,7 @@ public final class TemplateView extends View {
         int size = pane.getWidth() / 4;
         int half = size / 8;
         Button button = createButton();
+        button.setMultilineAllowed(true);
         button.setSize(size, half * 2);
         button.setPosition(half * 2 + (half * 2 + size) * (id % 3), half * 2 + (half * 3) * Math.floorDiv(id, 3));
         return button;

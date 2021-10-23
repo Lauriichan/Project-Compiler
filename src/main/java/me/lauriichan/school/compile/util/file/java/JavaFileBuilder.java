@@ -12,6 +12,11 @@ public class JavaFileBuilder extends FileBuilder<JavaFileBuilder> {
 
     private int indent = 0;
 
+    public JavaFileBuilder(File path, String name, String extension) {
+        super(path, name + '.' + extension);
+        this.name = name;
+    }
+
     public JavaFileBuilder(File path, String name) {
         super(path, name + ".java");
         this.name = name;
@@ -55,20 +60,40 @@ public class JavaFileBuilder extends FileBuilder<JavaFileBuilder> {
         return add("static ");
     }
 
-    public JavaFileBuilder normalImport(Class<?> clazz) {
-        return add("import ").add(clazz.getName()).add(';').next();
-    }
-
     public JavaFileBuilder setPackage(String packet) {
         return add("package ").add(packet).add(';').next().next();
     }
 
-    public JavaFileBuilder wildImport(Class<?> clazz) {
-        return add("import ").modStatic().add(clazz.getName()).add(".*;").next();
+    public JavaFileBuilder normalImport(String className) {
+        return add("import ").add(className).add(';').next();
     }
 
-    public JavaFileBuilder wildImport(Package packet) {
-        return add("import ").add(packet.getName()).add(".*;").next();
+    public JavaFileBuilder normalImport(Class<?> clazz) {
+        return normalImport(clazz.getName());
+    }
+
+    public JavaFileBuilder wildNormalImport(String packageName) {
+        return add("import ").add(packageName).add(".*;").next();
+    }
+
+    public JavaFileBuilder wildNormalImport(Package packageObj) {
+        return wildNormalImport(packageObj.getName());
+    }
+
+    public JavaFileBuilder staticImport(String className, String name) {
+        return add("import ").modStatic().add(className).add('.').add(name).add(';').next();
+    }
+
+    public JavaFileBuilder staticImport(Class<?> clazz, String name) {
+        return staticImport(clazz.getName(), name);
+    }
+
+    public JavaFileBuilder wildStaticImport(String className) {
+        return staticImport(className, "*");
+    }
+
+    public JavaFileBuilder wildStaticImport(Class<?> clazz) {
+        return wildStaticImport(clazz.getName());
     }
 
     public JavaFileBuilder security(Security security) {
@@ -146,7 +171,8 @@ public class JavaFileBuilder extends FileBuilder<JavaFileBuilder> {
     }
 
     public JavaFileBuilder loopForMin(String name, String start, String min) {
-        return add("for(int ").add(name).add(" = ").add(start).add("; ").add(name).add(" >= ").add(min).add("; ").add(name).add("--)").open();
+        return add("for(int ").add(name).add(" = ").add(start).add("; ").add(name).add(" >= ").add(min).add("; ").add(name).add("--)")
+            .open();
     }
 
     public JavaFileBuilder loopForEach(Class<?> clazz, String name, String target) {
@@ -200,7 +226,7 @@ public class JavaFileBuilder extends FileBuilder<JavaFileBuilder> {
     public JavaFileBuilder setCall(String name, String varName, String target, String... params) {
         return add(name).add(" = ").call(varName, target, params);
     }
-    
+
     public JavaFileBuilder setSmartIf(String name, String statement, String first, String second) {
         return add(name).add(" = ").add(statement).add(" ? ").add(first).add(" : ").add(second).add(';');
     }

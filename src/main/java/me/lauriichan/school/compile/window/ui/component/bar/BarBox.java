@@ -17,9 +17,21 @@ public final class BarBox implements ITriggerComponent {
 
     private final BiConsumer<Area, Color> iconDrawer;
     private final EnumMap<MouseButton, Runnable> actions = new EnumMap<>(MouseButton.class);
+    
+    private boolean hidden = false;
 
     public BarBox(BiConsumer<Area, Color> iconDrawer) {
         this.iconDrawer = iconDrawer;
+    }
+
+    @Override
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
+    }
+    
+    @Override
+    public boolean isHidden() {
+        return hidden;
     }
 
     @Override

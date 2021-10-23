@@ -15,7 +15,7 @@ public final class Application {
     public static final Category APPLICATIONS = new Category("applications");
 
     public static String getDefault() {
-        ISetting setting = Singleton.get(Settings.class).get("name", Settings.USER_SETTINGS);
+        ISetting setting = Singleton.get(Settings.class).put(Settings.USER_SETTINGS.of("application", String.class, true));
         if (!setting.isValid()) {
             return "Atom";
         }
@@ -70,7 +70,7 @@ public final class Application {
         String command = builder.substring(0, builder.length() - 1);
         try {
             Process process = Runtime.getRuntime().exec(command);
-            Thread.sleep(3000);
+            Thread.sleep(1500);
             return process.isAlive();
         } catch (IOException | InterruptedException e) {
             return false;

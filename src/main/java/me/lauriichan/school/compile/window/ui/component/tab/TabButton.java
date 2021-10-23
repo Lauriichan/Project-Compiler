@@ -31,6 +31,7 @@ public class TabButton implements ITriggerComponent {
     private int shadowThickness = 2;
 
     private boolean pressed = false;
+    private boolean hidden = false;
 
     private Runnable action;
 
@@ -49,6 +50,16 @@ public class TabButton implements ITriggerComponent {
         }
         area.drawText((area.getWidth() - textWidth) / 2, (area.getHeight() - textHeight / 2) / 2, textLine, fontColor, fontName, fontSize,
             fontStyle);
+    }
+
+    @Override
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
+    }
+    
+    @Override
+    public boolean isHidden() {
+        return hidden;
     }
 
     private void renderBackground(Area area) {

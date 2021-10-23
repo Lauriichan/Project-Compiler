@@ -1,15 +1,16 @@
-package me.lauriichan.school.compile.project.template;
+package me.lauriichan.school.compile.project.template.java;
 
-import static me.lauriichan.school.compile.util.file.java.Security.PUBLIC;
+import static me.lauriichan.school.compile.util.file.java.Security.*;
 
 import java.io.File;
 
+import me.lauriichan.school.compile.project.template.JavaTemplate;
 import me.lauriichan.school.compile.util.file.java.JavaFileBuilder;
 
-final class Empty extends JavaTemplate {
+public final class HelloWorld extends JavaTemplate {
 
-    public Empty() {
-        super("Leer");
+    public HelloWorld() {
+        super("Hallo Welt");
     }
 
     @Override
@@ -20,7 +21,8 @@ final class Empty extends JavaTemplate {
         builder.setPackage(packet);
         builder.security(PUBLIC).add("class ").name().open();
         builder.next().security(PUBLIC).modStatic().type(Void.class).add("main(").param(String[].class, "args").add(") throws Exception").open();
-        builder.close().next().close().exit();
+        builder.callField(System.class, "out", "println", "\"Hallo Welt\"").close();
+        builder.next().close().exit();
     }
 
 }

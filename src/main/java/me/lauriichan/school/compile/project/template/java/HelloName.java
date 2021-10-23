@@ -1,13 +1,14 @@
-package me.lauriichan.school.compile.project.template;
+package me.lauriichan.school.compile.project.template.java;
 
 import static me.lauriichan.school.compile.util.file.java.Security.*;
 
 import java.io.File;
 import java.util.Scanner;
 
+import me.lauriichan.school.compile.project.template.JavaTemplate;
 import me.lauriichan.school.compile.util.file.java.JavaFileBuilder;
 
-final class HelloName extends JavaTemplate {
+public final class HelloName extends JavaTemplate {
 
     public HelloName() {
         super("Hallo $name");

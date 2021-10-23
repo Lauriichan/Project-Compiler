@@ -5,15 +5,17 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 
+import me.lauriichan.school.compile.window.ui.IComponent;
+
 final class InputReceiver<I extends Input> {
 
     private static final InputReceiver<?>[] EMPTY = new InputReceiver<?>[0];
 
     private final Class<I> type;
-    private final Object instance;
+    private final IComponent instance;
     private final Method method;
 
-    private InputReceiver(Class<I> type, Object instance, Method method) {
+    private InputReceiver(Class<I> type, IComponent instance, Method method) {
         this.type = type;
         this.method = method;
         this.instance = instance;
@@ -23,7 +25,7 @@ final class InputReceiver<I extends Input> {
         return type;
     }
 
-    public Object getInstance() {
+    public IComponent getInstance() {
         return instance;
     }
 
@@ -53,7 +55,7 @@ final class InputReceiver<I extends Input> {
         }
     }
 
-    public static InputReceiver<?>[] find(Object instance) {
+    public static InputReceiver<?>[] find(IComponent instance) {
         if (instance == null) {
             return EMPTY;
         }
@@ -66,7 +68,7 @@ final class InputReceiver<I extends Input> {
         return receivers.toArray(new InputReceiver<?>[receivers.size()]);
     }
 
-    private static void find(ArrayList<InputReceiver<?>> receivers, ArrayList<Method> visited, Object instance, Method[] methods) {
+    private static void find(ArrayList<InputReceiver<?>> receivers, ArrayList<Method> visited, IComponent instance, Method[] methods) {
         for (Method method : methods) {
             if (visited.contains(method)) {
                 continue;

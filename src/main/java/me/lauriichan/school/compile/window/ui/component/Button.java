@@ -1,6 +1,7 @@
 package me.lauriichan.school.compile.window.ui.component;
 
 import java.awt.Color;
+import java.awt.FontMetrics;
 
 import me.lauriichan.school.compile.window.input.Listener;
 import me.lauriichan.school.compile.window.input.mouse.MouseButton;
@@ -39,7 +40,8 @@ public final class Button extends Component {
 
     private boolean pressed = false;
     private boolean centerText = false;
-    
+    private boolean allowMultiline = false;
+
     private boolean locked = false;
 
     @Override
@@ -49,6 +51,36 @@ public final class Button extends Component {
     }
 
     private void renderText(Area area) {
+        if (allowMultiline) {
+            renderMultiText(area);
+            return;
+        }
+        renderSingleText(area);
+    }
+
+    private void renderMultiText(Area area) {
+        if (textRender == null) {
+            textRender = area.analyseText(0, 0, text, fontName, fontSize, fontStyle);
+            textHeight = textRender.getHeight() / 2;
+        }
+        int amount = textRender.getLines();
+        if (amount == 0) {
+            return;
+        }
+        int offset = (area.getHeight() / 2) / amount;
+        FontMetrics metrics = textRender.getMetrics();
+        for (int index = 0; index < textRender.getLines(); index++) {
+            String line = textRender.getLine(index);
+            int y = (textHeight / 2) * index + offset;
+            if (!centerText) {
+                area.drawText(10, y, line, fontColor, fontName, fontSize, fontStyle);
+                continue;
+            }
+            area.drawText((area.getWidth() - metrics.stringWidth(line)) / 2, y, line, fontColor, fontName, fontSize, fontStyle);
+        }
+    }
+
+    private void renderSingleText(Area area) {
         if (textRender == null) {
             textRender = area.analyseText(0, 0, text, fontName, fontSize, fontStyle);
             textLine = textRender.getLines() == 0 ? "" : textRender.getLine(0);
@@ -76,11 +108,20 @@ public final class Button extends Component {
         hover.tick(deltaTime);
         hoverShadow.tick(deltaTime);
     }
-    
+
+    public boolean isMultilineAllowed() {
+        return allowMultiline;
+    }
+
+    public void setMultilineAllowed(boolean allowMultiline) {
+        this.allowMultiline = allowMultiline;
+        textRender = null;
+    }
+
     public boolean isLocked() {
         return locked;
     }
-    
+
     public void setLocked(boolean locked) {
         this.locked = locked;
     }
@@ -212,7 +253,7 @@ public final class Button extends Component {
             return;
         }
         press.consume();
-        if(locked) {
+        if (locked) {
             return;
         }
         pressed = true;

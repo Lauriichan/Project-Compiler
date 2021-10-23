@@ -1,12 +1,13 @@
-package me.lauriichan.school.compile.project.template;
+package me.lauriichan.school.compile.project.template.java;
 
 import static me.lauriichan.school.compile.util.file.java.Security.PUBLIC;
 
 import java.io.File;
 
+import me.lauriichan.school.compile.project.template.JavaTemplate;
 import me.lauriichan.school.compile.util.file.java.JavaFileBuilder;
 
-final class Secret99Bottles extends JavaTemplate {
+public final class Secret99Bottles extends JavaTemplate {
 
     public Secret99Bottles() {
         super("99 Flaschen", true);
