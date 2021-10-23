@@ -27,7 +27,7 @@ public final class Project {
     public static void create(String name, String packet, File directory, Template template) {
         Singleton.get(Settings.class).put(PROJECTS.of(name, Project.class, true)).set(new Project(name, packet, directory));
         Files.createFolder(directory);
-        if(template == null) {
+        if (template == null) {
             return;
         }
         template.setup(packet, directory);
@@ -61,7 +61,11 @@ public final class Project {
     }
 
     public void open() {
-        Application application = Application.get("Atom");
+        open(Application.getDefault());
+    }
+
+    public void open(String applicationName) {
+        Application application = Application.get(applicationName);
         if (application == null) {
             return;
         }

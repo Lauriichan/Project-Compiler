@@ -16,6 +16,8 @@ import com.syntaxphoenix.syntaxapi.utils.java.Files;
 import me.lauriichan.school.compile.data.json.JsonIO;
 
 public final class Settings {
+    
+    public static final Category USER_SETTINGS = new Category("user");
 
     private final ConcurrentHashMap<String, ISetting> settings = new ConcurrentHashMap<>();
     private final File file = new File("config/settings.json");
@@ -36,6 +38,10 @@ public final class Settings {
             return;
         }
         ((ValueSetting) setting).clear();
+    }
+
+    public ISetting get(String name, Category category) {
+        return get(name, category.getName());
     }
 
     public ISetting get(String name, String category) {

@@ -14,8 +14,17 @@ public final class Application {
 
     public static final Category APPLICATIONS = new Category("applications");
 
+    public static String getDefault() {
+        ISetting setting = Singleton.get(Settings.class).get("name", Settings.USER_SETTINGS);
+        if (!setting.isValid()) {
+            return "Atom";
+        }
+        String value = setting.getAs(String.class);
+        return value == null ? "Atom" : value;
+    }
+
     public static Application get(String name) {
-        ISetting setting = Singleton.get(Settings.class).get(name, APPLICATIONS.getName());
+        ISetting setting = Singleton.get(Settings.class).get(name, APPLICATIONS);
         if (!setting.isValid()) {
             return null;
         }
