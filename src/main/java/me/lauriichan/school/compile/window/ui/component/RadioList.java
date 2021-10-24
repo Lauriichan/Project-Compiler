@@ -104,6 +104,10 @@ public class RadioList extends Component {
             read.unlock();
         }
         component.setInput(null);
+        int idx = components.indexOf(component);
+        if (idx <= current) {
+            current = -1;
+        }
         write.lock();
         try {
             return components.remove(component);
@@ -185,16 +189,16 @@ public class RadioList extends Component {
             scrollDecay = 0;
         }
         RadioButton[] buttons = getChildren();
-        for(RadioButton button : buttons) {
+        for (RadioButton button : buttons) {
             button.setHidden(hidden);
         }
     }
-    
+
     @Override
     public void setUpdating(boolean update) {
         super.setUpdating(update);
         RadioButton[] buttons = getChildren();
-        for(RadioButton button : buttons) {
+        for (RadioButton button : buttons) {
             button.setUpdating(update);
         }
     }
@@ -353,19 +357,19 @@ public class RadioList extends Component {
     public boolean isScrollEnabled() {
         return scrollY > 0;
     }
-    
+
     public void setLineThickness(int lineThickness) {
         this.lineThickness = lineThickness;
     }
-    
+
     public int getLineThickness() {
         return lineThickness;
     }
-    
+
     public void setLine(Color line) {
         this.line = line;
     }
-    
+
     public Color getLine() {
         return line;
     }

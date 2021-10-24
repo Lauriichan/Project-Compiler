@@ -182,27 +182,31 @@ public final class JsonIO {
                 return;
             }
         }
+        setValue(instance, field, converted);
+    }
+    
+    public static void setValue(Object instance, Field field, Object value) {
         try {
             int modifier = field.getModifiers();
             if (Modifier.isFinal(field.getModifiers())) {
                 AbstractReflect.FIELD.setFieldValue(field, "modify", modifier & ~Modifier.FINAL);
                 if (field.isAccessible()) {
-                    field.set(instance, converted);
+                    field.set(instance, value);
                     AbstractReflect.FIELD.setFieldValue(field, "modify", modifier);
                     return;
                 }
                 field.setAccessible(true);
-                field.set(instance, converted);
+                field.set(instance, value);
                 field.setAccessible(false);
                 AbstractReflect.FIELD.setFieldValue(field, "modify", modifier);
                 return;
             }
             if (field.isAccessible()) {
-                field.set(instance, converted);
+                field.set(instance, value);
                 return;
             }
             field.setAccessible(true);
-            field.set(instance, converted);
+            field.set(instance, value);
             field.setAccessible(false);
         } catch (IllegalArgumentException | IllegalAccessException exp) {
             return;

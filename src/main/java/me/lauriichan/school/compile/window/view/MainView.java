@@ -3,15 +3,27 @@ package me.lauriichan.school.compile.window.view;
 import static me.lauriichan.school.compile.window.ui.util.ColorCache.color;
 
 import java.awt.Color;
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
+import org.apache.commons.io.FileUtils;
+
+import com.syntaxphoenix.syntaxapi.json.JsonValue;
+import com.syntaxphoenix.syntaxapi.random.Keys;
 import com.syntaxphoenix.syntaxapi.utils.java.Strings;
 
+import jnafilechooser.api.JnaFileChooser;
+import jnafilechooser.api.JnaFileChooser.Mode;
 import me.lauriichan.school.compile.data.ISetting;
 import me.lauriichan.school.compile.data.Settings;
+import me.lauriichan.school.compile.data.json.JsonIO;
 import me.lauriichan.school.compile.project.Project;
+import me.lauriichan.school.compile.util.Executor;
 import me.lauriichan.school.compile.util.Singleton;
+import me.lauriichan.school.compile.util.ZipUtil;
 import me.lauriichan.school.compile.window.ui.BasicPane;
 import me.lauriichan.school.compile.window.ui.Component;
 import me.lauriichan.school.compile.window.ui.component.Button;
@@ -150,11 +162,95 @@ public final class MainView extends View<BasicPane> {
     }
 
     public void exportProject(Project project) {
-        // TODO: Implement project zip export
+        JnaFileChooser chooser = new JnaFileChooser();
+        chooser.setMultiSelectionEnabled(false);
+        chooser.addFilter("Zip Archive (*.zip)", "zip");
+        chooser.showSaveDialog(pane.getInput().getPanel().getFrame());
+        File file = chooser.getSelectedFile();
+        if (file == null) {
+            return;
+        }
+        Executor.execute(() -> {
+            try {
+                File folder = java.nio.file.Files.createTempDirectory(Keys.generateKey(24) + "-" + Keys.generateKey(16)).toFile();
+                FileUtils.copyDirectory(project.getDirectory(), folder);
+                File settings = new File(folder, "settings.json");
+                JsonValue<?> value = JsonIO.fromObject(project);
+                if (value == null) {
+                    FileUtils.deleteDirectory(folder);
+                    throw new NullPointerException("JsonValue is null");
+                }
+                JsonIO.WRITER.toFile(value, settings);
+                ZipUtil.zip(file, folder, "bin");
+                Desktop.getDesktop().open(file.getParentFile());
+                FileUtils.deleteDirectory(folder);
+            } catch (IOException exp) {
+                System.err.println("Failed to export Project '" + project.getName() + "' to '" + file.getPath() + "'!");
+                System.err.println(exp);
+            }
+        });
     }
 
     public void importProject() {
-        // TODO: Implement project zip import
+        JnaFileChooser chooser = new JnaFileChooser();
+        chooser.setMultiSelectionEnabled(false);
+        chooser.addFilter("Zip Archive (*.zip)", "zip");
+        chooser.showOpenDialog(pane.getInput().getPanel().getFrame());
+        File file = chooser.getSelectedFile();
+        if (file == null) {
+            return;
+        }
+        Executor.execute(() -> {
+            Project project = null;
+            File folder = null;
+            File settings = null;
+            try {
+                folder = java.nio.file.Files.createTempDirectory(Keys.generateKey(24) + "-" + Keys.generateKey(16)).toFile();
+                ZipUtil.unzip(file, folder);
+                settings = new File(folder, "settings.json");
+                if (!settings.exists()) {
+                    FileUtils.deleteDirectory(folder);
+                    throw new IllegalStateException("Settings file doesn't exist!");
+                }
+                JsonValue<?> value = JsonIO.PARSER.fromFile(settings);
+                if (value == null) {
+                    FileUtils.deleteDirectory(folder);
+                    throw new NullPointerException("JsonValue is null");
+                }
+                Object object = JsonIO.toObject(value, Project.class);
+                if (object == null || !(object instanceof Project)) {
+                    FileUtils.deleteDirectory(folder);
+                    throw new IllegalStateException("Failed to read settings");
+                }
+                project = (Project) object;
+            } catch (IOException exp) {
+                if (folder != null) {
+                    FileUtils.deleteDirectory(folder);
+                }
+                System.err.println("Failed to import '" + file.getPath() + "'!");
+                System.err.println(exp);
+            }
+            if (settings == null || project == null) {
+                return;
+            }
+            JnaFileChooser target = new JnaFileChooser();
+            target.setMultiSelectionEnabled(false);
+            target.setMode(Mode.Directories);
+            target.showOpenDialog(pane.getInput().getPanel().getFrame());
+            File output = target.getSelectedFile();
+            if (output == null || !output.exists() || !output.isDirectory()) {
+                return;
+            }
+            settings.delete();
+            FileUtils.copyDirectory(folder, output);
+            FileUtils.deleteDirectory(folder);
+            Project.create(project.getName(), project.getPacket(), output, null);
+            project = Project.get(project.getName());
+            if(project == null) {
+                return;
+            }
+            project.open();
+        });
     }
 
     private void fillList(RadioList list) {
@@ -165,6 +261,10 @@ public final class MainView extends View<BasicPane> {
             }
             Project project = setting.getAs(Project.class);
             if (project == null) {
+                continue;
+            }
+            if(!project.getDirectory().exists()) {
+                Project.PROJECTS.delete(Singleton.get(Settings.class), project.getName());
                 continue;
             }
             addButton(list, project);

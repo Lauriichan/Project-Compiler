@@ -105,6 +105,10 @@ public final class Project {
     public String getName() {
         return name;
     }
+    
+    public String getPacket() {
+        return packet;
+    }
 
     public File getDirectory() {
         return directory;
