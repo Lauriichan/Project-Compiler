@@ -148,7 +148,7 @@ public class LogDisplay extends Component {
     }
 
     private int drawEntry(Area area, int offset, LogEntry entry) {
-        TextRender render = area.drawText(6, area.getHeight() - 10 - offset, entry.toString(), entry.getColor(), fontName, fontSize,
+        TextRender render = area.drawWrappedText(6, area.getHeight() - 10 - offset, entry.toString(), entry.getColor(), fontName, fontSize,
             fontStyle);
         return render.getLines() * render.getHeight();
     }

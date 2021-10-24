@@ -9,23 +9,24 @@ import me.lauriichan.school.compile.data.ISetting;
 import me.lauriichan.school.compile.data.Serialize;
 import me.lauriichan.school.compile.data.Settings;
 import me.lauriichan.school.compile.util.Singleton;
+import me.lauriichan.school.compile.util.UserSettings;
 
 public final class Application {
 
     public static final Category APPLICATIONS = new Category("applications");
 
-    public static String getDefault() {
-        ISetting setting = Singleton.get(Settings.class).get("application", Settings.USER_SETTINGS);
-        if (!setting.isValid()) {
-            return "Atom";
-        }
-        String value = setting.getAs(String.class);
-        return value == null ? "Atom" : value;
+    public static String getDefaultName() {
+        String value = UserSettings.getString("application");
+        return value.isEmpty() ? "Atom" : value;
     }
 
-    public static void setDefault(String name, File executable) {
+    public static void setDefaultName(String name, File executable) {
         put(name, executable);
-        Singleton.get(Settings.class).put(Settings.USER_SETTINGS.of("application", String.class, true)).set(name);
+        UserSettings.setString("application", name);
+    }
+    
+    public static Application getDefault() {
+        return get(getDefaultName());
     }
 
     public static Application get(String name) {

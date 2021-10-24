@@ -48,7 +48,7 @@ public class TabButton implements ITriggerComponent {
             textWidth = textRender.getMetrics().stringWidth(textLine);
             textHeight = textRender.getHeight();
         }
-        area.drawText((area.getWidth() - textWidth) / 2, (area.getHeight() - textHeight / 2) / 2, textLine, fontColor, fontName, fontSize,
+        area.drawWrappedText((area.getWidth() - textWidth) / 2, (area.getHeight() - textHeight / 2) / 2, textLine, fontColor, fontName, fontSize,
             fontStyle);
     }
 

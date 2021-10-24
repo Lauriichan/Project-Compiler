@@ -1,8 +1,6 @@
-package me.lauriichan.school.compile.window.ui.component.bar;
+package me.lauriichan.school.compile.window.ui.util;
 
 import java.awt.Color;
-
-import me.lauriichan.school.compile.window.ui.util.Area;
 
 @FunctionalInterface
 public interface IBoxRenderer {

@@ -5,12 +5,13 @@ import me.lauriichan.school.compile.window.ui.Component;
 
 public abstract class View {
 
-    protected final String title;
     protected final BasicPane pane = new BasicPane();
 
     private ViewManager manager;
     private boolean setup = false;
     private boolean locked = false;
+    
+    private String title;
 
     public View(String title) {
         this.title = title;
@@ -30,6 +31,14 @@ public abstract class View {
 
     public String getTitle() {
         return title;
+    }
+    
+    public void setTitle(String title) {
+        if(title == null) {
+            return;
+        }
+        this.title = title;
+        manager.updateTitle(this);
     }
 
     public BasicPane getPane() {

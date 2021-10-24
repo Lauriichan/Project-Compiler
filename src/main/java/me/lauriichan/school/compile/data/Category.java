@@ -23,7 +23,11 @@ public final class Category {
     }
 
     public void load(Settings settings, Class<?> type) {
-        settings.loadCategory(name, type);
+        settings.loadComplex(name, type);
+    }
+
+    public void load(Settings settings) {
+        settings.loadPrimitives(name);
     }
 
     public ISetting[] get(Settings settings) {

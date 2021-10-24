@@ -23,8 +23,8 @@ import me.lauriichan.school.compile.window.ui.component.Button;
 import me.lauriichan.school.compile.window.ui.component.Label;
 import me.lauriichan.school.compile.window.ui.component.TextField;
 import me.lauriichan.school.compile.window.ui.component.bar.BarBox;
-import me.lauriichan.school.compile.window.ui.component.bar.BoxRenderers;
 import me.lauriichan.school.compile.window.ui.util.Area;
+import me.lauriichan.school.compile.window.ui.util.BoxRenderers;
 
 public final class TemplateView extends View {
 
@@ -175,7 +175,7 @@ public final class TemplateView extends View {
 
         // Root bar
         RootBar bar = panel.getBar();
-        BarBox close = bar.createBox(BoxRenderers.CLOSE);
+        BarBox close = bar.createBox(BoxRenderers.CROSS);
         close.setIcon(Color.GRAY, color("#F26161"));
         close.setIconFade(0.3, 0.15);
         close.setBox(Color.DARK_GRAY);

@@ -2,16 +2,15 @@ package me.lauriichan.school.compile.window.view;
 
 import java.awt.Color;
 
-import me.lauriichan.school.compile.project.Project;
 import me.lauriichan.school.compile.window.ui.BasicPane;
 import me.lauriichan.school.compile.window.ui.component.LogDisplay;
 import me.lauriichan.school.compile.window.ui.component.TextField;
 import me.lauriichan.school.compile.window.ui.util.ColorCache;
 
-public final class ConsoleView extends View {
+public final class DebugView extends View {
 
-    public ConsoleView() {
-        super("Konsole");
+    public DebugView() {
+        super("Debug Konsole");
     }
 
     @Override
@@ -42,11 +41,6 @@ public final class ConsoleView extends View {
             String command = text.getContent().trim();
             display.command(command);
             text.setContent("");
-            Project project = Project.getDefault();
-            if(project == null) {
-                return;
-            }
-            project.println(command);
         });
         pane.addChild(field);
     }

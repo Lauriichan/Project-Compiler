@@ -67,12 +67,12 @@ public final class TextField extends Component {
     public void render(Area area) {
         if (valid) {
             renderBackground(area, background, line);
-            TextRender render = area.drawText(10, 12, buffer.toString(), fontColor, fontName, fontSize, fontStyle);
+            TextRender render = area.drawWrappedText(10, 12, buffer.toString(), fontColor, fontName, fontSize, fontStyle);
             renderCursor(10, 12, area, render);
             return;
         }
         renderBackground(area, invalidBackground, invalidLine);
-        TextRender render = area.drawText(10, 12, buffer.toString(), invalidFontColor, fontName, fontSize, fontStyle);
+        TextRender render = area.drawWrappedText(10, 12, buffer.toString(), invalidFontColor, fontName, fontSize, fontStyle);
         renderCursor(10, 12, area, render);
     }
 

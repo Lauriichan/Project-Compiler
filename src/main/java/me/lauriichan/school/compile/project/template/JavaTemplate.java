@@ -25,6 +25,9 @@ public abstract class JavaTemplate extends Template {
         File resource = new File(directory, "resources");
         deleteIfExists(resource);
         Files.createFolder(resource);
+        File bin = new File(directory, "bin");
+        deleteIfExists(bin);
+        Files.createFolder(bin);
         File packet = new File(source, packetName.replace('.', '/'));
         Files.createFolder(packet);
 

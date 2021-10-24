@@ -13,10 +13,12 @@ import me.lauriichan.school.compile.window.input.mouse.MouseHover;
 import me.lauriichan.school.compile.window.ui.Panel;
 import me.lauriichan.school.compile.window.ui.RootBar;
 import me.lauriichan.school.compile.window.ui.util.Area;
+import me.lauriichan.school.compile.window.ui.util.IBoxRenderer;
 
 public final class SimpleRootBar extends RootBar {
 
     private int lineThickness = 2;
+    private int boxOffset = 0;
     private int offset = 0;
     private int size = 0;
 
@@ -100,10 +102,10 @@ public final class SimpleRootBar extends RootBar {
     public void render(Area area) {
         area.fill(background);
         BarBox[] boxes = getAll();
-        int next = (offset * 2) + size;
+        int next = (boxOffset * 2) + size;
         int distance = area.getWidth() - next;
         for (int index = 0; index < boxes.length; index++) {
-            boxes[index].render(area.create(distance - (next * index), offset, size, size));
+            boxes[index].render(area.create(distance - (next * index), boxOffset, size, size));
         }
     }
 
@@ -117,7 +119,7 @@ public final class SimpleRootBar extends RootBar {
 
     @Override
     public BarBox createBox(IBoxRenderer renderer) {
-        BarBox box = new BarBox((area, color) -> renderer.render(area, color, offset, size - offset, lineThickness));
+        BarBox box = new BarBox((area, color) -> renderer.render(area, color, (size / 6) + offset, (size / 3) * 2, lineThickness));
         add(box);
         return box;
     }
@@ -126,7 +128,7 @@ public final class SimpleRootBar extends RootBar {
     public void setHeight(int height) {
         super.setHeight(height);
         int tmp = height / 3;
-        this.offset = tmp / 2;
+        this.boxOffset = tmp / 2;
         this.size = height - tmp;
     }
 
@@ -137,14 +139,22 @@ public final class SimpleRootBar extends RootBar {
     public void setLineThickness(int lineThickness) {
         this.lineThickness = lineThickness;
     }
+    
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+    
+    public int getOffset() {
+        return offset;
+    }
 
     @Listener
     public void onClick(MouseClick click) {
-        if (!(offset <= click.getY() && (size + offset) >= click.getY())) {
+        if (!(boxOffset <= click.getY() && (size + boxOffset) >= click.getY())) {
             return;
         }
         int count = getCount();
-        int next = (offset * 2) + size;
+        int next = (boxOffset * 2) + size;
         int distance = click.getProvider().getPanel().getWidth() - next;
         for (int index = 0; index < count; index++) {
             int x = distance - (next * index);
@@ -163,7 +173,7 @@ public final class SimpleRootBar extends RootBar {
 
     @Listener
     public void onHover(MouseHover hover) {
-        if (!(offset <= hover.getY() && (size + offset) >= hover.getY())) {
+        if (!(boxOffset <= hover.getY() && (size + boxOffset) >= hover.getY())) {
             if (!triggered) {
                 return;
             }
@@ -175,7 +185,7 @@ public final class SimpleRootBar extends RootBar {
             return;
         }
         int count = getCount();
-        int next = (offset * 2) + size;
+        int next = (boxOffset * 2) + size;
         int distance = hover.getProvider().getPanel().getWidth() - next;
         for (int index = 0; index < count; index++) {
             int x = distance - (next * index);

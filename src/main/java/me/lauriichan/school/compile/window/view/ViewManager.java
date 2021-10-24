@@ -2,7 +2,9 @@ package me.lauriichan.school.compile.window.view;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 
+import me.lauriichan.school.compile.util.TriConsumer;
 import me.lauriichan.school.compile.window.ui.BasicPane;
 import me.lauriichan.school.compile.window.ui.Component;
 import me.lauriichan.school.compile.window.ui.Pane;
@@ -13,10 +15,14 @@ public final class ViewManager extends Component {
     private final ArrayList<View> views = new ArrayList<>();
     private int current = 0;
 
+    private TriConsumer<Boolean, Integer, String> delegate;
+    private BiConsumer<Integer, String> updater;
+
     public void add(View view) {
         if (views.contains(view)) {
             return;
         }
+        int index = views.size();
         views.add(view);
         view.setManager(this);
         view.getPane().setSize(getWidth(), getHeight());
@@ -25,10 +31,41 @@ public final class ViewManager extends Component {
             view.setup();
         }
         view.setLocked(true);
+        if (delegate == null) {
+            return;
+        }
+        delegate.accept(true, index, view.getTitle());
     }
 
     public <E extends View> Optional<E> get(Class<E> clazz) {
         return views.stream().filter(view -> clazz.isAssignableFrom(view.getClass())).findFirst().map(clazz::cast);
+    }
+
+    public void setDelegate(TriConsumer<Boolean, Integer, String> delegate) {
+        this.delegate = delegate;
+    }
+
+    public TriConsumer<Boolean, Integer, String> getDelegate() {
+        return delegate;
+    }
+
+    public void setUpdater(BiConsumer<Integer, String> updater) {
+        this.updater = updater;
+    }
+
+    public BiConsumer<Integer, String> getUpdater() {
+        return updater;
+    }
+
+    void updateTitle(View view) {
+        if (updater == null) {
+            return;
+        }
+        int index = views.indexOf(view);
+        if (index == -1) {
+            return;
+        }
+        updater.accept(index, view.getTitle());
     }
 
     @Override
@@ -54,12 +91,20 @@ public final class ViewManager extends Component {
             current = 0;
             views.get(0).getPane().setInput(null);
             views.clear();
+            if (delegate == null) {
+                return;
+            }
+            delegate.accept(false, index, view.getTitle());
             return;
         }
-        if (index >= current) {
+        if (index <= current) {
             current--;
         }
         views.remove(index).getPane().setInput(null);
+        if (delegate == null) {
+            return;
+        }
+        delegate.accept(false, index, view.getTitle());
     }
 
     public View get(int index) {
@@ -72,8 +117,8 @@ public final class ViewManager extends Component {
 
     public void select(int id) {
         int tmp = Math.min(views.size() - 1, Math.max(0, id));
-        if(tmp != current) {
-            if(current < views.size()) {
+        if (tmp != current) {
+            if (current < views.size()) {
                 views.get(current).lock();
             }
             views.get(tmp).unlock();

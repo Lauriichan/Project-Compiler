@@ -73,10 +73,10 @@ public final class Button extends Component {
             String line = textRender.getLine(index);
             int y = (textHeight / 2) * index + offset;
             if (!centerText) {
-                area.drawText(10, y, line, fontColor, fontName, fontSize, fontStyle);
+                area.drawWrappedText(10, y, line, fontColor, fontName, fontSize, fontStyle);
                 continue;
             }
-            area.drawText((area.getWidth() - metrics.stringWidth(line)) / 2, y, line, fontColor, fontName, fontSize, fontStyle);
+            area.drawWrappedText((area.getWidth() - metrics.stringWidth(line)) / 2, y, line, fontColor, fontName, fontSize, fontStyle);
         }
     }
 
@@ -88,10 +88,10 @@ public final class Button extends Component {
             textHeight = textRender.getHeight();
         }
         if (!centerText) {
-            area.drawText(10, 12, textLine, fontColor, fontName, fontSize, fontStyle);
+            area.drawWrappedText(10, 12, textLine, fontColor, fontName, fontSize, fontStyle);
             return;
         }
-        area.drawText((area.getWidth() - textWidth) / 2, (area.getHeight() - textHeight / 2) / 2, textLine, fontColor, fontName, fontSize,
+        area.drawWrappedText((area.getWidth() - textWidth) / 2, (area.getHeight() - textHeight / 2) / 2, textLine, fontColor, fontName, fontSize,
             fontStyle);
     }
 

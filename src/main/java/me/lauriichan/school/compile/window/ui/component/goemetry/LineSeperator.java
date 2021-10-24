@@ -45,10 +45,10 @@ public final class LineSeperator extends Seperator {
     @Override
     public void render(Area area) {
         if (isVertical()) {
-            area.drawLine(area.getWidth() / 2, offset, area.getWidth() / 2, area.getHeight() - offset, thickness);
+            area.drawLine(area.getWidth() / 2, offset, area.getWidth() / 2, area.getHeight() - offset, thickness, color);
             return;
         }
-        area.drawLine(offset, area.getHeight() / 2, area.getWidth() - offset, area.getHeight() / 2, thickness);
+        area.drawLine(offset, area.getHeight() / 2, area.getWidth() - offset, area.getHeight() / 2, thickness, color);
     }
 
 }

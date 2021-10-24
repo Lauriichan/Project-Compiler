@@ -8,12 +8,13 @@ import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.util.ArrayList;
 
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import me.lauriichan.school.compile.window.util.Point;
 
 public final class Area {
 
     private static final String[] EMPTY_LINES = new String[0];
-    private static final Integer[] EMPTY_INDICES = new Integer[0];
+    private static final int[] EMPTY_INDICES = new int[0];
 
     private final Graphics2D graphics;
 
@@ -129,6 +130,94 @@ public final class Area {
         graphics.setPaint(this.color);
     }
 
+    public TextRender drawWrappedText(int x, int y, String text) {
+        return drawWrappedText(x, y, text.toCharArray(), FontCache.get(fontName, fontStyle, fontSize));
+    }
+
+    public TextRender drawWrappedText(int x, int y, String text, Color color) {
+        return drawWrappedText(x, y, text.toCharArray(), color, FontCache.get(fontName, fontStyle, fontSize));
+    }
+
+    public TextRender drawWrappedText(int x, int y, char[] text) {
+        return drawWrappedText(x, y, text, fontColor, FontCache.get(fontName, fontStyle, fontSize));
+    }
+
+    public TextRender drawWrappedText(int x, int y, char[] text, Color color) {
+        return drawWrappedText(x, y, text, color, FontCache.get(fontName, fontStyle, fontSize));
+    }
+
+    public TextRender drawWrappedText(int x, int y, String text, int fontSize) {
+        return drawWrappedText(x, y, text.toCharArray(), FontCache.get(fontName, fontSize));
+    }
+
+    public TextRender drawWrappedText(int x, int y, String text, Color color, int fontSize) {
+        return drawWrappedText(x, y, text.toCharArray(), color, FontCache.get(fontName, fontSize));
+    }
+
+    public TextRender drawWrappedText(int x, int y, char[] text, int fontSize) {
+        return drawWrappedText(x, y, text, fontColor, FontCache.get(fontName, fontSize));
+    }
+
+    public TextRender drawWrappedText(int x, int y, char[] text, Color color, int fontSize) {
+        return drawWrappedText(x, y, text, color, FontCache.get(fontName, fontSize));
+    }
+
+    public TextRender drawWrappedText(int x, int y, String text, String fontName, int fontSize) {
+        return drawWrappedText(x, y, text.toCharArray(), FontCache.get(fontName, fontSize));
+    }
+
+    public TextRender drawWrappedText(int x, int y, String text, Color color, String fontName, int fontSize) {
+        return drawWrappedText(x, y, text.toCharArray(), color, FontCache.get(fontName, fontSize));
+    }
+
+    public TextRender drawWrappedText(int x, int y, char[] text, String fontName, int fontSize) {
+        return drawWrappedText(x, y, text, fontColor, FontCache.get(fontName, fontSize));
+    }
+
+    public TextRender drawWrappedText(int x, int y, char[] text, Color color, String fontName, int fontSize) {
+        return drawWrappedText(x, y, text, color, FontCache.get(fontName, fontSize));
+    }
+
+    public TextRender drawWrappedText(int x, int y, String text, String fontName, int fontSize, int fontStyle) {
+        return drawWrappedText(x, y, text.toCharArray(), FontCache.get(fontName, fontStyle, fontSize));
+    }
+
+    public TextRender drawWrappedText(int x, int y, String text, Color color, String fontName, int fontSize, int fontStyle) {
+        return drawWrappedText(x, y, text.toCharArray(), color, FontCache.get(fontName, fontStyle, fontSize));
+    }
+
+    public TextRender drawWrappedText(int x, int y, char[] text, String fontName, int fontSize, int fontStyle) {
+        return drawWrappedText(x, y, text, fontColor, FontCache.get(fontName, fontStyle, fontSize));
+    }
+
+    public TextRender drawWrappedText(int x, int y, char[] text, Color color, String fontName, int fontSize, int fontStyle) {
+        return drawWrappedText(x, y, text, color, FontCache.get(fontName, fontStyle, fontSize));
+    }
+
+    public TextRender drawWrappedText(int x, int y, String text, Font font) {
+        return drawWrappedText(x, y, text.toCharArray(), fontColor, font);
+    }
+
+    public TextRender drawWrappedText(int x, int y, String text, Color color, Font font) {
+        return drawWrappedText(x, y, text.toCharArray(), color, font);
+    }
+
+    public TextRender drawWrappedText(int x, int y, char[] text, Font font) {
+        return drawWrappedText(x, y, text, fontColor, font);
+    }
+
+    public TextRender drawWrappedText(int x, int y, char[] text, Color color, Font font) {
+        graphics.setFont(font);
+        TextRender render = metricText(size.getX() - x * 2, size.getY() - y, text);
+        int base = (render.getHeight() / 2) + y;
+        graphics.setPaint(color);
+        for (int index = 0; index < render.getLines(); index++) {
+            graphics.drawString(render.getLine(index), x, base + (render.getHeight() * (index)));
+        }
+        graphics.setPaint(this.color);
+        return render;
+    }
+
     public TextRender drawText(int x, int y, String text) {
         return drawText(x, y, text.toCharArray(), FontCache.get(fontName, fontStyle, fontSize));
     }
@@ -207,14 +296,26 @@ public final class Area {
 
     public TextRender drawText(int x, int y, char[] text, Color color, Font font) {
         graphics.setFont(font);
-        TextRender render = metricText(size.getX() - x * 2, size.getY() - y, text);
-        int base = (render.getHeight() / 2) + y;
+        FontMetrics metrics = graphics.getFontMetrics();
+        String stringText = new String(text);
+        int index = 0;
+        IntArrayList list = new IntArrayList();
+        while (true) {
+            index = stringText.indexOf('\n', index);
+            if (index != -1) {
+                list.add(index);
+                continue;
+            }
+            break;
+        }
+        String[] lines = stringText.split("\n");
+        int base = (metrics.getHeight() / 2) + y;
         graphics.setPaint(color);
-        for (int index = 0; index < render.getLines(); index++) {
-            graphics.drawString(render.getLine(index), x, base + (render.getHeight() * (index)));
+        for (index = 0; index < lines.length; index++) {
+            graphics.drawString(stringText, x, base + (metrics.getHeight() * (index)));
         }
         graphics.setPaint(this.color);
-        return render;
+        return new TextRender(lines, list.toIntArray(), metrics);
     }
 
     public TextRender analyseText(int x, int y, String text) {
@@ -264,7 +365,7 @@ public final class Area {
             return new TextRender(EMPTY_LINES, EMPTY_INDICES, metrics);
         }
         ArrayList<String> characters = new ArrayList<>();
-        ArrayList<Integer> indices = new ArrayList<>();
+        IntArrayList indices = new IntArrayList();
         int width = 0;
         int last = 0;
         int wordBound = 0;
@@ -300,7 +401,7 @@ public final class Area {
             last = wordBound + 1;
         }
         if ((last != 0 && wordBound + 1 == text.length)) {
-            return new TextRender(characters.toArray(new String[characters.size()]), indices.toArray(new Integer[indices.size()]), metrics);
+            return new TextRender(characters.toArray(new String[characters.size()]), indices.toIntArray(), metrics);
         }
         if (wordBound + 1 != text.length) {
             wordBound = text.length - 1;
@@ -314,7 +415,7 @@ public final class Area {
         String string = new String(chars);
         characters.add(string);
         indices.add(indices.contains(last) ? last + 1 : last);
-        return new TextRender(characters.toArray(new String[characters.size()]), indices.toArray(new Integer[indices.size()]), metrics);
+        return new TextRender(characters.toArray(new String[characters.size()]), indices.toIntArray(), metrics);
     }
 
     public Area create(int x, int y, int width, int height) {

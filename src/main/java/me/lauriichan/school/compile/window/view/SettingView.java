@@ -11,16 +11,19 @@ import com.syntaxphoenix.syntaxapi.utils.java.Strings;
 
 import jnafilechooser.api.JnaFileChooser;
 import jnafilechooser.api.JnaFileChooser.Mode;
-import me.lauriichan.school.compile.data.ISetting;
-import me.lauriichan.school.compile.data.Settings;
 import me.lauriichan.school.compile.project.Application;
-import me.lauriichan.school.compile.util.Singleton;
+import me.lauriichan.school.compile.util.UserSettings;
 import me.lauriichan.school.compile.window.ui.BasicPane;
 import me.lauriichan.school.compile.window.ui.component.Button;
+import me.lauriichan.school.compile.window.ui.component.CheckButton;
 import me.lauriichan.school.compile.window.ui.component.Label;
 import me.lauriichan.school.compile.window.ui.component.TextField;
+import me.lauriichan.school.compile.window.ui.component.goemetry.LineSeperator;
+import me.lauriichan.school.compile.window.ui.util.BoxRenderers;
 
 public final class SettingView extends View {
+
+    private final DebugView debug = new DebugView();
 
     public SettingView() {
         super("Einstellungen");
@@ -29,13 +32,62 @@ public final class SettingView extends View {
     @Override
     protected void onSetup(BasicPane pane, int width, int height) {
         addExecutableChooser(40, "Anwendung", () -> {
-            Application app = Application.get(Application.getDefault());
+            Application app = Application.getDefault();
             return app == null ? null : app.getExecutable().getPath();
-        }, file -> Application.setDefault(Strings.firstLetterToUpperCase(file.getName()), file));
+        }, file -> Application.setDefaultName(Strings.firstLetterToUpperCase(file.getName()), file));
         addExecutableChooser(110, "Java", () -> {
-            ISetting setting = Singleton.get(Settings.class).get("java", Settings.USER_SETTINGS);
-            return setting.isValid() ? setting.getAs(String.class) : null;
-        }, file -> Singleton.get(Settings.class).put(Settings.USER_SETTINGS.of("java", String.class, true)).set(file.getPath()));
+            String value = UserSettings.getString("java");
+            return value.isEmpty() ? null : value;
+        }, file -> UserSettings.setString("java", file.getPath()));
+        seperator(150);
+        addOption(170, "Debug", () -> UserSettings.getBoolean("debug"), state -> {
+            UserSettings.setBoolean("debug", state);
+            if (state) {
+                getManager().add(debug);
+                return;
+            }
+            getManager().remove(debug);
+        });
+    }
+
+    private void seperator(int y) {
+        LineSeperator seperator = new LineSeperator(false);
+        seperator.setColor(Color.DARK_GRAY);
+        seperator.setThickness(2);
+        seperator.setX(10);
+        seperator.setY(y);
+        seperator.setWidth(pane.getWidth() - seperator.getX() * 2);
+        seperator.setHeight(16);
+        pane.addChild(seperator);
+    }
+
+    private void addOption(int y, String label, Supplier<Boolean> current, Consumer<Boolean> listener) {
+        CheckButton button = new CheckButton();
+        button.setX(10);
+        button.setY(y);
+        button.setSize(20, 20);
+        button.setBox(Color.DARK_GRAY, color("#353737"));
+        button.setBoxFade(0.3, 0.125);
+        button.setLine(Color.DARK_GRAY);
+        button.setIcon(color("#2B8193"), color("#3CCFEE"));
+        button.setIconFade(0.3, 0.125);
+        button.setOffset(0);
+        button.setOffRender(BoxRenderers.CROSS);
+        button.setOnRender(BoxRenderers.CHECKMARK);
+        button.setListener(listener);
+        button.setState(current.get());
+
+        Label btnLabel = new Label();
+        btnLabel.setText(label);
+        btnLabel.setText(label);
+        btnLabel.setY(button.getY() - 6);
+        btnLabel.setX(button.getX() + 30);
+        btnLabel.setWidth(120);
+        btnLabel.setHeight(32);
+        btnLabel.setTextCentered(false);
+
+        pane.addChild(btnLabel);
+        pane.addChild(button);
     }
 
     private void addExecutableChooser(int y, String label, Supplier<String> current, Consumer<File> setter) {

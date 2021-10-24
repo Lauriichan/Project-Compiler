@@ -5,10 +5,10 @@ import java.awt.FontMetrics;
 public final class TextRender {
 
     private final String[] lines;
-    private final Integer[] indices;
+    private final int[] indices;
     private final FontMetrics metrics;
 
-    public TextRender(String[] lines, Integer[] indices, FontMetrics metrics) {
+    public TextRender(String[] lines, int[] indices, FontMetrics metrics) {
         this.lines = lines;
         this.metrics = metrics;
         this.indices = indices;

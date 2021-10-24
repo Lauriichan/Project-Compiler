@@ -16,8 +16,6 @@ import com.syntaxphoenix.syntaxapi.utils.java.Files;
 import me.lauriichan.school.compile.data.json.JsonIO;
 
 public final class Settings {
-    
-    public static final Category USER_SETTINGS = new Category("user");
 
     private final ConcurrentHashMap<String, ISetting> settings = new ConcurrentHashMap<>();
     private final File file = new File("config/settings.json");
@@ -61,11 +59,11 @@ public final class Settings {
         return output.toArray(new ISetting[output.size()]);
     }
 
-    public void load(Category category, Class<?> type) {
+    public void loadComplex(Category category, Class<?> type) {
         category.load(this, type);
     }
 
-    public void loadCategory(String category, Class<?> type) {
+    public void loadComplex(String category, Class<?> type) {
         String categoryKey = '#' + category;
         if (root == null || !root.has(categoryKey, ValueType.OBJECT)) {
             return;
@@ -80,7 +78,32 @@ public final class Settings {
             }
             setting.set(object);
         }
+    }
 
+    public void loadPrimitives(Category category) {
+        category.load(this);
+    }
+
+    public void loadPrimitives(String category) {
+        String categoryKey = '#' + category;
+        if (root == null || !root.has(categoryKey, ValueType.OBJECT)) {
+            return;
+        }
+        JsonObject section = (JsonObject) root.get(categoryKey);
+        for (JsonEntry<?> entry : section.entries()) {
+            JsonValue<?> value = entry.getValue();
+            if (!value.getType().isPrimitive()) {
+                continue;
+            }
+            Class<?> type = value.getValue().getClass();
+            ISetting setting = ISetting.of(entry.getKey(), category, type, true);
+            put(setting);
+            Object object = JsonIO.toObject(value, type);
+            if (object == null) {
+                continue;
+            }
+            setting.set(object);
+        }
     }
 
     public ISetting put(ISetting setting) {
