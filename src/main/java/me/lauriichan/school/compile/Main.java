@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.NoSuchElementException;
 
 import com.syntaxphoenix.syntaxapi.utils.java.Files;
 import com.syntaxphoenix.syntaxapi.utils.java.tools.Container;
@@ -55,14 +56,14 @@ public final class Main {
         SYSTEM_OUT.ifPresent(stream -> {
             try {
                 stream.close();
-            } catch (IOException e) {
+            } catch (NoSuchElementException | IOException e) {
                 return; // Ignore, we're exiting
             }
         });
         SYSTEM_ERR.ifPresent(stream -> {
             try {
                 stream.close();
-            } catch (IOException e) {
+            } catch (NoSuchElementException | IOException e) {
                 return; // Ignore, we're exiting
             }
         });
@@ -73,12 +74,12 @@ public final class Main {
      */
 
     public static void main(String[] args) {
+        Runtime.getRuntime().addShutdownHook(new Thread(Main::shutdown));
         registerConverters();
         loadData();
         initSingletons();
         initLogger();
         buildUi();
-        Runtime.getRuntime().addShutdownHook(new Thread(Main::shutdown));
     }
 
     private static void loadData() {
@@ -103,8 +104,8 @@ public final class Main {
     private static void initLogger() {
         try {
             LOG_FILE.replace(new PrintStream(Files.createFile(new File("debug.log")))).lock();
-            System.setOut(SYSTEM_OUT.replace(new StreamListener("SystemOut")).lock().get().getStream());
-            System.setErr(SYSTEM_ERR.replace(new StreamListener("SystemErr")).lock().get().getStream());
+            SYSTEM_OUT.replace(new StreamListener("SystemOut")).lock().get().getStream();
+            SYSTEM_ERR.replace(new StreamListener("SystemErr")).lock().get().getStream();
         } catch (Exception exp) {
             exp.printStackTrace();
         }

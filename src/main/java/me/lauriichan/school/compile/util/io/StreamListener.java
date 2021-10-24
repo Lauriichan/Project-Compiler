@@ -37,27 +37,31 @@ public final class StreamListener implements Closeable {
 
     private void read() {
         while (running) {
-            String line = scanner.nextLine();
-            if (line == null) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    break;
+            try {
+                String line = scanner.nextLine();
+                if (line == null) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        break;
+                    }
+                    continue;
                 }
+                if (delegate == null) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        break;
+                    }
+                    continue;
+                }
+                delegate.accept(line);
+            } catch (Exception exp) {
                 continue;
             }
-            if (delegate == null) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    break;
-                }
-                continue;
-            }
-            delegate.accept(line);
         }
     }
-    
+
     public void setDelegate(Consumer<String> delegate) {
         this.delegate = delegate;
     }
@@ -69,10 +73,11 @@ public final class StreamListener implements Closeable {
     @Override
     public void close() throws IOException {
         running = false;
+        thread.interrupt();
+        scanner.close();
         stream.close();
         input.close();
         output.close();
-        scanner.close();
     }
 
 }

@@ -32,6 +32,8 @@ public final class Panel extends Component {
 
     private Color background = Color.BLACK;
     private Font font = new Font("Open Sans", Font.PLAIN, 12);
+    
+    private boolean shouldExit = false;
 
     public Panel() {
         this(new BasicPane());
@@ -85,12 +87,10 @@ public final class Panel extends Component {
     }
 
     public void exit() {
-        renderTick.stop();
-        updateTick.stop();
-        hide();
-        frame.dispose();
         bar.exit();
         pane.exit();
+        shouldExit = true;
+        updateTick.stop();
     }
 
     @Override
@@ -195,7 +195,11 @@ public final class Panel extends Component {
     }
 
     private void render(long deltaTime) {
-        if (isHidden()) {
+        if (isHidden() || shouldExit) {
+            if(shouldExit) {
+                frame.dispose();
+                renderTick.stop();
+            }
             return;
         }
         frame.repaint();
