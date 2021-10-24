@@ -159,5 +159,14 @@ public final class BasicPane extends Pane {
             component.update(deltaTime);
         }
     }
+    
+    @Override
+    public void exit() {
+        Component[] children = getChildren();
+        for (Component child : children) {
+            child.exit();
+        }
+        components.clear();
+    }
 
 }

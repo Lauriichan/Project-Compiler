@@ -11,5 +11,7 @@ public interface IComponent {
     void render(Area area);
 
     void update(long deltaTime);
+    
+    default void exit() {}
 
 }

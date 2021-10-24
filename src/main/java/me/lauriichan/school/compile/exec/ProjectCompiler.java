@@ -18,12 +18,13 @@ import javax.tools.ToolProvider;
 
 import org.apache.commons.io.FileUtils;
 
+import com.syntaxphoenix.syntaxapi.utils.java.Exceptions;
 import com.syntaxphoenix.syntaxapi.utils.java.Files;
 
 import me.lauriichan.school.compile.project.Project;
 import me.lauriichan.school.compile.util.file.FileHelper;
 
-public final class Compiler implements DiagnosticListener<JavaFileObject> {
+public final class ProjectCompiler implements DiagnosticListener<JavaFileObject> {
 
     private final JavaCompiler compiler;
     private final EnumMap<Kind, ArrayList<Diagnostic<? extends JavaFileObject>>> diagnostics = new EnumMap<>(Kind.class);
@@ -31,7 +32,7 @@ public final class Compiler implements DiagnosticListener<JavaFileObject> {
 
     private boolean compiles = false;
 
-    public Compiler() {
+    public ProjectCompiler() {
         this.compiler = ToolProvider.getSystemJavaCompiler();
     }
 
@@ -56,13 +57,21 @@ public final class Compiler implements DiagnosticListener<JavaFileObject> {
         File directory = project.getDirectory();
         File source = new File(directory, "src");
         File resource = new File(directory, "resources");
-        
+
         File bin = new File(directory, "bin");
         FileHelper.deleteIfExists(bin);
         Files.createFolder(bin);
-        
+
         File resources = new File(bin, "resources");
         Files.createFolder(resources);
+
+        try {
+            FileUtils.copyDirectory(resource, resources);
+        } catch (IOException e) {
+            System.err.println("Failed to copy resources of '" + project.getName() + "'!");
+            System.err.println(Exceptions.stackTraceToString(e));
+        }
+
         File classes = new File(bin, "classes");
         Files.createFolder(classes);
 
@@ -77,15 +86,20 @@ public final class Compiler implements DiagnosticListener<JavaFileObject> {
             compiler.getTask(null, manager, null, null, null, iterable);
         } catch (Exception exp) {
             compiles = false;
-            exp.printStackTrace();
+            System.err.println("Failed to compile '" + project.getName() + "'!");
+            System.err.println(Exceptions.stackTraceToString(exp));
+            return;
         }
         try {
             manager.close();
-        } catch (IOException ignore) {
-            // Ignore for now
+        } catch (IOException exp) {
+            System.err.println("Failed to close StandardJavaFileManager");
+            System.err.println(Exceptions.stackTraceToString(exp));
         }
-        
-        
+
+    }
+
+    public void exit() {
 
     }
 

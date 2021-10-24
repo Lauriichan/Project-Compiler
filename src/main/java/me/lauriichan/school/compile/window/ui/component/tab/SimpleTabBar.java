@@ -33,7 +33,7 @@ public class SimpleTabBar extends TabBar {
 
     public SimpleTabBar() {
         LineSeperator seperator = new LineSeperator();
-        seperator.setColor(Color.WHITE);
+        seperator.setColor(Color.GRAY);
         seperator.setWidth(12);
         seperator.setThickness(2);
         this.seperator = seperator;

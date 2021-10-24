@@ -55,4 +55,8 @@ public final class Dialog {
         panel.show();
     }
 
+    public void exit() {
+        panel.exit();
+    }
+
 }

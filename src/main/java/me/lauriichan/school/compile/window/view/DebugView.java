@@ -2,6 +2,7 @@ package me.lauriichan.school.compile.window.view;
 
 import java.awt.Color;
 
+import me.lauriichan.school.compile.Main;
 import me.lauriichan.school.compile.window.ui.BasicPane;
 import me.lauriichan.school.compile.window.ui.component.LogDisplay;
 import me.lauriichan.school.compile.window.ui.component.TextField;
@@ -20,8 +21,13 @@ public final class DebugView extends View {
         display.setX(10);
         display.setWidth(width - 20);
         display.setHeight(height - 80);
+        display.setHistorySize(500);
         display.setBarFill(Color.GREEN);
         pane.addChild(display);
+
+        Main.SYSTEM_OUT.ifPresent(listener -> listener.setDelegate(display::info));
+        Main.SYSTEM_ERR.ifPresent(listener -> listener.setDelegate(display::error));
+        Main.LOG_FILE.ifPresent(stream -> display.setListener(entry -> stream.println(entry.toString())));
 
         TextField field = new TextField();
         field.setX(display.getX());

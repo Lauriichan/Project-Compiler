@@ -99,5 +99,7 @@ public abstract class View {
     }
 
     protected abstract void onSetup(BasicPane pane, int width, int height);
+    
+    protected void exit() {}
 
 }

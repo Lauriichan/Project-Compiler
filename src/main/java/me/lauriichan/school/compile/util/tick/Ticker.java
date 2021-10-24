@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
+import com.syntaxphoenix.syntaxapi.utils.java.Exceptions;
+
 public final class Ticker {
 
     public static final long NANO_TIME = TimeUnit.SECONDS.toNanos(1);
@@ -104,18 +106,25 @@ public final class Ticker {
     }
 
     private void timeTick() {
-        try {
-            Thread.sleep(delay);
-        } catch (IllegalArgumentException | InterruptedException ignore) {
-            // Delay Sleep Error
+        if (delay > 0) {
+            try {
+                Thread.sleep(delay);
+            } catch (InterruptedException ignore) {
+                if(state == 2) {
+                    return; // Stop if the state is 2
+                }
+            }
         }
         while (state != 2) {
             if (receivers.isEmpty() || state == 1) {
                 time = System.nanoTime();
                 try {
+                    if (emptyLength <= 0) {
+                        continue;
+                    }
                     Thread.sleep(emptyLength);
-                } catch (IllegalArgumentException | InterruptedException ignore) {
-                    // Empty Sleep Error
+                } catch (InterruptedException ignore) {
+                    continue; // Check for state
                 }
                 continue;
             }
@@ -123,16 +132,20 @@ public final class Ticker {
             updateTps();
             ITickReceiver[] receivers = this.receivers.toArray(new ITickReceiver[this.receivers.size()]);
             for (ITickReceiver receiver : receivers) {
-                receiver.onTick(delta);
+                try {
+                    receiver.onTick(delta);
+                } catch (Exception exp) {
+                    System.err.println(Exceptions.stackTraceToString(exp));
+                }
             }
             time = System.nanoTime();
             try {
-                if (length == 0) {
+                if (length <= 0) {
                     continue;
                 }
                 Thread.sleep(length);
-            } catch (IllegalArgumentException | InterruptedException ignore) {
-                // Sleep Error
+            } catch (InterruptedException ignore) {
+                continue; // Check for state
             }
         }
     }

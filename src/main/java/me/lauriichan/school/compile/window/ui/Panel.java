@@ -89,6 +89,8 @@ public final class Panel extends Component {
         updateTick.stop();
         hide();
         frame.dispose();
+        bar.exit();
+        pane.exit();
     }
 
     @Override

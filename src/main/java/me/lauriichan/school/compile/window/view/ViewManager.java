@@ -170,4 +170,12 @@ public final class ViewManager extends Component {
         pane.update(deltaTime);
     }
 
+    @Override
+    public void exit() {
+        for (View view : views) {
+            view.exit();
+        }
+        views.clear();
+    }
+
 }

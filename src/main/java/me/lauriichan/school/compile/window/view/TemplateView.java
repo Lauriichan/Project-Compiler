@@ -61,6 +61,15 @@ public final class TemplateView extends View {
         random.setAction(() -> createProject(template));
         pane.addChild(random);
     }
+    
+    @Override
+    protected void exit() {
+        dialog.exit();
+    }
+    
+    /*
+     * 
+     */
 
     public Dialog getDialog() {
         return dialog;
@@ -162,7 +171,7 @@ public final class TemplateView extends View {
         panel.setHeight(340);
         panel.setBarHeight(40);
         panel.setBackground(Color.GRAY);
-        
+
         Component outline = new Component() {
             @Override
             public void render(Area area) {

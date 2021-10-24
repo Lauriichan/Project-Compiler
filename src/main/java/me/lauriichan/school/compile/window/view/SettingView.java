@@ -69,7 +69,7 @@ public final class SettingView extends View {
         button.setBox(Color.DARK_GRAY, color("#353737"));
         button.setBoxFade(0.3, 0.125);
         button.setLine(Color.DARK_GRAY);
-        button.setIcon(color("#2B8193"), color("#3CCFEE"));
+        button.setIcon(Color.GRAY, Color.GREEN);
         button.setIconFade(0.3, 0.125);
         button.setOffset(0);
         button.setOffRender(BoxRenderers.CROSS);

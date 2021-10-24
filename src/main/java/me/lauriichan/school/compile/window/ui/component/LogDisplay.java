@@ -2,6 +2,7 @@ package me.lauriichan.school.compile.window.ui.component;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 import me.lauriichan.school.compile.window.input.Listener;
 import me.lauriichan.school.compile.window.input.mouse.MouseClick;
@@ -47,6 +48,8 @@ public class LogDisplay extends Component {
     private Color barFill = Color.RED;
     private Color barBackground = Color.DARK_GRAY;
 
+    private Consumer<LogEntry> listener;
+
     public void info(String line) {
         log(new LogEntry(infoColor, line, true));
     }
@@ -72,10 +75,17 @@ public class LogDisplay extends Component {
             history.remove(historySize - 1);
         }
         history.add(0, entry);
+        if (listener != null) {
+            listener.accept(entry);
+        }
     }
 
     public LogEntry remove(int index) {
         return outside(index) ? null : history.remove(index);
+    }
+
+    public void clear() {
+        history.clear();
     }
 
     public LogEntry[] getHistory() {
@@ -159,6 +169,14 @@ public class LogDisplay extends Component {
 
     public int getHistorySize() {
         return historySize;
+    }
+
+    public void setListener(Consumer<LogEntry> listener) {
+        this.listener = listener;
+    }
+
+    public Consumer<LogEntry> getListener() {
+        return listener;
     }
 
     public void setFontName(String fontName) {

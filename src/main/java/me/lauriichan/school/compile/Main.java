@@ -3,14 +3,21 @@ package me.lauriichan.school.compile;
 import static me.lauriichan.school.compile.window.ui.util.ColorCache.color;
 
 import java.awt.Color;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+
+import com.syntaxphoenix.syntaxapi.utils.java.Files;
+import com.syntaxphoenix.syntaxapi.utils.java.tools.Container;
 
 import me.lauriichan.school.compile.data.Settings;
 import me.lauriichan.school.compile.data.converter.*;
-import me.lauriichan.school.compile.exec.Runner;
+import me.lauriichan.school.compile.exec.*;
 import me.lauriichan.school.compile.project.Application;
 import me.lauriichan.school.compile.project.Project;
 import me.lauriichan.school.compile.util.Singleton;
 import me.lauriichan.school.compile.util.UserSettings;
+import me.lauriichan.school.compile.util.io.StreamListener;
 import me.lauriichan.school.compile.window.input.mouse.MouseButton;
 import me.lauriichan.school.compile.window.ui.Pane;
 import me.lauriichan.school.compile.window.ui.Panel;
@@ -23,18 +30,55 @@ import me.lauriichan.school.compile.window.view.*;
 
 public final class Main {
 
+    public static final Container<StreamListener> SYSTEM_OUT = Container.of();
+    public static final Container<StreamListener> SYSTEM_ERR = Container.of();
+    public static final Container<PrintStream> LOG_FILE = Container.of();
+    public static final Container<Panel> UI = Container.of();
+
     private Main() {}
+
+    /*
+     * Stop
+     */
+
+    private static void shutdown() {
+        Singleton.get(Runner.class).exit();
+        Singleton.get(ProjectCompiler.class).exit();
+        Singleton.get(Settings.class).save();
+        UI.ifPresent(panel -> {
+            panel.exit();
+        });
+        LOG_FILE.ifPresent(stream -> {
+            stream.flush();
+            stream.close();
+        });
+        SYSTEM_OUT.ifPresent(stream -> {
+            try {
+                stream.close();
+            } catch (IOException e) {
+                return; // Ignore, we're exiting
+            }
+        });
+        SYSTEM_ERR.ifPresent(stream -> {
+            try {
+                stream.close();
+            } catch (IOException e) {
+                return; // Ignore, we're exiting
+            }
+        });
+    }
+
+    /*
+     * Start
+     */
 
     public static void main(String[] args) {
         registerConverters();
         loadData();
         initSingletons();
+        initLogger();
         buildUi();
         Runtime.getRuntime().addShutdownHook(new Thread(Main::shutdown));
-    }
-
-    private static void shutdown() {
-        Singleton.get(Settings.class).save();
     }
 
     private static void loadData() {
@@ -56,7 +100,17 @@ public final class Main {
         Singleton.get(Runner.class);
     }
 
-    public static Panel buildUi() {
+    private static void initLogger() {
+        try {
+            LOG_FILE.replace(new PrintStream(Files.createFile(new File("debug.log")))).lock();
+            System.setOut(SYSTEM_OUT.replace(new StreamListener("SystemOut")).lock().get().getStream());
+            System.setErr(SYSTEM_ERR.replace(new StreamListener("SystemErr")).lock().get().getStream());
+        } catch (Exception exp) {
+            exp.printStackTrace();
+        }
+    }
+
+    public static void buildUi() {
         Panel panel = new Panel();
         Pane pane = panel.getPane();
         panel.setWidth(800);
@@ -116,7 +170,7 @@ public final class Main {
         panel.center();
         panel.show();
 
-        return panel;
+        UI.replace(panel).lock();
     }
 
 }
