@@ -9,11 +9,21 @@ public final class InputHelper {
     private InputHelper() {}
 
     public static void hover(MouseHover hover, Component component, FadeAnimation<?> animation) {
-        animation.setTriggered(component.isInside(hover.getX(), hover.getY()));
+        if(!component.isInside(hover.getX(), hover.getY()) || hover.isConsumed()) {
+            animation.setTriggered(false);
+            return;
+        }
+        hover.consume();
+        animation.setTriggered(true);
     }
 
     public static void hover(MouseHover hover, int x, int y, int width, int height, FadeAnimation<?> animation) {
-        animation.setTriggered(x <= hover.getX() && x + width >= hover.getX() && y <= hover.getY() && y + height >= hover.getY());
+        if(!(x <= hover.getX() && x + width >= hover.getX() && y <= hover.getY() && y + height >= hover.getY()) || hover.isConsumed()) {
+            animation.setTriggered(false);
+            return;
+        }
+        hover.consume();
+        animation.setTriggered(true);
     }
 
 }

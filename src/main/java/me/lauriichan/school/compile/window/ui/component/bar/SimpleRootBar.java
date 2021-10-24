@@ -139,17 +139,21 @@ public final class SimpleRootBar extends RootBar {
     public void setLineThickness(int lineThickness) {
         this.lineThickness = lineThickness;
     }
-    
+
     public void setOffset(int offset) {
         this.offset = offset;
     }
-    
+
     public int getOffset() {
         return offset;
     }
 
     @Listener
     public void onClick(MouseClick click) {
+        if (!isInside(click.getX(), click.getY())) {
+            return;
+        }
+        click.consume();
         if (!(boxOffset <= click.getY() && (size + boxOffset) >= click.getY())) {
             return;
         }
@@ -173,6 +177,10 @@ public final class SimpleRootBar extends RootBar {
 
     @Listener
     public void onHover(MouseHover hover) {
+        boolean consumed = hover.isConsumed();
+        if (isInside(hover.getX(), hover.getY())) {
+            hover.consume();
+        }
         if (!(boxOffset <= hover.getY() && (size + boxOffset) >= hover.getY())) {
             if (!triggered) {
                 return;
@@ -182,6 +190,9 @@ public final class SimpleRootBar extends RootBar {
             for (BarBox box : boxes) {
                 box.setTriggered(false);
             }
+            return;
+        }
+        if (consumed) {
             return;
         }
         int count = getCount();
@@ -209,7 +220,7 @@ public final class SimpleRootBar extends RootBar {
 
     @Listener
     public void onDrag(MouseDrag drag) {
-        if (drag.getOldY() > getHeight() || drag.getButton() != MouseButton.LEFT) {
+        if (drag.isConsumed() || drag.getOldY() > getHeight() || drag.getButton() != MouseButton.LEFT) {
             return;
         }
         drag.consume();

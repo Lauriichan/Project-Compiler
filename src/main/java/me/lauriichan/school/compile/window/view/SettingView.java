@@ -21,12 +21,12 @@ import me.lauriichan.school.compile.window.ui.component.TextField;
 import me.lauriichan.school.compile.window.ui.component.goemetry.LineSeperator;
 import me.lauriichan.school.compile.window.ui.util.BoxRenderers;
 
-public final class SettingView extends View {
+public final class SettingView extends View<BasicPane> {
 
     private final DebugView debug = new DebugView();
 
     public SettingView() {
-        super("Einstellungen");
+        super("Einstellungen", new BasicPane());
     }
 
     @Override

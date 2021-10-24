@@ -2,16 +2,20 @@ package me.lauriichan.school.compile.window.view;
 
 import java.awt.Color;
 
+import com.syntaxphoenix.syntaxapi.utils.java.tools.Container;
+
 import me.lauriichan.school.compile.project.Project;
 import me.lauriichan.school.compile.window.ui.BasicPane;
 import me.lauriichan.school.compile.window.ui.component.LogDisplay;
 import me.lauriichan.school.compile.window.ui.component.TextField;
 import me.lauriichan.school.compile.window.ui.util.ColorCache;
 
-public final class ConsoleView extends View {
+public final class ConsoleView extends View<BasicPane> {
+    
+    public static final Container<LogDisplay> APP_LOG = Container.of();
 
     public ConsoleView() {
-        super("Konsole");
+        super("Konsole", new BasicPane());
     }
 
     @Override
@@ -20,8 +24,9 @@ public final class ConsoleView extends View {
         display.setY(10);
         display.setX(10);
         display.setWidth(width - 20);
-        display.setHeight(height - 80);
+        display.setHeight(height - 60);
         display.setBarFill(Color.GREEN);
+        APP_LOG.replace(display);
         pane.addChild(display);
 
         TextField field = new TextField();
@@ -49,6 +54,11 @@ public final class ConsoleView extends View {
             project.println(command);
         });
         pane.addChild(field);
+    }
+    
+    @Override
+    protected void exit() {
+        APP_LOG.replace(null);
     }
 
 }

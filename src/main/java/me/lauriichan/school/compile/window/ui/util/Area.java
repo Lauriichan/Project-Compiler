@@ -301,7 +301,7 @@ public final class Area {
         int index = 0;
         IntArrayList list = new IntArrayList();
         while (true) {
-            index = stringText.indexOf('\n', index);
+            index = stringText.indexOf('\n', index + 1);
             if (index != -1) {
                 list.add(index);
                 continue;
@@ -355,6 +355,59 @@ public final class Area {
     }
 
     public TextRender analyseText(int x, int y, char[] text, Font font) {
+        graphics.setFont(font);
+        FontMetrics metrics = graphics.getFontMetrics();
+        String stringText = new String(text);
+        int index = 0;
+        IntArrayList list = new IntArrayList();
+        while (true) {
+            index = stringText.indexOf('\n', index + 1);
+            if (index != -1) {
+                list.add(index);
+                continue;
+            }
+            break;
+        }
+        return new TextRender(stringText.split("\n"), list.toIntArray(), metrics);
+    }
+
+    public TextRender analyseWrappedText(int x, int y, String text) {
+        return analyseWrappedText(x, y, text.toCharArray());
+    }
+
+    public TextRender analyseWrappedText(int x, int y, String text, int fontSize) {
+        return analyseWrappedText(x, y, text.toCharArray(), fontSize);
+    }
+
+    public TextRender analyseWrappedText(int x, int y, String text, String fontName, int fontSize) {
+        return analyseWrappedText(x, y, text.toCharArray(), fontName, fontSize);
+    }
+
+    public TextRender analyseWrappedText(int x, int y, String text, String fontName, int fontSize, int fontStyle) {
+        return analyseWrappedText(x, y, text.toCharArray(), fontName, fontSize, fontStyle);
+    }
+
+    public TextRender analyseWrappedText(int x, int y, String text, Font font) {
+        return analyseWrappedText(x, y, text.toCharArray(), font);
+    }
+
+    public TextRender analyseWrappedText(int x, int y, char[] text) {
+        return analyseWrappedText(x, y, text, FontCache.get(fontName, fontStyle, fontSize));
+    }
+
+    public TextRender analyseWrappedText(int x, int y, char[] text, int fontSize) {
+        return analyseWrappedText(x, y, text, FontCache.get(fontName, fontSize));
+    }
+
+    public TextRender analyseWrappedText(int x, int y, char[] text, String fontName, int fontSize) {
+        return analyseWrappedText(x, y, text, FontCache.get(fontName, fontSize));
+    }
+
+    public TextRender analyseWrappedText(int x, int y, char[] text, String fontName, int fontSize, int fontStyle) {
+        return analyseWrappedText(x, y, text, FontCache.get(fontName, fontStyle, fontSize));
+    }
+
+    public TextRender analyseWrappedText(int x, int y, char[] text, Font font) {
         graphics.setFont(font);
         return metricText(size.getX() - x * 2, size.getY() - y, text);
     }

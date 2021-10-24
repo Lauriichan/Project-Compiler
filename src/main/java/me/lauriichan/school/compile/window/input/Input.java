@@ -8,7 +8,7 @@ public abstract class Input {
     public Input(InputProvider provider) {
         this.provider = provider;
     }
-
+    
     public void consume() {
         consumed = true;
     }

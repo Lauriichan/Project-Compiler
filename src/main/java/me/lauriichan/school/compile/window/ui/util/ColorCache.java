@@ -25,7 +25,7 @@ public final class ColorCache {
         String combine = (hex.startsWith("#") ? hex.substring(1) : hex) + '$' + alpha;
         if (!colors.containsKey(combine)) {
             Color color = ColorTools.hex2rgba(hex, alpha);
-            color = new Color(color.getRed(), color.getBlue(), color.getBlue(), alpha);
+            color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
             colors.put(combine, color);
             return color;
         }

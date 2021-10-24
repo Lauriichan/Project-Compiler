@@ -8,9 +8,11 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.NoSuchElementException;
 
+import com.syntaxphoenix.syntaxapi.utils.java.Exceptions;
 import com.syntaxphoenix.syntaxapi.utils.java.Files;
 import com.syntaxphoenix.syntaxapi.utils.java.tools.Container;
 
+import it.unimi.dsi.fastutil.ints.IntConsumer;
 import me.lauriichan.school.compile.data.Settings;
 import me.lauriichan.school.compile.data.converter.*;
 import me.lauriichan.school.compile.exec.*;
@@ -36,6 +38,11 @@ public final class Main {
     public static final Container<PrintStream> LOG_FILE = Container.of();
     public static final Container<Panel> UI = Container.of();
 
+    public static final Container<PrintStream> OLD_OUT = Container.of();
+    public static final Container<PrintStream> OLD_ERR = Container.of();
+
+    public static final Container<IntConsumer> SELECT = Container.of();
+
     private Main() {}
 
     /*
@@ -43,6 +50,7 @@ public final class Main {
      */
 
     private static void shutdown() {
+
         Singleton.get(Runner.class).exit();
         Singleton.get(ProjectCompiler.class).exit();
         Singleton.get(Settings.class).save();
@@ -79,7 +87,11 @@ public final class Main {
         loadData();
         initSingletons();
         initLogger();
-        buildUi();
+        try {
+            buildUi();
+        } catch (Exception exp) {
+            OLD_ERR.get().println(Exceptions.stackTraceToString(exp));
+        }
     }
 
     private static void loadData() {
@@ -103,9 +115,11 @@ public final class Main {
 
     private static void initLogger() {
         try {
+            OLD_OUT.replace(System.out).lock();
+            OLD_ERR.replace(System.err).lock();
             LOG_FILE.replace(new PrintStream(Files.createFile(new File("debug.log")))).lock();
-            SYSTEM_OUT.replace(new StreamListener("SystemOut")).lock().get().getStream();
-            SYSTEM_ERR.replace(new StreamListener("SystemErr")).lock().get().getStream();
+            System.setOut(SYSTEM_OUT.replace(new StreamListener("SystemOut")).lock().get().getStream());
+            System.setErr(SYSTEM_ERR.replace(new StreamListener("SystemErr")).lock().get().getStream());
         } catch (Exception exp) {
             exp.printStackTrace();
         }
@@ -158,15 +172,21 @@ public final class Main {
             btar.remove(btar.get(index));
         });
         viewManager.setUpdater((index, title) -> btar.get(index).setText(title));
-        viewManager.add(new MainView());
-        viewManager.add(new TemplateView());
+        MainView main = new MainView();
+        viewManager.add(main);
+        viewManager.add(new TemplateView(main));
         viewManager.add(new CompileView());
         viewManager.add(new ConsoleView());
         viewManager.add(new SettingView());
-        viewManager.select(0);
-        btar.setSelectEnabled(true);
-        btar.setSelected(0);
         pane.addChild(viewManager);
+        btar.setSelectEnabled(true);
+        viewManager.select(0);
+        btar.setSelected(0);
+
+        SELECT.replace((index) -> {
+            viewManager.select(index);
+            btar.setSelected(index);
+        }).lock();
 
         panel.center();
         panel.show();

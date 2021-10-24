@@ -80,6 +80,7 @@ public class CheckButton extends Component {
         if (!(gx <= x && gx + size >= x && gy <= y && gy + size >= y)) {
             return;
         }
+        press.consume();
         state = !state;
         if (listener == null) {
             return;

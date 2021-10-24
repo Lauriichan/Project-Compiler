@@ -7,11 +7,15 @@ import java.io.File;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
+import com.syntaxphoenix.syntaxapi.random.NumberGeneratorType;
+import com.syntaxphoenix.syntaxapi.random.RandomNumberGenerator;
+
 import jnafilechooser.api.JnaFileChooser;
 import jnafilechooser.api.JnaFileChooser.Mode;
 import me.lauriichan.school.compile.project.Project;
 import me.lauriichan.school.compile.project.ProjectInfo;
 import me.lauriichan.school.compile.project.template.Template;
+import me.lauriichan.school.compile.util.Executor;
 import me.lauriichan.school.compile.window.input.mouse.MouseButton;
 import me.lauriichan.school.compile.window.ui.BasicPane;
 import me.lauriichan.school.compile.window.ui.Component;
@@ -26,14 +30,18 @@ import me.lauriichan.school.compile.window.ui.component.bar.BarBox;
 import me.lauriichan.school.compile.window.ui.util.Area;
 import me.lauriichan.school.compile.window.ui.util.BoxRenderers;
 
-public final class TemplateView extends View {
+public final class TemplateView extends View<BasicPane> {
 
     private int buttonId = 0;
     private boolean locked = false;
     private final Dialog dialog = new Dialog(this::buildProjectDialog);
+    private final MainView main;
 
-    public TemplateView() {
-        super("Templates");
+    private final RandomNumberGenerator random = NumberGeneratorType.MURMUR.create(System.currentTimeMillis());
+
+    public TemplateView(MainView main) {
+        super("Templates", new BasicPane());
+        this.main = main;
     }
 
     @Override
@@ -55,24 +63,34 @@ public final class TemplateView extends View {
             pane.addChild(createTemplateButton());
         }
         int offset = width / 16;
-        Button random = createButton(offset, (height / 3) * 2 + offset, (width / 4) * 3 + offset * 2, offset);
-        Template template = Template.TEMPLATES.get(0);
-        random.setText(template.getName());
-        random.setAction(() -> createProject(template));
+        Button random = createButton(offset, height - offset * 2, (width / 4) * 3 + offset * 2, offset);
+        random.setText("Zufällig");
+        random.setAction(() -> createProject(getTemplate()));
         pane.addChild(random);
     }
-    
+
     @Override
     protected void exit() {
         dialog.exit();
     }
-    
+
     /*
      * 
      */
 
     public Dialog getDialog() {
         return dialog;
+    }
+
+    private Template getTemplate() {
+        Template template;
+        while (!(template = nextTemplate()).getType().equals("Java")) {
+        }
+        return template;
+    }
+
+    private Template nextTemplate() {
+        return Template.TEMPLATES.get(random.nextInt(Template.TEMPLATES.size() - 1));
     }
 
     public void createProject(Template template) {
@@ -102,12 +120,18 @@ public final class TemplateView extends View {
         }
         setButtonLocked(false);
         ProjectInfo info = (ProjectInfo) input;
+        boolean existed = Project.get(info.getName()) != null;
         Project.create(info.getName(), info.getPackageName(), new File(info.getDirectory()), template);
         Project project = Project.get(info.getName());
         if (project == null) {
             return;
         }
-        project.open();
+        Executor.execute(() -> project.open());
+        if (existed) {
+            main.updateProject(project);
+            return;
+        }
+        main.addProject(project);
     }
 
     public void setButtonLocked(boolean locked) {

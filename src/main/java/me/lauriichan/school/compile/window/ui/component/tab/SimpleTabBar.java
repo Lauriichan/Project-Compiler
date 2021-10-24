@@ -146,12 +146,16 @@ public class SimpleTabBar extends TabBar {
     }
 
     public void setSelected(int selected) {
-        if (this.selected != -1 || !selectEnabled) {
+        if (!selectEnabled) {
             return;
         }
-        this.selected = Math.min(getCount(), Math.max(0, selected));
-        if (getCount() != 0) {
-            get(selected).setTriggered(true);
+        int count = getCount();
+        if(this.selected < count && this.selected >= 0) {
+            get(this.selected).setTriggered(false);
+        }
+        this.selected = Math.min(count - 1, Math.max(0, selected));
+        if (count != 0) {
+            get(this.selected).setTriggered(true);
         }
     }
 
@@ -185,6 +189,7 @@ public class SimpleTabBar extends TabBar {
         if (!(gy <= press.getY() && (getHeight() + gy) >= press.getY())) {
             return;
         }
+        press.consume();
         int count = getCount();
         int next = seperator.getWidth() + size;
         for (int index = 0; index < count; index++) {
@@ -197,7 +202,7 @@ public class SimpleTabBar extends TabBar {
             if (box == null) {
                 break;
             }
-            if(selectEnabled && selected == index) {
+            if (selectEnabled && selected == index) {
                 break;
             }
             box.press(press.getButton());
@@ -222,6 +227,10 @@ public class SimpleTabBar extends TabBar {
 
     @Listener
     public void onHover(MouseHover hover) {
+        boolean consumed = hover.isConsumed();
+        if (isInside(hover.getX(), hover.getY())) {
+            hover.consume();
+        }
         int gy = getGlobalY();
         if (!(gy <= hover.getY() && (getHeight() + gy) >= hover.getY())) {
             if (!triggered) {
@@ -235,6 +244,9 @@ public class SimpleTabBar extends TabBar {
                 }
                 boxes[index].setTriggered(false);
             }
+            return;
+        }
+        if (consumed) {
             return;
         }
         int count = getCount();

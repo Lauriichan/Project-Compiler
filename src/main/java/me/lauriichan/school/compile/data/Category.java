@@ -34,4 +34,8 @@ public final class Category {
         return settings.getAll(name);
     }
 
+    public void delete(Settings settings, String name) {
+        settings.delete(this.name + '.' + name);
+    }
+
 }

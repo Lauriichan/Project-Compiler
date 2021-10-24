@@ -316,6 +316,7 @@ public final class TextField extends Component {
         if (!blink.isTriggered()) {
             return;
         }
+        press.consume();
         switch (press.getCode()) {
         case KeyEvent.VK_LEFT:
         case KeyEvent.VK_KP_LEFT:
@@ -428,7 +429,12 @@ public final class TextField extends Component {
         if (click.getButton() != MouseButton.LEFT || locked) {
             return;
         }
-        blink.setTriggered(isInside(click.getX(), click.getY()));
+        if(!isInside(click.getX(), click.getY())) {
+            blink.setTriggered(false);
+            return;
+        }
+        click.consume();
+        blink.setTriggered(true);
     }
 
 }

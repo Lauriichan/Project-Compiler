@@ -2,6 +2,7 @@ package me.lauriichan.school.compile.window.ui.component;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 import me.lauriichan.school.compile.window.input.Listener;
@@ -18,12 +19,14 @@ import me.lauriichan.school.compile.window.ui.util.TextRender;
 public class LogDisplay extends Component {
 
     private final ArrayList<LogEntry> history = new ArrayList<>();
+    private final AtomicBoolean scrollEnabled = new AtomicBoolean(false);
 
     private String fontName = "Lucida Console";
     private int fontSize = 12;
     private int fontStyle = 0;
 
     private Color infoColor = Color.WHITE;
+    private Color warnColor = Color.YELLOW;
     private Color errorColor = Color.RED;
     private Color commandColor = Color.GREEN;
 
@@ -37,7 +40,6 @@ public class LogDisplay extends Component {
     private double scroll = 0;
 
     private int prevOffset = 0;
-    private boolean scrollEnabled = false;
 
     private int lineThickness = 0;
     private Color background = Color.BLACK;
@@ -52,6 +54,10 @@ public class LogDisplay extends Component {
 
     public void info(String line) {
         log(new LogEntry(infoColor, line, true));
+    }
+    
+    public void warn(String line) {
+        log(new LogEntry(warnColor, line, true));
     }
 
     public void error(String line) {
@@ -108,7 +114,8 @@ public class LogDisplay extends Component {
             offset += height;
             off[index] = height;
         }
-        if ((scrollEnabled = offset >= 400)) {
+        boolean tmp;
+        if (tmp = offset >= 400) {
             prevOffset = -(offset - 400);
             if (current < -(offset - 400)) {
                 current = -(offset - 400);
@@ -119,17 +126,18 @@ public class LogDisplay extends Component {
             drawBar(area, Math.abs(current / (double) (offset - 400)));
             area.getGraphics().translate(0, -current);
         }
+        if(tmp != scrollEnabled.get()) {
+            scrollEnabled.set(tmp);
+        }
         offset = 0;
         for (int index = 0; index < entries.length; index++) {
             offset += drawEntry(area, offset + (off[index] / 2), entries[index]);
         }
     }
 
-    int tick = 0;
-
     @Override
     public void update(long deltaTime) {
-        if (!scrollEnabled || scrollDecay == 0D) {
+        if (!scrollEnabled.get() || scrollDecay == 0D) {
             return;
         }
         double second = TimeHelper.nanoAsSecond(deltaTime);
@@ -153,7 +161,7 @@ public class LogDisplay extends Component {
     }
 
     private int calcEntry(Area area, LogEntry entry) {
-        TextRender render = area.analyseText(6, 0, entry.toString(), fontName, fontSize);
+        TextRender render = area.analyseWrappedText(6, 0, entry.toString(), fontName, fontSize);
         return render.getLines() * render.getHeight();
     }
 
@@ -218,6 +226,22 @@ public class LogDisplay extends Component {
     public Color getErrorColor() {
         return errorColor;
     }
+    
+    public void setCommandColor(Color commandColor) {
+        this.commandColor = commandColor;
+    }
+    
+    public Color getCommandColor() {
+        return commandColor;
+    }
+    
+    public void setWarnColor(Color warnColor) {
+        this.warnColor = warnColor;
+    }
+    
+    public Color getWarnColor() {
+        return warnColor;
+    }
 
     public void setLineThickness(int lineThickness) {
         this.lineThickness = lineThickness;
@@ -275,9 +299,33 @@ public class LogDisplay extends Component {
         return barWidth;
     }
 
+    public void setScrollMaxSpeed(double scrollMaxSpeed) {
+        this.scrollMaxSpeed = scrollMaxSpeed;
+    }
+
+    public double getScrollMaxSpeed() {
+        return scrollMaxSpeed;
+    }
+
+    public void setScrollSpeed(double scrollSpeed) {
+        this.scrollSpeed = scrollSpeed;
+    }
+
+    public double getScrollSpeed() {
+        return scrollSpeed;
+    }
+
+    public void setScrollTime(double scrollTime) {
+        this.scrollTime = scrollTime;
+    }
+
+    public double getScrollTime() {
+        return scrollTime;
+    }
+
     @Listener
     public void onDrag(MouseDrag drag) {
-        if (!scrollEnabled) {
+        if (drag.isConsumed() || !scrollEnabled.get()) {
             return;
         }
         int y = drag.getOldY();
@@ -297,7 +345,7 @@ public class LogDisplay extends Component {
 
     @Listener
     public void onClick(MouseClick click) {
-        if (!scrollEnabled) {
+        if (click.isConsumed() || !scrollEnabled.get()) {
             return;
         }
         int y = click.getY();
@@ -317,14 +365,15 @@ public class LogDisplay extends Component {
 
     @Listener
     public void onScroll(MouseScroll scroll) {
-        if (!scrollEnabled || !isInside(scroll.getX(), scroll.getY())) {
+        if (scroll.isConsumed() || !isInside(scroll.getX(), scroll.getY())) {
+            return;
+        }
+        scroll.consume();
+        if (!scrollEnabled.get()) {
             return;
         }
         scrollDecay = scrollTime;
-        scrollVelocity -= scroll.getScroll() * scrollSpeed;
-        if (scrollVelocity > scrollMaxSpeed) {
-            scrollVelocity = scrollMaxSpeed;
-        }
+        scrollVelocity = Math.max(-scrollMaxSpeed, Math.min(scrollMaxSpeed, scrollVelocity - (scroll.getScroll() * scrollSpeed)));
     }
 
 }

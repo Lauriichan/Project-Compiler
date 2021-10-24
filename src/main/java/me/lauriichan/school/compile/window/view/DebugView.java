@@ -8,10 +8,10 @@ import me.lauriichan.school.compile.window.ui.component.LogDisplay;
 import me.lauriichan.school.compile.window.ui.component.TextField;
 import me.lauriichan.school.compile.window.ui.util.ColorCache;
 
-public final class DebugView extends View {
+public final class DebugView extends View<BasicPane> {
 
     public DebugView() {
-        super("Debug Konsole");
+        super("Debug Konsole", new BasicPane());
     }
 
     @Override
@@ -20,8 +20,10 @@ public final class DebugView extends View {
         display.setY(10);
         display.setX(10);
         display.setWidth(width - 20);
-        display.setHeight(height - 80);
+        display.setHeight(height - 60);
         display.setHistorySize(500);
+        display.setScrollMaxSpeed(1100);
+        display.setScrollSpeed(11);
         display.setBarFill(Color.GREEN);
         pane.addChild(display);
 

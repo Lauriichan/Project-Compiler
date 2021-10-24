@@ -12,8 +12,9 @@ public abstract class Bar<E extends IComponent> implements IComponent, Iterable<
 
     private int height = 0;
     private InputProvider input;
-    
+
     private boolean hidden = false;
+    private boolean update = true;
 
     protected final void setInput(Component component) {
         if (component == null) {
@@ -33,6 +34,16 @@ public abstract class Bar<E extends IComponent> implements IComponent, Iterable<
         return input;
     }
     
+    @Override
+    public boolean isUpdating() {
+        return update;
+    }
+    
+    @Override
+    public void setUpdating(boolean update) {
+        this.update = update;
+    }
+
     @Override
     public boolean isHidden() {
         return hidden;
@@ -60,19 +71,25 @@ public abstract class Bar<E extends IComponent> implements IComponent, Iterable<
     }
 
     public boolean hasRoot() {
-        return hasParent() ? parent.hasRoot() : false;
+        return input != null;
     }
 
     public Component getRoot() {
-        return hasParent() ? parent.getRoot() : null;
+        return (input == null ? null : input.getPanel());
     }
 
     public int getGlobalY() {
-        return hasParent() ? getParent().getGlobalY() : 0;
+        return hasParent() ? getParent().getGlobalY() : getY();
     }
 
     public int getGlobalX() {
-        return hasParent() ? getParent().getGlobalX() : 0;
+        return hasParent() ? getParent().getGlobalX() : getX();
+    }
+
+    public boolean isInside(int x, int y) {
+        int gx = getGlobalX();
+        int gy = getGlobalY();
+        return gx <= x && gx + getWidth() >= x && gy <= y && gy + getHeight() >= y;
     }
 
     public void setHeight(int height) {
@@ -84,6 +101,10 @@ public abstract class Bar<E extends IComponent> implements IComponent, Iterable<
 
     public int getHeight() {
         return height;
+    }
+
+    public int getWidth() {
+        return hasParent() ? getParent().getWidth() : (input == null ? 0 : input.getPanel().getWidth());
     }
 
     public abstract void setBackground(Color color);

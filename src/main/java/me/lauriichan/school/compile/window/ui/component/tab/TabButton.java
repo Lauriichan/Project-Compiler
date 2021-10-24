@@ -32,6 +32,7 @@ public class TabButton implements ITriggerComponent {
 
     private boolean pressed = false;
     private boolean hidden = false;
+    private boolean update = true;
 
     private Runnable action;
 
@@ -43,7 +44,7 @@ public class TabButton implements ITriggerComponent {
 
     private void renderText(Area area) {
         if (textRender == null) {
-            textRender = area.analyseText(0, 0, text, fontName, fontSize, fontStyle);
+            textRender = area.analyseWrappedText(0, 0, text, fontName, fontSize, fontStyle);
             textLine = textRender.getLines() == 0 ? "" : textRender.getLine(0);
             textWidth = textRender.getMetrics().stringWidth(textLine);
             textHeight = textRender.getHeight();
@@ -60,6 +61,16 @@ public class TabButton implements ITriggerComponent {
     @Override
     public boolean isHidden() {
         return hidden;
+    }
+    
+    @Override
+    public void setUpdating(boolean update) {
+        this.update = update;
+    }
+    
+    @Override
+    public boolean isUpdating() {
+        return update;
     }
 
     private void renderBackground(Area area) {

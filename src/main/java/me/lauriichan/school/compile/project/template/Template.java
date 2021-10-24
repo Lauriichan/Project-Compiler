@@ -15,7 +15,6 @@ public abstract class Template {
     static {
         ArrayList<Template> templates = new ArrayList<>();
         // Java
-        templates.add(new RandomTemplate());
         templates.add(new Empty());
         templates.add(new HelloWorld());
         templates.add(new HelloName());

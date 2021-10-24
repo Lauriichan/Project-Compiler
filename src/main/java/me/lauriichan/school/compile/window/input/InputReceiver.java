@@ -29,6 +29,10 @@ final class InputReceiver<I extends Input> {
         return instance;
     }
 
+    public boolean canReceive() {
+        return !instance.isHidden();
+    }
+
     public Method getMethod() {
         return method;
     }

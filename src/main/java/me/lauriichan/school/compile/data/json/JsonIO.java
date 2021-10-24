@@ -135,6 +135,9 @@ public final class JsonIO {
         if (object == null) {
             return JsonNull.get();
         }
+        if(Primitives.isInstance(object)) {
+            return JsonValue.fromPrimitive(object);
+        }
         JsonConverter<?, ?> converter = get(null, object.getClass());
         if (converter == null) {
             converter = get(null, field.getType());

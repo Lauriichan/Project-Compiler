@@ -1,20 +1,20 @@
 package me.lauriichan.school.compile.window.view;
 
-import me.lauriichan.school.compile.window.ui.BasicPane;
-import me.lauriichan.school.compile.window.ui.Component;
+import me.lauriichan.school.compile.window.ui.Pane;
 
-public abstract class View {
+public abstract class View<E extends Pane> {
 
-    protected final BasicPane pane = new BasicPane();
+    protected final E pane;
 
     private ViewManager manager;
     private boolean setup = false;
     private boolean locked = false;
-    
+
     private String title;
 
-    public View(String title) {
+    public View(String title, E pane) {
         this.title = title;
+        this.pane = pane;
     }
 
     final void setManager(ViewManager manager) {
@@ -32,16 +32,16 @@ public abstract class View {
     public String getTitle() {
         return title;
     }
-    
+
     public void setTitle(String title) {
-        if(title == null) {
+        if (title == null) {
             return;
         }
         this.title = title;
         manager.updateTitle(this);
     }
 
-    public BasicPane getPane() {
+    public E getPane() {
         return pane;
     }
 
@@ -58,9 +58,6 @@ public abstract class View {
     }
 
     public final void setLocked(boolean locked) {
-        if (this.locked == locked) {
-            return;
-        }
         this.locked = locked;
         if (locked) {
             onLock(pane);
@@ -81,25 +78,22 @@ public abstract class View {
         setLocked(false);
     }
 
-    protected void onLock(BasicPane pane) {
-        defaultPaneLock(pane);
+    protected void onLock(E pane) {
+        defaultPaneLock(true, pane);
     }
 
-    protected void onUnlock(BasicPane pane) {
-        defaultPaneLock(pane);
+    protected void onUnlock(E pane) {
+        defaultPaneLock(false, pane);
     }
 
-    protected final void defaultPaneLock(BasicPane pane) {
-        boolean state = locked;
-        Component[] components = pane.getChildren();
-        for (Component component : components) {
-            component.setUpdating(!state);
-            component.setHidden(state);
-        }
+    protected final void defaultPaneLock(boolean state, E pane) {
+        pane.setHidden(state);
+        pane.setUpdating(!state);
+        pane.applyChildren();
     }
 
-    protected abstract void onSetup(BasicPane pane, int width, int height);
-    
+    protected void onSetup(E pane, int width, int height) {}
+
     protected void exit() {}
 
 }

@@ -4,10 +4,7 @@ import java.awt.Color;
 import java.awt.FontMetrics;
 
 import me.lauriichan.school.compile.window.input.Listener;
-import me.lauriichan.school.compile.window.input.mouse.MouseButton;
 import me.lauriichan.school.compile.window.input.mouse.MouseHover;
-import me.lauriichan.school.compile.window.input.mouse.MousePress;
-import me.lauriichan.school.compile.window.input.mouse.MouseRelease;
 import me.lauriichan.school.compile.window.ui.Component;
 import me.lauriichan.school.compile.window.ui.animation.Animators;
 import me.lauriichan.school.compile.window.ui.animation.FadeAnimation;
@@ -15,7 +12,7 @@ import me.lauriichan.school.compile.window.ui.util.Area;
 import me.lauriichan.school.compile.window.ui.util.InputHelper;
 import me.lauriichan.school.compile.window.ui.util.TextRender;
 
-public final class Button extends Component {
+public final class RadioButton extends Component {
 
     private final FadeAnimation<Color> hover = new FadeAnimation<>(Animators.COLOR);
     private final FadeAnimation<Color> hoverShadow = new FadeAnimation<>(Animators.COLOR);
@@ -254,28 +251,16 @@ public final class Button extends Component {
         InputHelper.hover(hover, this, hoverShadow);
         this.hover.setTriggered(hoverShadow.isTriggered());
     }
-
-    @Listener
-    public void onPress(MousePress press) {
-        if (press.isConsumed() || press.getButton() != MouseButton.LEFT || !isInside(press.getX(), press.getY())) {
-            return;
-        }
-        press.consume();
-        if (locked) {
-            return;
-        }
-        pressed = true;
-    }
-
-    @Listener
-    public void onRelease(MouseRelease release) {
-        if (!pressed || release.getButton() != MouseButton.LEFT) {
-            return;
-        }
-        pressed = false;
-        if (action != null) {
+    
+    public void press() {
+        pressed = !pressed;
+        if (pressed && action != null) {
             action.run();
         }
+    }
+    
+    public boolean isPressed() {
+        return pressed;
     }
 
 }

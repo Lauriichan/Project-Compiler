@@ -36,7 +36,7 @@ public final class InputProvider {
     public void register(IComponent component) {
         InputReceiver<?>[] receivers = InputReceiver.find(component);
         for (InputReceiver<?> receiver : receivers) {
-            listeners.computeIfAbsent(receiver.getType(), clz -> new ArrayList<>()).add(0, receiver);
+            listeners.computeIfAbsent(receiver.getType(), clz -> new ArrayList<>()).add(receiver);
         }
     }
 
@@ -83,7 +83,7 @@ public final class InputProvider {
         }
         InputReceiver<?>[] receivers = list.toArray(new InputReceiver<?>[list.size()]);
         for (InputReceiver<?> receiver : receivers) {
-            if (receiver.getInstance().isHidden()) {
+            if (!receiver.canReceive()) {
                 continue;
             }
             receiver.accept(input);

@@ -5,20 +5,19 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 
 import me.lauriichan.school.compile.util.TriConsumer;
-import me.lauriichan.school.compile.window.ui.BasicPane;
 import me.lauriichan.school.compile.window.ui.Component;
 import me.lauriichan.school.compile.window.ui.Pane;
 import me.lauriichan.school.compile.window.ui.util.Area;
 
 public final class ViewManager extends Component {
 
-    private final ArrayList<View> views = new ArrayList<>();
+    private final ArrayList<View<?>> views = new ArrayList<>();
     private int current = 0;
 
     private TriConsumer<Boolean, Integer, String> delegate;
     private BiConsumer<Integer, String> updater;
 
-    public void add(View view) {
+    public void add(View<?> view) {
         if (views.contains(view)) {
             return;
         }
@@ -30,14 +29,14 @@ public final class ViewManager extends Component {
             view.getPane().setInput(this);
             view.setup();
         }
-        view.setLocked(true);
+        view.lock();
         if (delegate == null) {
             return;
         }
         delegate.accept(true, index, view.getTitle());
     }
 
-    public <E extends View> Optional<E> get(Class<E> clazz) {
+    public <E extends View<?>> Optional<E> get(Class<E> clazz) {
         return views.stream().filter(view -> clazz.isAssignableFrom(view.getClass())).findFirst().map(clazz::cast);
     }
 
@@ -57,7 +56,7 @@ public final class ViewManager extends Component {
         return updater;
     }
 
-    void updateTitle(View view) {
+    void updateTitle(View<?> view) {
         if (updater == null) {
             return;
         }
@@ -72,17 +71,18 @@ public final class ViewManager extends Component {
     public void setInput(Component component) {
         super.setInput(component);
         for (int index = 0; index < views.size(); index++) {
-            View view = views.get(index);
+            View<?> view = views.get(index);
             Pane pane = view.getPane();
             if (pane.getInput() != null) {
                 continue;
             }
             pane.setInput(this);
             view.setup();
+            view.lock();
         }
     }
 
-    public void remove(View view) {
+    public void remove(View<?> view) {
         int index = views.indexOf(view);
         if (index == -1) {
             return;
@@ -107,7 +107,7 @@ public final class ViewManager extends Component {
         delegate.accept(false, index, view.getTitle());
     }
 
-    public View get(int index) {
+    public View<?> get(int index) {
         return views.get(index);
     }
 
@@ -117,12 +117,10 @@ public final class ViewManager extends Component {
 
     public void select(int id) {
         int tmp = Math.min(views.size() - 1, Math.max(0, id));
-        if (tmp != current) {
-            if (current < views.size()) {
-                views.get(current).lock();
-            }
-            views.get(tmp).unlock();
+        if (tmp != current && current < views.size()) {
+            views.get(current).lock();
         }
+        views.get(tmp).unlock();
         current = tmp;
     }
 
@@ -138,23 +136,23 @@ public final class ViewManager extends Component {
 
     @Override
     public void setWidth(int width) {
+        super.setWidth(width);
         for (int index = 0; index < views.size(); index++) {
             views.get(index).getPane().setWidth(width);
         }
-        super.setWidth(width);
     }
 
     @Override
     public void setHeight(int height) {
+        super.setHeight(height);
         for (int index = 0; index < views.size(); index++) {
             views.get(index).getPane().setHeight(height);
         }
-        super.setHeight(height);
     }
 
     @Override
     public void render(Area area) {
-        BasicPane pane = views.get(current).getPane();
+        Pane pane = views.get(current).getPane();
         if (pane.isHidden()) {
             return;
         }
@@ -163,7 +161,7 @@ public final class ViewManager extends Component {
 
     @Override
     public void update(long deltaTime) {
-        BasicPane pane = views.get(current).getPane();
+        Pane pane = views.get(current).getPane();
         if (!pane.isUpdating()) {
             return;
         }
@@ -172,7 +170,7 @@ public final class ViewManager extends Component {
 
     @Override
     public void exit() {
-        for (View view : views) {
+        for (View<?> view : views) {
             view.exit();
         }
         views.clear();

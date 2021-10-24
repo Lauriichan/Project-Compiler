@@ -1,24 +1,45 @@
 package me.lauriichan.school.compile.project;
 
+import java.awt.Desktop;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
 
+import com.syntaxphoenix.syntaxapi.utils.java.Exceptions;
 import com.syntaxphoenix.syntaxapi.utils.java.Files;
 
+import me.lauriichan.school.compile.Main;
 import me.lauriichan.school.compile.data.Category;
 import me.lauriichan.school.compile.data.ISetting;
 import me.lauriichan.school.compile.data.Serialize;
 import me.lauriichan.school.compile.data.Settings;
+import me.lauriichan.school.compile.exec.ProjectCompiler;
 import me.lauriichan.school.compile.project.template.Template;
+import me.lauriichan.school.compile.util.Executor;
 import me.lauriichan.school.compile.util.Singleton;
 import me.lauriichan.school.compile.util.UserSettings;
+import me.lauriichan.school.compile.util.io.InputStreamListener;
+import me.lauriichan.school.compile.window.view.ConsoleView;
 
 public final class Project {
 
     public static final Category PROJECTS = new Category("projects");
+
+    private static boolean RUNNING = false;
+    private static boolean ABORT = false;
+
+    public static boolean isRunning() {
+        return RUNNING;
+    }
+
+    public static void abort() {
+        ABORT = true;
+    }
 
     public static String getDefaultName() {
         return UserSettings.getString("project");
@@ -64,16 +85,20 @@ public final class Project {
     private final File directory;
     @Serialize
     private final ArrayList<String> options = new ArrayList<>();
-    @Serialize
+    
     private long hash;
+
+    private PrintStream stream;
+    private InputStreamListener normalListener;
+    private InputStreamListener errorListener;
 
     protected Project() {
         this(null, null, null);
     }
 
     private Project(String name, String packet, File directory) {
-        this.directory = directory;
         this.name = name;
+        this.directory = directory;
         this.packet = packet;
     }
 
@@ -87,6 +112,15 @@ public final class Project {
 
     public ArrayList<String> getOptions() {
         return options;
+    }
+
+    public void openDirectory() {
+        try {
+            Desktop.getDesktop().open(directory);
+        } catch (IOException e) {
+            System.err.println("Failed to open project folder '" + name + "'!");
+            System.err.println(Exceptions.stackTraceToString(e));
+        }
     }
 
     public void open() {
@@ -116,23 +150,103 @@ public final class Project {
         if (!isCompileable()) {
             return;
         }
-        try {
-            hash = FileUtils.checksumCRC32(directory);
-        } catch (IOException e) {
-            return;
+        File source = new File(directory, "src");
+        File resource = new File(directory, "resources");
+        Collection<File> collection = FileUtils.listFiles(source, new String[] {
+            "java"
+        }, true);
+        collection.addAll(Files.listFiles(resource));
+        long hash = 0;
+        for (File file : collection) {
+            try {
+                hash += FileUtils.checksumCRC32(file);
+            } catch (Exception e) {
+                System.err.println("Failed to get checksum of '" + file.getPath() + "' while getting hash for '" + name + "'!");
+                System.err.println(e);
+            }
         }
+        this.hash = hash;
     }
 
     public void println(String line) {
-
+        if (stream == null) {
+            return;
+        }
+        stream.println(line);
+        stream.flush();
     }
 
     public boolean compile() {
-        return false;
+        if (!isCompileable()) {
+            return false;
+        }
+        Executor.execute(() -> Singleton.get(ProjectCompiler.class).compile(this));
+        return true;
     }
 
     public boolean execute() {
-        return false;
+        if (RUNNING) {
+            ConsoleView.APP_LOG.ifPresent(log -> {
+                log.error("Projekt '" + name + "' konnt nicht ausgeführt werden,");
+                log.error("da ein Projekt bereits ausgeführt wird!");
+            });
+            Main.SELECT.ifPresent(consumer -> consumer.accept(3));
+            return false;
+        }
+        if (UserSettings.getString("java").isEmpty()) {
+            ConsoleView.APP_LOG.ifPresent(log -> log.error("Bitte lege erst den Pfad zur Java Runtime fest!"));
+            Main.SELECT.ifPresent(consumer -> consumer.accept(3));
+            return false;
+        }
+        File file = new File(directory, "bin/main.jar");
+        if (!file.exists()) {
+            ConsoleView.APP_LOG.ifPresent(log -> {
+                log.error("Projekt '" + name + "' konnt nicht ausgeführt werden,");
+                log.error("da es noch nicht kompiliert wurde!");
+            });
+            Main.SELECT.ifPresent(consumer -> consumer.accept(3));
+            return false;
+        }
+        ABORT = false;
+        RUNNING = true;
+        Executor.execute(() -> {
+            Main.SELECT.ifPresent(consumer -> consumer.accept(3));
+            ConsoleView.APP_LOG.ifPresent(log -> log.info("Projekt '" + name + "' wurde gestartet"));
+            Process process = Runtime.getRuntime().exec('"' + UserSettings.getString("java") + "\" -jar \"" + file.getPath() + '"');
+            stream = new PrintStream(new BufferedOutputStream(process.getOutputStream()));
+            normalListener = new InputStreamListener(process.getInputStream(), name + "-Out");
+            normalListener.setDelegate(ConsoleView.APP_LOG.get()::info);
+            errorListener = new InputStreamListener(process.getErrorStream(), name + "-Err");
+            errorListener.setDelegate(ConsoleView.APP_LOG.get()::error);
+            while (process.isAlive()) {
+                if (ABORT) {
+                    break;
+                }
+                Thread.sleep(50);
+            }
+            if (process.isAlive()) {
+                ConsoleView.APP_LOG.ifPresent(log -> log.warn("Projekt '" + name + "' wird abgebrochen..."));
+                Main.SELECT.ifPresent(consumer -> consumer.accept(3));
+                process.destroy();
+                Thread.sleep(300);
+                if (process.isAlive()) {
+                    process.destroyForcibly();
+                }
+                ConsoleView.APP_LOG.ifPresent(log -> log.warn("Projekt '" + name + "' wurde erfolgreich abgebrochen!"));
+            } else {
+                ConsoleView.APP_LOG.ifPresent(log -> log.info("Projekt '" + name + "' wurde beendet"));
+                Main.SELECT.ifPresent(consumer -> consumer.accept(3));
+            }
+            stream.close();
+            stream = null;
+            normalListener.close();
+            normalListener = null;
+            errorListener.close();
+            errorListener = null;
+            ABORT = false;
+            RUNNING = false;
+        });
+        return true;
     }
 
 }

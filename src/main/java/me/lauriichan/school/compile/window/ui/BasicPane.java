@@ -6,13 +6,13 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import me.lauriichan.school.compile.window.ui.util.Area;
 
-public final class BasicPane extends Pane {
+public class BasicPane extends Pane {
 
-    private final ArrayList<Component> components = new ArrayList<>();
+    protected final ArrayList<Component> components = new ArrayList<>();
 
-    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-    private final Lock read = lock.readLock();
-    private final Lock write = lock.writeLock();
+    protected final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+    protected final Lock read = lock.readLock();
+    protected final Lock write = lock.writeLock();
 
     private Bar<?> bar;
     private int previous = 0;
@@ -26,10 +26,11 @@ public final class BasicPane extends Pane {
         } finally {
             read.unlock();
         }
+        component.setY(component.getY() + previous);
+        component.setHeight(component.getHeight() - previous);
         component.setInput(this);
         write.lock();
         try {
-            component.setY(component.getY() + previous);
             return components.add(component);
         } finally {
             write.unlock();
@@ -45,10 +46,11 @@ public final class BasicPane extends Pane {
         } finally {
             read.unlock();
         }
+        component.setY(component.getY() - previous);
+        component.setHeight(component.getHeight() + previous);
         component.setInput(null);
         write.lock();
         try {
-            component.setY(component.getY() - previous);
             return components.remove(component);
         } finally {
             write.unlock();
@@ -113,14 +115,15 @@ public final class BasicPane extends Pane {
 
     @Override
     public void updateChildren(int width, int height) {
-        if (width != 0 || height == previous) {
+        if (width != 0) {
             return;
         }
         int diff = height - previous;
         previous = height;
         Component[] children = getChildren();
         for (Component child : children) {
-            child.setY(child.getY() + diff);
+            child.setY(child.getY() - diff);
+            child.setHeight(child.getHeight() + diff);
         }
     }
 
@@ -137,9 +140,7 @@ public final class BasicPane extends Pane {
             if (component.isHidden()) {
                 continue;
             }
-            Area current = area.create(component.getX(), component.getY(), component.getWidth(), component.getHeight());
-            current.clear();
-            component.render(current);
+            component.render(area.create(component.getX(), component.getY(), component.getWidth(), component.getHeight()));
         }
     }
 
@@ -153,7 +154,7 @@ public final class BasicPane extends Pane {
         }
         Component[] children = getChildren();
         for (Component component : children) {
-            if (component.isHidden()) {
+            if (!component.isUpdating()) {
                 continue;
             }
             component.update(deltaTime);
