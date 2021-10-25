@@ -21,7 +21,7 @@ public final class DebugView extends View<BasicPane> {
         display.setX(10);
         display.setWidth(width - 20);
         display.setHeight(height - 60);
-        display.setHistorySize(500);
+        display.setHistorySize(250);
         display.setScrollMaxSpeed(1100);
         display.setScrollSpeed(11);
         display.setBarFill(Color.GREEN);

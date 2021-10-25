@@ -48,7 +48,7 @@ public final class TemplateView extends View<BasicPane> {
     protected void onSetup(BasicPane pane, int width, int height) {
         int amount = Template.TEMPLATES.size();
         int possible = 15;
-        for (int index = 1; index < amount; index++) {
+        for (int index = 0; index < amount; index++) {
             Template template = Template.TEMPLATES.get(index);
             if (template.isHidden()) {
                 continue;
