@@ -182,6 +182,11 @@ public final class Project {
 
     public boolean compile() {
         if (!isCompileable()) {
+            ConsoleView.APP_LOG.ifPresent(log -> {
+                log.warn("Das Projekt '" + name + "' kann nicht kompiliert werden,");
+                log.warn("da es kein normales Java Projekt ist!");
+            });
+            Main.SELECT.ifPresent(consumer -> consumer.accept(3));
             return false;
         }
         Executor.execute(() -> Singleton.get(ProjectCompiler.class).compile(this));
@@ -191,7 +196,7 @@ public final class Project {
     public boolean execute() {
         if (RUNNING) {
             ConsoleView.APP_LOG.ifPresent(log -> {
-                log.error("Projekt '" + name + "' konnt nicht ausgeführt werden,");
+                log.error("Das Projekt '" + name + "' konnt nicht ausgeführt werden,");
                 log.error("da ein Projekt bereits ausgeführt wird!");
             });
             Main.SELECT.ifPresent(consumer -> consumer.accept(3));

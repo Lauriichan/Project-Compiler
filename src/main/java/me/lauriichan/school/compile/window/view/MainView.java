@@ -161,6 +161,24 @@ public final class MainView extends View<BasicPane> {
         }
     }
 
+    public void selectProject(String name) {
+        Component component = pane.getChild(0);
+        if (component == null || !(component instanceof RadioList)) {
+            return;
+        }
+        RadioList list = (RadioList) component;
+        RadioButton[] buttons = list.getChildren();
+        for (int index = 0; index < buttons.length; index++) {
+            String btnName = buttons[index].getText().split("\n", 2)[0];
+            if (!name.equals(btnName)) {
+                continue;
+            }
+            list.setCurrent(-1);
+            list.setCurrent(index);
+            break;
+        }
+    }
+
     public void exportProject(Project project) {
         JnaFileChooser chooser = new JnaFileChooser();
         chooser.setMultiSelectionEnabled(false);
@@ -245,11 +263,16 @@ public final class MainView extends View<BasicPane> {
             FileUtils.copyDirectory(folder, output);
             FileUtils.deleteDirectory(folder);
             Project.create(project.getName(), project.getPacket(), output, null);
-            project = Project.get(project.getName());
-            if(project == null) {
+            Project tmpProject = Project.get(project.getName());
+            if (tmpProject == null) {
                 return;
             }
-            project.open();
+            tmpProject.getOptions().addAll(project.getOptions());
+            addProject(tmpProject);
+            selectProject(tmpProject.getName());
+            Project.setDefault(tmpProject);
+            Singleton.get(Settings.class).save();
+            tmpProject.open();
         });
     }
 
@@ -263,7 +286,7 @@ public final class MainView extends View<BasicPane> {
             if (project == null) {
                 continue;
             }
-            if(!project.getDirectory().exists()) {
+            if (!project.getDirectory().exists()) {
                 Project.PROJECTS.delete(Singleton.get(Settings.class), project.getName());
                 continue;
             }

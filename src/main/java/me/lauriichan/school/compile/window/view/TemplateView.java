@@ -12,10 +12,12 @@ import com.syntaxphoenix.syntaxapi.random.RandomNumberGenerator;
 
 import jnafilechooser.api.JnaFileChooser;
 import jnafilechooser.api.JnaFileChooser.Mode;
+import me.lauriichan.school.compile.data.Settings;
 import me.lauriichan.school.compile.project.Project;
 import me.lauriichan.school.compile.project.ProjectInfo;
 import me.lauriichan.school.compile.project.template.Template;
 import me.lauriichan.school.compile.util.Executor;
+import me.lauriichan.school.compile.util.Singleton;
 import me.lauriichan.school.compile.window.input.mouse.MouseButton;
 import me.lauriichan.school.compile.window.ui.BasicPane;
 import me.lauriichan.school.compile.window.ui.Component;
@@ -126,12 +128,16 @@ public final class TemplateView extends View<BasicPane> {
         if (project == null) {
             return;
         }
+        Project.setDefault(project);
         Executor.execute(() -> project.open());
+        Singleton.get(Settings.class).save();
         if (existed) {
             main.updateProject(project);
+            main.selectProject(project.getName());
             return;
         }
         main.addProject(project);
+        main.selectProject(project.getName());
     }
 
     public void setButtonLocked(boolean locked) {

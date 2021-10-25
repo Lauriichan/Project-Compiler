@@ -344,8 +344,8 @@ public class RadioList extends Component {
                 button.press();
             }
         }
-        this.current = Math.min(components.size(), Math.max(0, current));
-        if (this.current == components.size()) {
+        this.current = Math.min(components.size(), Math.max(-1, current));
+        if (this.current == components.size() || this.current == -1) {
             return;
         }
         RadioButton button = components.get(this.current);
