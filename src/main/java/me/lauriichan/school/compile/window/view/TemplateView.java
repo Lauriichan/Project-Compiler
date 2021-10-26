@@ -18,6 +18,7 @@ import me.lauriichan.school.compile.project.ProjectInfo;
 import me.lauriichan.school.compile.project.template.Template;
 import me.lauriichan.school.compile.util.Executor;
 import me.lauriichan.school.compile.util.Singleton;
+import me.lauriichan.school.compile.util.file.FileHelper;
 import me.lauriichan.school.compile.window.input.mouse.MouseButton;
 import me.lauriichan.school.compile.window.ui.BasicPane;
 import me.lauriichan.school.compile.window.ui.Component;
@@ -123,7 +124,7 @@ public final class TemplateView extends View<BasicPane> {
         setButtonLocked(false);
         ProjectInfo info = (ProjectInfo) input;
         boolean existed = Project.get(info.getName()) != null;
-        Project.create(info.getName(), info.getPackageName(), new File(info.getDirectory()), template);
+        Project.create(info.getName(), info.getPackageName(), FileHelper.asRelative(new File(info.getDirectory())), template);
         Project project = Project.get(info.getName());
         if (project == null) {
             return;

@@ -13,6 +13,7 @@ import jnafilechooser.api.JnaFileChooser;
 import jnafilechooser.api.JnaFileChooser.Mode;
 import me.lauriichan.school.compile.project.Application;
 import me.lauriichan.school.compile.util.UserSettings;
+import me.lauriichan.school.compile.util.file.FileHelper;
 import me.lauriichan.school.compile.window.ui.BasicPane;
 import me.lauriichan.school.compile.window.ui.component.Button;
 import me.lauriichan.school.compile.window.ui.component.CheckButton;
@@ -144,6 +145,7 @@ public final class SettingView extends View<BasicPane> {
             file.showOpenDialog(pane.getInput().getPanel().getFrame());
             File selected = file.getSelectedFile();
             if (selected != null) {
+                selected = FileHelper.asRelative(selected);
                 application.setContent(selected.getPath());
                 setter.accept(selected);
             }

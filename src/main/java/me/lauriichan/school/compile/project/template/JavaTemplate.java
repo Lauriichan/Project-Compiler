@@ -34,7 +34,7 @@ public abstract class JavaTemplate extends Template {
         File packet = new File(source, packetName.replace('.', '/'));
         Files.createFolder(packet);
 
-        File manifestFile = new File(directory, "MANIFEST.MF");
+        File manifestFile = new File(directory.getAbsoluteFile(), "MANIFEST.MF");
         Files.createFile(manifestFile);
         try (FileOutputStream stream = new FileOutputStream(manifestFile)) {
             Manifest manifest = new Manifest();

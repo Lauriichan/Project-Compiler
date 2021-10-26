@@ -24,6 +24,7 @@ import me.lauriichan.school.compile.project.Project;
 import me.lauriichan.school.compile.util.Executor;
 import me.lauriichan.school.compile.util.Singleton;
 import me.lauriichan.school.compile.util.ZipUtil;
+import me.lauriichan.school.compile.util.file.FileHelper;
 import me.lauriichan.school.compile.window.ui.BasicPane;
 import me.lauriichan.school.compile.window.ui.Component;
 import me.lauriichan.school.compile.window.ui.component.Button;
@@ -262,7 +263,7 @@ public final class MainView extends View<BasicPane> {
             settings.delete();
             FileUtils.copyDirectory(folder, output);
             FileUtils.deleteDirectory(folder);
-            Project.create(project.getName(), project.getPacket(), output, null);
+            Project.create(project.getName(), project.getPacket(), FileHelper.asRelative(output), null);
             Project tmpProject = Project.get(project.getName());
             if (tmpProject == null) {
                 return;
