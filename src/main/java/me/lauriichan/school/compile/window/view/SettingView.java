@@ -11,6 +11,7 @@ import com.syntaxphoenix.syntaxapi.utils.java.Strings;
 
 import jnafilechooser.api.JnaFileChooser;
 import jnafilechooser.api.JnaFileChooser.Mode;
+import me.lauriichan.school.compile.data.translation.Translation;
 import me.lauriichan.school.compile.project.Application;
 import me.lauriichan.school.compile.util.UserSettings;
 import me.lauriichan.school.compile.util.file.FileHelper;
@@ -21,6 +22,7 @@ import me.lauriichan.school.compile.window.ui.component.Label;
 import me.lauriichan.school.compile.window.ui.component.TextField;
 import me.lauriichan.school.compile.window.ui.component.goemetry.LineSeperator;
 import me.lauriichan.school.compile.window.ui.util.BoxRenderers;
+import me.lauriichan.school.compile.window.ui.util.IStringValidator;
 
 public final class SettingView extends View<BasicPane> {
 
@@ -32,16 +34,19 @@ public final class SettingView extends View<BasicPane> {
 
     @Override
     protected void onSetup(BasicPane pane, int width, int height) {
-        addExecutableChooser(40, "Anwendung", () -> {
+        addExecutableChooser(40, "ui.setting.application", () -> {
             Application app = Application.getDefault();
             return app == null ? null : app.getExecutable().getPath();
         }, file -> Application.setDefaultName(Strings.firstLetterToUpperCase(file.getName()), file));
-        addExecutableChooser(110, "Java", () -> {
+        addExecutableChooser(110, "ui.setting.java", () -> {
             String value = UserSettings.getString("java");
             return value.isEmpty() ? null : value;
         }, file -> UserSettings.setString("java", file.getPath()));
         seperator(150);
-        addOption(170, "Debug", () -> UserSettings.getBoolean("debug"), state -> {
+        addField(190, "ui.setting.language (key.restart.required)", Translation::has, () -> Translation.getDefaultCode(),
+            string -> UserSettings.setString("language", Translation.get(string).getCode()));
+        seperator(230);
+        addOption(270, "ui.setting.debug", () -> UserSettings.getBoolean("debug"), state -> {
             UserSettings.setBoolean("debug", state);
             if (state) {
                 getManager().add(debug);
@@ -49,6 +54,7 @@ public final class SettingView extends View<BasicPane> {
             }
             getManager().remove(debug);
         });
+
     }
 
     private void seperator(int y) {
@@ -91,6 +97,41 @@ public final class SettingView extends View<BasicPane> {
         pane.addChild(button);
     }
 
+    private void addField(int y, String label, IStringValidator validator, Supplier<String> current, Consumer<String> setter) {
+        TextField field = new TextField();
+        field.setX(10);
+        field.setY(y);
+        field.setWidth(pane.getWidth() - field.getX() * 2);
+        field.setHeight(32);
+        field.setFontSize(14);
+        field.setFontColor(Color.LIGHT_GRAY);
+        field.setBackground(color("#6D6D6D"));
+        field.setLine(color("#353737"));
+        field.setInvalidBackground(color("#6F3535"));
+        field.setInvalidLine(color("#353737"));
+        field.setInvalidFontColor(color("#F47777"));
+        field.setOutline(true);
+        field.setLineSize(1);
+        field.setLocked(false);
+        field.setValidator(validator);
+        String value = current.get();
+        if (value != null) {
+            field.setContent(value);
+        }
+        field.setValidConsume(setter);
+
+        Label fieldLabel = new Label();
+        fieldLabel.setText(Translation.getDefault().translate(label));
+        fieldLabel.setY(field.getY() - 26);
+        fieldLabel.setX(field.getX());
+        fieldLabel.setWidth(240);
+        fieldLabel.setHeight(32);
+        fieldLabel.setTextCentered(false);
+
+        pane.addChild(fieldLabel);
+        pane.addChild(field);
+    }
+
     private void addExecutableChooser(int y, String label, Supplier<String> current, Consumer<File> setter) {
         TextField application = new TextField();
         application.setX(10);
@@ -116,8 +157,10 @@ public final class SettingView extends View<BasicPane> {
             application.setContent(value);
         }
 
+        Translation translation = Translation.getDefault();
+
         Label applicationLabel = new Label();
-        applicationLabel.setText(label);
+        applicationLabel.setText(translation.translate(label));
         applicationLabel.setY(application.getY() - 26);
         applicationLabel.setX(application.getX());
         applicationLabel.setWidth(120);
@@ -125,7 +168,7 @@ public final class SettingView extends View<BasicPane> {
         applicationLabel.setTextCentered(false);
 
         Button openButton = new Button();
-        openButton.setText("Öffnen");
+        openButton.setText(translation.translate("ui.button.open"));
         openButton.setTextCentered(true);
         openButton.setPress(color("#646363"));
         openButton.setShadow(color("#646363"));

@@ -20,6 +20,7 @@ import jnafilechooser.api.JnaFileChooser.Mode;
 import me.lauriichan.school.compile.data.ISetting;
 import me.lauriichan.school.compile.data.Settings;
 import me.lauriichan.school.compile.data.json.JsonIO;
+import me.lauriichan.school.compile.data.translation.Translation;
 import me.lauriichan.school.compile.project.Project;
 import me.lauriichan.school.compile.util.Executor;
 import me.lauriichan.school.compile.util.Singleton;
@@ -52,15 +53,15 @@ public final class MainView extends View<BasicPane> {
         pane.addChild(list);
         fillList(list);
 
-        addButton(10, "Ordner öffnen", projectAction(Project::openDirectory));
-        addButton(50, "Editor öffnen", projectAction(Project::open));
-        addWarnButton(90, "Löschen", projectAction(this::deleteProject));
-        addButton(170, "Kompilieren", projectAction(Project::compile));
-        addButton(210, "Ausführen", projectAction(Project::execute));
-        addWarnButton(250, "Stoppen", Project::abort);
+        addButton(10, "ui.main.open.folder", projectAction(Project::openDirectory));
+        addButton(50, "ui.main.open.editor", projectAction(Project::open));
+        addWarnButton(90, "ui.main.delete", projectAction(this::deleteProject));
+        addButton(170, "ui.main.compile", projectAction(Project::compile));
+        addButton(210, "ui.main.execute", projectAction(Project::execute));
+        addWarnButton(250, "ui.main.stop", Project::abort);
 
-        addButton(height - 80, "Export", projectAction(this::exportProject));
-        addButton(height - 40, "Import", this::importProject);
+        addButton(height - 80, "ui.main.export", projectAction(this::exportProject));
+        addButton(height - 40, "ui.main.import", this::importProject);
 
     }
 
@@ -307,7 +308,7 @@ public final class MainView extends View<BasicPane> {
         text.append(project.getName());
         text.append('\n').append(project.getDirectory().getPath());
         if (type != null) {
-            text.append("\n(").append(Strings.firstLetterToUpperCase(type)).append(')');
+            text.append("\n(").append(Translation.getDefault().translate(type.toLowerCase() + ".name")).append(')');
         }
         button.setMultilineAllowed(true);
         button.setText(text.toString());

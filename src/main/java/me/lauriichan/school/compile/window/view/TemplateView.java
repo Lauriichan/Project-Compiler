@@ -57,7 +57,7 @@ public final class TemplateView extends View<BasicPane> {
                 continue;
             }
             Button button = createTemplateButton();
-            button.setText(template.getName() + "\n(" + template.getType() + ')');
+            button.setText(template.getName() + "\n(" + template.getTypeName() + ')');
             button.setAction(() -> createProject(template));
             pane.addChild(button);
             possible--;

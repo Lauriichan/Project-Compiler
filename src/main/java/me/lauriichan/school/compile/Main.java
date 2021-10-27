@@ -15,6 +15,7 @@ import com.syntaxphoenix.syntaxapi.utils.java.tools.Container;
 import it.unimi.dsi.fastutil.ints.IntConsumer;
 import me.lauriichan.school.compile.data.Settings;
 import me.lauriichan.school.compile.data.converter.*;
+import me.lauriichan.school.compile.data.translation.Translation;
 import me.lauriichan.school.compile.exec.*;
 import me.lauriichan.school.compile.project.Application;
 import me.lauriichan.school.compile.project.Project;
@@ -50,7 +51,6 @@ public final class Main {
      */
 
     private static void shutdown() {
-
         Singleton.get(Runner.class).exit();
         Singleton.get(ProjectCompiler.class).exit();
         Singleton.get(Settings.class).save();
@@ -101,11 +101,13 @@ public final class Main {
         Project.PROJECTS.load(settings, Project.class);
         Application.APPLICATIONS.load(settings, Application.class);
         settings.save();
+        Translation.load();
     }
 
     private static void registerConverters() {
         new FileConverter();
         new ListConverter();
+        new MapConverter();
     }
 
     private static void initSingletons() {

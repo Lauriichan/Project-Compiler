@@ -10,7 +10,7 @@ import me.lauriichan.school.compile.util.file.java.JavaFileBuilder;
 public final class Secret99Bottles extends JavaTemplate {
 
     public Secret99Bottles() {
-        super("99 Flaschen", true);
+        super(true);
     }
 
     @Override

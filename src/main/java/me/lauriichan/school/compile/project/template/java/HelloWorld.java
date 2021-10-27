@@ -9,10 +9,6 @@ import me.lauriichan.school.compile.util.file.java.JavaFileBuilder;
 
 public final class HelloWorld extends JavaTemplate {
 
-    public HelloWorld() {
-        super("Hallo Welt");
-    }
-
     @Override
     public void setup(String packet, File directory) {
         File source = buildJava(packet, directory);

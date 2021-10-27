@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import me.lauriichan.school.compile.data.translation.Translation;
 import me.lauriichan.school.compile.project.template.hamster.*;
 import me.lauriichan.school.compile.project.template.java.*;
 
@@ -24,18 +25,23 @@ public abstract class Template {
         TEMPLATES = Collections.unmodifiableList(templates);
     }
 
-    private final String name;
     private final String type;
+    private final String typeName;
     private final boolean hidden;
 
-    public Template(String type, String name) {
-        this(type, name, false);
+    private final String id = getClass().getSimpleName().split("\\.", 2)[0].toLowerCase();
+    private final String name;
+
+    public Template(String type) {
+        this(type, false);
     }
 
-    public Template(String type, String name, boolean hidden) {
-        this.name = name;
+    public Template(String type, boolean hidden) {
         this.type = type;
         this.hidden = hidden;
+        Translation translation = Translation.getDefault();
+        this.name = translation.translate(type.toLowerCase() + ".template." + id);
+        this.typeName = translation.translate(type.toLowerCase() + ".name");
     }
 
     public final String getName() {
@@ -44,6 +50,10 @@ public abstract class Template {
 
     public final String getType() {
         return type;
+    }
+
+    public final String getTypeName() {
+        return typeName;
     }
 
     public final boolean isHidden() {

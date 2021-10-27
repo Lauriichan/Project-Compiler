@@ -9,10 +9,6 @@ import me.lauriichan.school.compile.util.file.java.JavaFileBuilder;
 
 public final class Empty extends JavaTemplate {
 
-    public Empty() {
-        super("Leer");
-    }
-
     @Override
     public void setup(String packet, File directory) {
         File source = buildJava(packet, directory);

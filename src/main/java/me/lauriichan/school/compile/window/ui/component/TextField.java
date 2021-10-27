@@ -31,6 +31,7 @@ public final class TextField extends Component {
     private IStringValidator validator = null;
 
     private Consumer<TextField> action = null;
+    private Consumer<String> validConsume = null;
 
     private boolean returnAllowed = false;
     private boolean spaceAllowed = true;
@@ -278,6 +279,14 @@ public final class TextField extends Component {
     public Consumer<TextField> getAction() {
         return action;
     }
+    
+    public void setValidConsume(Consumer<String> validConsume) {
+        this.validConsume = validConsume;
+    }
+    
+    public Consumer<String> getValidConsume() {
+        return validConsume;
+    }
 
     public void setMapper(ICharMapper mapper) {
         this.mapper = mapper;
@@ -420,7 +429,13 @@ public final class TextField extends Component {
 
     private void validate() {
         if (validator != null) {
-            valid = validator.validate(buffer.toString());
+            this.valid = true;
+            return;
+        }
+        String string = buffer.toString();
+        this.valid = validator.validate(string);
+        if (valid && validConsume != null) {
+            validConsume.accept(string);
         }
     }
 
@@ -429,7 +444,7 @@ public final class TextField extends Component {
         if (click.getButton() != MouseButton.LEFT || locked) {
             return;
         }
-        if(!isInside(click.getX(), click.getY())) {
+        if (!isInside(click.getX(), click.getY())) {
             blink.setTriggered(false);
             return;
         }

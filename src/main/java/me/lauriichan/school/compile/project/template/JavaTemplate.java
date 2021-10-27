@@ -13,12 +13,12 @@ import com.syntaxphoenix.syntaxapi.utils.java.Files;
 
 public abstract class JavaTemplate extends Template {
 
-    public JavaTemplate(String name) {
-        super("Java", name);
+    public JavaTemplate() {
+        super("Java");
     }
 
-    public JavaTemplate(String name, boolean hidden) {
-        super("Java", name, hidden);
+    public JavaTemplate(boolean hidden) {
+        super("Java", hidden);
     }
 
     protected File buildJava(String packetName, File directory) {

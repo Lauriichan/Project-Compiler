@@ -10,10 +10,6 @@ import me.lauriichan.school.compile.util.file.java.JavaFileBuilder;
 
 public final class HelloName extends JavaTemplate {
 
-    public HelloName() {
-        super("Hallo $name");
-    }
-
     @Override
     public void setup(String packet, File directory) {
         File source = buildJava(packet, directory);
