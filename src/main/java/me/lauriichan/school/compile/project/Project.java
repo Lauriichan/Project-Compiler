@@ -18,6 +18,7 @@ import me.lauriichan.school.compile.data.Category;
 import me.lauriichan.school.compile.data.ISetting;
 import me.lauriichan.school.compile.data.Serialize;
 import me.lauriichan.school.compile.data.Settings;
+import me.lauriichan.school.compile.data.translation.Translation;
 import me.lauriichan.school.compile.exec.ProjectCompiler;
 import me.lauriichan.school.compile.project.template.Template;
 import me.lauriichan.school.compile.util.Executor;
@@ -85,7 +86,7 @@ public final class Project {
     private final File directory;
     @Serialize
     private final ArrayList<String> options = new ArrayList<>();
-    
+
     private long hash;
 
     private PrintStream stream;
@@ -105,7 +106,7 @@ public final class Project {
     public String getName() {
         return name;
     }
-    
+
     public String getPacket() {
         return packet;
     }
@@ -183,35 +184,68 @@ public final class Project {
     public boolean compile() {
         if (!isCompileable()) {
             ConsoleView.APP_LOG.ifPresent(log -> {
-                log.warn("Das Projekt '" + name + "' kann nicht kompiliert werden,");
-                log.warn("da es kein normales Java Projekt ist!");
+                Translation translation = Translation.getDefault();
+                log.warn(translation.translate("message.header.project.compile", new String[][] {
+                    {
+                        "name",
+                        name
+                    }
+                }));
+                log.warn(translation.translate("message.project.compile.incompatible"));
             });
             Main.SELECT.ifPresent(consumer -> consumer.accept(3));
             return false;
         }
-        Executor.execute(() -> Singleton.get(ProjectCompiler.class).compile(this));
+        ProjectCompiler compiler = Singleton.get(ProjectCompiler.class);
+        if (compiler.isCompiling()) {
+            ConsoleView.APP_LOG.ifPresent(log -> {
+                Translation translation = Translation.getDefault();
+                log.warn(translation.translate("message.header.project.compile", new String[][] {
+                    {
+                        "name",
+                        name
+                    }
+                }));
+                log.warn(translation.translate("message.project.compile.running"));
+            });
+            Main.SELECT.ifPresent(consumer -> consumer.accept(3));
+            return false;
+        }
+        Executor.execute(() -> compiler.compile(this));
         return true;
     }
 
     public boolean execute() {
         if (RUNNING) {
             ConsoleView.APP_LOG.ifPresent(log -> {
-                log.error("Das Projekt '" + name + "' konnt nicht ausgeführt werden,");
-                log.error("da ein Projekt bereits ausgeführt wird!");
+                Translation translation = Translation.getDefault();
+                log.warn(translation.translate("message.header.project.execute", new String[][] {
+                    {
+                        "name",
+                        name
+                    }
+                }));
+                log.warn(translation.translate("message.project.execute.running"));
             });
             Main.SELECT.ifPresent(consumer -> consumer.accept(3));
             return false;
         }
         if (UserSettings.getString("java").isEmpty()) {
-            ConsoleView.APP_LOG.ifPresent(log -> log.error("Bitte lege erst den Pfad zur Java Runtime fest!"));
+            ConsoleView.APP_LOG.ifPresent(log -> log.error(Translation.getDefault().translate("message.project.execute.java_required")));
             Main.SELECT.ifPresent(consumer -> consumer.accept(3));
             return false;
         }
         File file = new File(directory, "bin/main.jar");
         if (!file.exists()) {
             ConsoleView.APP_LOG.ifPresent(log -> {
-                log.error("Projekt '" + name + "' konnt nicht ausgeführt werden,");
-                log.error("da es noch nicht kompiliert wurde!");
+                Translation translation = Translation.getDefault();
+                log.warn(translation.translate("message.header.project.execute", new String[][] {
+                    {
+                        "name",
+                        name
+                    }
+                }));
+                log.warn(translation.translate("message.project.execute.not_compiled"));
             });
             Main.SELECT.ifPresent(consumer -> consumer.accept(3));
             return false;
@@ -220,7 +254,13 @@ public final class Project {
         RUNNING = true;
         Executor.execute(() -> {
             Main.SELECT.ifPresent(consumer -> consumer.accept(3));
-            ConsoleView.APP_LOG.ifPresent(log -> log.info("Projekt '" + name + "' wurde gestartet"));
+            ConsoleView.APP_LOG.ifPresent(log -> log.warn(Translation.getDefault().translate("message.project.execute.started",
+                new String[][] {
+                    {
+                        "name",
+                        name
+                }
+            })));
             Process process = Runtime.getRuntime().exec('"' + UserSettings.getString("java") + "\" -jar \"" + file.getPath() + '"');
             stream = new PrintStream(new BufferedOutputStream(process.getOutputStream()));
             normalListener = new InputStreamListener(process.getInputStream(), name + "-Out");
@@ -234,16 +274,34 @@ public final class Project {
                 Thread.sleep(50);
             }
             if (process.isAlive()) {
-                ConsoleView.APP_LOG.ifPresent(log -> log.warn("Projekt '" + name + "' wird abgebrochen..."));
+                ConsoleView.APP_LOG.ifPresent(log -> log.warn(Translation.getDefault().translate("message.project.execute.aborting",
+                    new String[][] {
+                        {
+                            "name",
+                            name
+                    }
+                })));
                 Main.SELECT.ifPresent(consumer -> consumer.accept(3));
                 process.destroy();
                 Thread.sleep(300);
                 if (process.isAlive()) {
                     process.destroyForcibly();
                 }
-                ConsoleView.APP_LOG.ifPresent(log -> log.warn("Projekt '" + name + "' wurde erfolgreich abgebrochen!"));
+                ConsoleView.APP_LOG.ifPresent(log -> log.warn(Translation.getDefault().translate("message.project.execute.aborted",
+                    new String[][] {
+                        {
+                            "name",
+                            name
+                    }
+                })));
             } else {
-                ConsoleView.APP_LOG.ifPresent(log -> log.info("Projekt '" + name + "' wurde beendet"));
+                ConsoleView.APP_LOG.ifPresent(log -> log.warn(Translation.getDefault().translate("message.project.execute.stopped",
+                    new String[][] {
+                        {
+                            "name",
+                            name
+                    }
+                })));
                 Main.SELECT.ifPresent(consumer -> consumer.accept(3));
             }
             stream.close();

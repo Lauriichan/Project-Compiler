@@ -14,6 +14,7 @@ import com.syntaxphoenix.syntaxapi.json.io.JsonWriter;
 import com.syntaxphoenix.syntaxapi.json.value.JsonNull;
 import com.syntaxphoenix.syntaxapi.reflection.AbstractReflect;
 import com.syntaxphoenix.syntaxapi.utils.io.TextDeserializer;
+import com.syntaxphoenix.syntaxapi.utils.java.Exceptions;
 import com.syntaxphoenix.syntaxapi.utils.java.Primitives;
 
 import me.lauriichan.school.compile.data.Serialize;
@@ -54,7 +55,7 @@ public final class JsonIO {
             return JsonNull.get();
         }
         Class<?> clazz = object.getClass();
-        if(Primitives.isInstance(object)) {
+        if (Primitives.isInstance(object)) {
             return JsonValue.fromPrimitive(object);
         }
         ArrayList<Field> fields = new ArrayList<>();
@@ -77,7 +78,7 @@ public final class JsonIO {
     }
 
     public static Object toObject(JsonValue<?> value, Class<?> clazz) {
-        if(Primitives.isInstance(clazz)) {
+        if (Primitives.isInstance(clazz)) {
             return value.getValue();
         }
         ArrayList<Field> fields = new ArrayList<>();
@@ -108,7 +109,7 @@ public final class JsonIO {
     private static void putClass(ArrayList<Field> fields, Class<?> clazz) {
         putFields(fields, clazz.getFields());
         putFields(fields, clazz.getDeclaredFields());
-        if(clazz.getSuperclass() == null) {
+        if (clazz.getSuperclass() == null) {
             return;
         }
         putClass(fields, clazz.getSuperclass());
@@ -135,7 +136,7 @@ public final class JsonIO {
         if (object == null) {
             return JsonNull.get();
         }
-        if(Primitives.isInstance(object)) {
+        if (Primitives.isInstance(object)) {
             return JsonValue.fromPrimitive(object);
         }
         JsonConverter<?, ?> converter = get(null, object.getClass());
@@ -167,7 +168,7 @@ public final class JsonIO {
     }
 
     private static void setValue(Object instance, Field field, JsonValue<?> value) {
-        if(value == null) {
+        if (value == null) {
             return;
         }
         Class<?> type = field.getType();
@@ -184,7 +185,7 @@ public final class JsonIO {
         }
         setValue(instance, field, converted);
     }
-    
+
     public static void setValue(Object instance, Field field, Object value) {
         try {
             int modifier = field.getModifiers();
@@ -209,6 +210,7 @@ public final class JsonIO {
             field.set(instance, value);
             field.setAccessible(false);
         } catch (IllegalArgumentException | IllegalAccessException exp) {
+            System.err.println(Exceptions.stackTraceToString(exp));
             return;
         }
     }

@@ -32,6 +32,7 @@ import com.syntaxphoenix.syntaxapi.utils.java.Exceptions;
 import com.syntaxphoenix.syntaxapi.utils.java.Files;
 
 import me.lauriichan.school.compile.Main;
+import me.lauriichan.school.compile.data.translation.Translation;
 import me.lauriichan.school.compile.project.Project;
 import me.lauriichan.school.compile.util.file.FileHelper;
 import me.lauriichan.school.compile.window.view.ConsoleView;
@@ -57,10 +58,6 @@ public final class ProjectCompiler implements DiagnosticListener<JavaFileObject>
 
     public void compile(Project project) {
         if (compiles) {
-            ConsoleView.APP_LOG.ifPresent(log -> {
-                log.warn("Der Compiler ist derzeit beschäftigt!");
-            });
-            Main.SELECT.ifPresent(consumer -> consumer.accept(3));
             return;
         }
         compiles = true;
@@ -68,9 +65,12 @@ public final class ProjectCompiler implements DiagnosticListener<JavaFileObject>
         project.renewHash();
         if (hash == project.hash()) {
             compiles = false;
-            ConsoleView.APP_LOG.ifPresent(log -> {
-                log.warn("Das Projekt '" + project.getName() + "' ist bereits auf dem neusten Stand!");
-            });
+            ConsoleView.APP_LOG.ifPresent(log -> log.warn(Translation.getDefault().translate("message.compiler.up2date", new String[][] {
+                {
+                    "name",
+                    project.getName()
+                }
+            })));
             Main.SELECT.ifPresent(consumer -> consumer.accept(3));
             return;
         }
@@ -94,8 +94,14 @@ public final class ProjectCompiler implements DiagnosticListener<JavaFileObject>
             System.err.println(Exceptions.stackTraceToString(e1));
             compiles = false;
             ConsoleView.APP_LOG.ifPresent(log -> {
-                log.error("Das Projekt '" + project.getName() + "' konnte nicht kompiliert werden!");
-                log.error("Für mehr Informationen schau in den 'Probleme' Tab!");
+                Translation translation = Translation.getDefault();
+                log.error(translation.translate("message.header.compiler.compile", new String[][] {
+                    {
+                        "name",
+                        project.getName()
+                    }
+                }));
+                log.error(translation.translate("message.compiler.error.not_compiled"));
             });
             Main.SELECT.ifPresent(consumer -> consumer.accept(3));
             return;
@@ -111,8 +117,14 @@ public final class ProjectCompiler implements DiagnosticListener<JavaFileObject>
             System.err.println(Exceptions.stackTraceToString(e));
             compiles = false;
             ConsoleView.APP_LOG.ifPresent(log -> {
-                log.error("Das Projekt '" + project.getName() + "' konnte nicht kompiliert werden!");
-                log.error("Für mehr Informationen schau in den 'Probleme' Tab!");
+                Translation translation = Translation.getDefault();
+                log.error(translation.translate("message.header.compiler.compile", new String[][] {
+                    {
+                        "name",
+                        project.getName()
+                    }
+                }));
+                log.error(translation.translate("message.compiler.error.not_compiled"));
             });
             Main.SELECT.ifPresent(consumer -> consumer.accept(3));
             return;
@@ -134,8 +146,14 @@ public final class ProjectCompiler implements DiagnosticListener<JavaFileObject>
             if (!task.call()) {
                 compiles = false;
                 ConsoleView.APP_LOG.ifPresent(log -> {
-                    log.error("Das Projekt '" + project.getName() + "' konnte nicht kompiliert werden!");
-                    log.error("Für mehr Informationen schau in den 'Probleme' Tab!");
+                    Translation translation = Translation.getDefault();
+                    log.error(translation.translate("message.header.compiler.compile", new String[][] {
+                        {
+                            "name",
+                            project.getName()
+                        }
+                    }));
+                    log.error(translation.translate("message.compiler.error.not_compiled"));
                 });
                 Main.SELECT.ifPresent(consumer -> consumer.accept(3));
                 task = null;
@@ -151,8 +169,14 @@ public final class ProjectCompiler implements DiagnosticListener<JavaFileObject>
         } catch (Exception exp) {
             compiles = false;
             ConsoleView.APP_LOG.ifPresent(log -> {
-                log.error("Das Projekt '" + project.getName() + "' konnte nicht kompiliert werden!");
-                log.error("Für mehr Informationen schau in den 'Probleme' Tab!");
+                Translation translation = Translation.getDefault();
+                log.error(translation.translate("message.header.compiler.compile", new String[][] {
+                    {
+                        "name",
+                        project.getName()
+                    }
+                }));
+                log.error(translation.translate("message.compiler.error.not_compiled"));
             });
             Main.SELECT.ifPresent(consumer -> consumer.accept(3));
             System.err.println("Failed to compile '" + project.getName() + "'!");
@@ -177,8 +201,14 @@ public final class ProjectCompiler implements DiagnosticListener<JavaFileObject>
             System.err.println(Exceptions.stackTraceToString(exp));
             compiles = false;
             ConsoleView.APP_LOG.ifPresent(log -> {
-                log.error("Das Projekt '" + project.getName() + "' konnte zu einem Jar Archiv gebaut werden!");
-                log.error("Für mehr Informationen schau in die 'Debug Konsole'!");
+                Translation translation = Translation.getDefault();
+                log.error(translation.translate("message.header.compiler.archive", new String[][] {
+                    {
+                        "name",
+                        project.getName()
+                    }
+                }));
+                log.error(translation.translate("message.compiler.error.not_archived"));
             });
             Main.SELECT.ifPresent(consumer -> consumer.accept(3));
             return;
@@ -199,16 +229,25 @@ public final class ProjectCompiler implements DiagnosticListener<JavaFileObject>
             System.err.println(Exceptions.stackTraceToString(exp));
             compiles = false;
             ConsoleView.APP_LOG.ifPresent(log -> {
-                log.error("Das Projekt '" + project.getName() + "' konnte zu einem Jar Archiv gebaut werden!");
-                log.error("Für mehr Informationen schau in die 'Debug Konsole'!");
+                Translation translation = Translation.getDefault();
+                log.error(translation.translate("message.header.compiler.archive", new String[][] {
+                    {
+                        "name",
+                        project.getName()
+                    }
+                }));
+                log.error(translation.translate("message.compiler.error.not_archived"));
             });
             Main.SELECT.ifPresent(consumer -> consumer.accept(3));
             return;
         }
         compiles = false;
-        ConsoleView.APP_LOG.ifPresent(log -> {
-            log.info("Das Projekt '" + project.getName() + "' wurde erfolgreich kompiliert!");
-        });
+        ConsoleView.APP_LOG.ifPresent(log -> log.info(Translation.getDefault().translate("message.compiler.success", new String[][] {
+            {
+                "name",
+                project.getName()
+            }
+        })));
         Main.SELECT.ifPresent(consumer -> consumer.accept(3));
     }
 

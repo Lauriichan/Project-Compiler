@@ -13,6 +13,7 @@ import com.syntaxphoenix.syntaxapi.random.RandomNumberGenerator;
 import jnafilechooser.api.JnaFileChooser;
 import jnafilechooser.api.JnaFileChooser.Mode;
 import me.lauriichan.school.compile.data.Settings;
+import me.lauriichan.school.compile.data.translation.Translation;
 import me.lauriichan.school.compile.project.Project;
 import me.lauriichan.school.compile.project.ProjectInfo;
 import me.lauriichan.school.compile.project.template.Template;
@@ -43,7 +44,7 @@ public final class TemplateView extends View<BasicPane> {
     private final RandomNumberGenerator random = NumberGeneratorType.MURMUR.create(System.currentTimeMillis());
 
     public TemplateView(MainView main) {
-        super("Templates", new BasicPane());
+        super("ui.view.template", new BasicPane());
         this.main = main;
     }
 
@@ -67,7 +68,7 @@ public final class TemplateView extends View<BasicPane> {
         }
         int offset = width / 16;
         Button random = createButton(offset, height - offset * 2, (width / 4) * 3 + offset * 2, offset);
-        random.setText("Zufällig");
+        random.setText(Translation.getDefault().translate("ui.template.random"));
         random.setAction(() -> createProject(getTemplate()));
         pane.addChild(random);
     }
@@ -212,6 +213,8 @@ public final class TemplateView extends View<BasicPane> {
         outline.setWidth(panel.getWidth());
         outline.setHeight(pane.getHeight());
         pane.addChild(outline);
+        
+        Translation translation = Translation.getDefault();
 
         // Root bar
         RootBar bar = panel.getBar();
@@ -222,7 +225,7 @@ public final class TemplateView extends View<BasicPane> {
         close.setAction(MouseButton.LEFT, () -> dialog.fail(null));
 
         Label nameLabel = new Label();
-        nameLabel.setText("Name");
+        nameLabel.setText(translation.translate("ui.dialog.name.project"));
         nameLabel.setY(16);
         nameLabel.setX(10);
         nameLabel.setWidth(120);
@@ -231,7 +234,7 @@ public final class TemplateView extends View<BasicPane> {
         pane.addChild(nameLabel);
 
         Label packageLabel = new Label();
-        packageLabel.setText("Package Name");
+        packageLabel.setText(translation.translate("ui.dialog.name.package"));
         packageLabel.setY(86);
         packageLabel.setX(10);
         packageLabel.setWidth(120);
@@ -240,7 +243,7 @@ public final class TemplateView extends View<BasicPane> {
         pane.addChild(packageLabel);
 
         Label directoryLabel = new Label();
-        directoryLabel.setText("Projekt Ordner");
+        directoryLabel.setText(translation.translate("ui.dialog.folder"));
         directoryLabel.setY(156);
         directoryLabel.setX(10);
         directoryLabel.setWidth(120);
@@ -315,7 +318,7 @@ public final class TemplateView extends View<BasicPane> {
         pane.addChild(directory);
 
         Button openButton = new Button();
-        openButton.setText("Öffnen");
+        openButton.setText(translation.translate("Open"));
         openButton.setTextCentered(true);
         openButton.setPress(color("#646363"));
         openButton.setShadow(color("#646363"));
@@ -341,7 +344,7 @@ public final class TemplateView extends View<BasicPane> {
 
         int btnHeight = pane.getHeight() - directory.getHeight() - 20;
         Button createButton = new Button();
-        createButton.setText("Erstellen");
+        createButton.setText(translation.translate("ui.dialog.create"));
         createButton.setTextCentered(true);
         createButton.setPress(color("#646363"));
         createButton.setShadow(color("#646363"));
@@ -362,7 +365,7 @@ public final class TemplateView extends View<BasicPane> {
         pane.addChild(createButton);
 
         Button abortButton = new Button();
-        abortButton.setText("Abbrechen");
+        abortButton.setText(translation.translate("ui.dialog.abort"));
         abortButton.setTextCentered(true);
         abortButton.setPress(color("#646363"));
         abortButton.setShadow(color("#646363"));

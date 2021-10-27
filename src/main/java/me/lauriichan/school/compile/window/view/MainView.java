@@ -13,7 +13,6 @@ import org.apache.commons.io.FileUtils;
 
 import com.syntaxphoenix.syntaxapi.json.JsonValue;
 import com.syntaxphoenix.syntaxapi.random.Keys;
-import com.syntaxphoenix.syntaxapi.utils.java.Strings;
 
 import jnafilechooser.api.JnaFileChooser;
 import jnafilechooser.api.JnaFileChooser.Mode;
@@ -35,7 +34,7 @@ import me.lauriichan.school.compile.window.ui.component.RadioList;
 public final class MainView extends View<BasicPane> {
 
     public MainView() {
-        super("Manager", new BasicPane());
+        super("ui.view.main", new BasicPane());
     }
 
     @Override
@@ -81,7 +80,7 @@ public final class MainView extends View<BasicPane> {
         button.setX((pane.getWidth() / 3) * 2);
         button.setHeight(30);
         button.setWidth(pane.getWidth() / 3 - 10);
-        button.setText(label);
+        button.setText(Translation.getDefault().translate(label));
         button.setAction(action);
         button.setPress(color("#646363"));
         button.setShadow(color("#646363"));
@@ -98,7 +97,7 @@ public final class MainView extends View<BasicPane> {
         button.setX((pane.getWidth() / 3) * 2);
         button.setHeight(30);
         button.setWidth(pane.getWidth() / 3 - 10);
-        button.setText(label);
+        button.setText(Translation.getDefault().translate(label));
         button.setAction(action);
         button.setPress(color("#F47777"));
         button.setShadow(color("#F47777"));
@@ -134,7 +133,7 @@ public final class MainView extends View<BasicPane> {
             text.append(project.getName());
             text.append('\n').append(project.getDirectory().getPath());
             if (type != null) {
-                text.append("\n(").append(Strings.firstLetterToUpperCase(type)).append(')');
+                text.append("\n(").append(Translation.getDefault().translate(type.toLowerCase() + ".name")).append(')');
             }
             button.setText(text.toString());
             break;

@@ -51,7 +51,6 @@ public final class Main {
      */
 
     private static void shutdown() {
-        Singleton.get(Runner.class).exit();
         Singleton.get(ProjectCompiler.class).exit();
         Singleton.get(Settings.class).save();
         UI.ifPresent(panel -> {
@@ -112,7 +111,6 @@ public final class Main {
 
     private static void initSingletons() {
         Singleton.get(Compiler.class);
-        Singleton.get(Runner.class);
     }
 
     private static void initLogger() {

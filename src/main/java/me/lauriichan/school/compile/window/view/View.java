@@ -1,5 +1,6 @@
 package me.lauriichan.school.compile.window.view;
 
+import me.lauriichan.school.compile.data.translation.Translation;
 import me.lauriichan.school.compile.window.ui.Pane;
 
 public abstract class View<E extends Pane> {
@@ -13,7 +14,7 @@ public abstract class View<E extends Pane> {
     private String title;
 
     public View(String title, E pane) {
-        this.title = title;
+        this.title = Translation.getDefault().translate(title);
         this.pane = pane;
     }
 
@@ -37,7 +38,7 @@ public abstract class View<E extends Pane> {
         if (title == null) {
             return;
         }
-        this.title = title;
+        this.title = Translation.getDefault().translate(title);
         manager.updateTitle(this);
     }
 

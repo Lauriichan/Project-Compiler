@@ -24,7 +24,7 @@ public final class CompileView extends View<ListPane> {
     private final EnumMap<Kind, Color> colorMap = new EnumMap<>(Kind.class);
 
     public CompileView() {
-        super("Probleme (0)", new ListPane());
+        super("ui.view.diagnostics (0)", new ListPane());
         Singleton.get(ProjectCompiler.class).setDiagnosticUpdate(this::update);
     }
 
@@ -54,7 +54,7 @@ public final class CompileView extends View<ListPane> {
             }
             problems += diagnostics.length;
         }
-        setTitle("Probleme (" + problems + ")");
+        setTitle("ui.view.diagnostics (" + problems + ")");
     }
 
     private void build(Diagnostic<? extends JavaFileObject> diagnostic) {

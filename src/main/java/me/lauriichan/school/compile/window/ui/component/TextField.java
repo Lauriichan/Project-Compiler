@@ -69,12 +69,12 @@ public final class TextField extends Component {
         if (valid) {
             renderBackground(area, background, line);
             TextRender render = area.drawWrappedText(10, 12, buffer.toString(), fontColor, fontName, fontSize, fontStyle);
-            renderCursor(10, 12, area, render);
+            renderCursor(8, 12, area, render);
             return;
         }
         renderBackground(area, invalidBackground, invalidLine);
         TextRender render = area.drawWrappedText(10, 12, buffer.toString(), invalidFontColor, fontName, fontSize, fontStyle);
-        renderCursor(10, 12, area, render);
+        renderCursor(8, 12, area, render);
     }
 
     private void renderBackground(Area area, Color background, Color line) {
@@ -124,9 +124,9 @@ public final class TextField extends Component {
     public void setContent(String content) {
         if (buffer.length() != 0) {
             buffer.delete(0, buffer.length());
-            cursor = 0;
         }
         buffer.append(content);
+        cursor = content.length() - 1;
         validate();
     }
 
@@ -279,11 +279,11 @@ public final class TextField extends Component {
     public Consumer<TextField> getAction() {
         return action;
     }
-    
+
     public void setValidConsume(Consumer<String> validConsume) {
         this.validConsume = validConsume;
     }
-    
+
     public Consumer<String> getValidConsume() {
         return validConsume;
     }
@@ -340,7 +340,7 @@ public final class TextField extends Component {
             }
             return;
         case KeyEvent.VK_BACK_SPACE:
-            if (cursor == 0) {
+            if (cursor == -1) {
                 return;
             }
             if (press.isControlDown() && !Character.isWhitespace(buffer.charAt(cursor - 1))) {
@@ -359,7 +359,8 @@ public final class TextField extends Component {
                 validate();
                 return;
             }
-            buffer.deleteCharAt(--cursor);
+            buffer.deleteCharAt(cursor--);
+            System.out.println(cursor);
             validate();
             return;
         case KeyEvent.VK_V:
@@ -423,12 +424,11 @@ public final class TextField extends Component {
             || !isReturnAllowed() && character == '\n' || (filter != null && filter.test(character))) {
             return;
         }
-        buffer.insert(cursor, mapper == null ? character : mapper.map(character));
-        cursor++;
+        buffer.insert((cursor++) + 1, mapper == null ? character : mapper.map(character));
     }
 
     private void validate() {
-        if (validator != null) {
+        if (validator == null) {
             this.valid = true;
             return;
         }

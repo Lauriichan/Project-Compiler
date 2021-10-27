@@ -29,7 +29,7 @@ public abstract class Template {
     private final String typeName;
     private final boolean hidden;
 
-    private final String id = getClass().getSimpleName().split("\\.", 2)[0].toLowerCase();
+    private final String id;
     private final String name;
 
     public Template(String type) {
@@ -40,6 +40,7 @@ public abstract class Template {
         this.type = type;
         this.hidden = hidden;
         Translation translation = Translation.getDefault();
+        this.id = getClass().getSimpleName().split("\\.", 2)[0].toLowerCase().replace(type.toLowerCase(), "");
         this.name = translation.translate(type.toLowerCase() + ".template." + id);
         this.typeName = translation.translate(type.toLowerCase() + ".name");
     }

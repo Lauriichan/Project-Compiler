@@ -22,6 +22,8 @@ import me.lauriichan.school.compile.window.ui.component.Label;
 import me.lauriichan.school.compile.window.ui.component.TextField;
 import me.lauriichan.school.compile.window.ui.component.goemetry.LineSeperator;
 import me.lauriichan.school.compile.window.ui.util.BoxRenderers;
+import me.lauriichan.school.compile.window.ui.util.ICharFilter;
+import me.lauriichan.school.compile.window.ui.util.ICharMapper;
 import me.lauriichan.school.compile.window.ui.util.IStringValidator;
 
 public final class SettingView extends View<BasicPane> {
@@ -29,7 +31,7 @@ public final class SettingView extends View<BasicPane> {
     private final DebugView debug = new DebugView();
 
     public SettingView() {
-        super("Einstellungen", new BasicPane());
+        super("ui.view.setting", new BasicPane());
     }
 
     @Override
@@ -42,11 +44,18 @@ public final class SettingView extends View<BasicPane> {
             String value = UserSettings.getString("java");
             return value.isEmpty() ? null : value;
         }, file -> UserSettings.setString("java", file.getPath()));
-        seperator(150);
-        addField(190, "ui.setting.language (key.restart.required)", Translation::has, () -> Translation.getDefaultCode(),
+        seperator(160);
+        addField(210, "ui.setting.language (key.restart.required)", 
+            Translation::has,
+            character -> !(Character.isAlphabetic(character) || character == '-'), 
+            character -> Character.toLowerCase(character),
+            () -> {
+                Translation translation = Translation.getDefault();
+                return translation.getCode().isEmpty() ? Translation.getDefaultCode() : translation.getName();
+            }, 
             string -> UserSettings.setString("language", Translation.get(string).getCode()));
-        seperator(230);
-        addOption(270, "ui.setting.debug", () -> UserSettings.getBoolean("debug"), state -> {
+        seperator(260);
+        addOption(290, "ui.setting.debug", () -> UserSettings.getBoolean("debug"), state -> {
             UserSettings.setBoolean("debug", state);
             if (state) {
                 getManager().add(debug);
@@ -85,8 +94,7 @@ public final class SettingView extends View<BasicPane> {
         button.setState(current.get());
 
         Label btnLabel = new Label();
-        btnLabel.setText(label);
-        btnLabel.setText(label);
+        btnLabel.setText(Translation.getDefault().translate(label));
         btnLabel.setY(button.getY() - 6);
         btnLabel.setX(button.getX() + 30);
         btnLabel.setWidth(120);
@@ -97,7 +105,8 @@ public final class SettingView extends View<BasicPane> {
         pane.addChild(button);
     }
 
-    private void addField(int y, String label, IStringValidator validator, Supplier<String> current, Consumer<String> setter) {
+    private void addField(int y, String label, IStringValidator validator, ICharFilter filter, ICharMapper mapper, Supplier<String> current,
+        Consumer<String> setter) {
         TextField field = new TextField();
         field.setX(10);
         field.setY(y);
@@ -105,8 +114,8 @@ public final class SettingView extends View<BasicPane> {
         field.setHeight(32);
         field.setFontSize(14);
         field.setFontColor(Color.LIGHT_GRAY);
-        field.setBackground(color("#6D6D6D"));
         field.setLine(color("#353737"));
+        field.setBackground(color("#6D6D6D"));
         field.setInvalidBackground(color("#6F3535"));
         field.setInvalidLine(color("#353737"));
         field.setInvalidFontColor(color("#F47777"));
@@ -119,6 +128,12 @@ public final class SettingView extends View<BasicPane> {
             field.setContent(value);
         }
         field.setValidConsume(setter);
+        if (filter != null) {
+            field.setFilter(filter);
+        }
+        if (mapper != null) {
+            field.setMapper(mapper);
+        }
 
         Label fieldLabel = new Label();
         fieldLabel.setText(Translation.getDefault().translate(label));

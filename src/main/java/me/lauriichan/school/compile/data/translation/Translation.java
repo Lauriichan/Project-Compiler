@@ -24,7 +24,7 @@ import me.lauriichan.school.compile.util.UserSettings;
 public final class Translation {
 
     private static final ArrayList<Translation> TRANSLATIONS = new ArrayList<>();
-    private static final Translation EMPTY = new Translation();
+    private static final Translation EMPTY = new Translation(null);
 
     public static void load() {
         try {
@@ -42,9 +42,7 @@ public final class Translation {
                 if (object == null || !(object instanceof Translation)) {
                     continue;
                 }
-                Translation translation = (Translation) object;
-                System.out.println(translation.getName() + " / " + translation.getCode());
-                TRANSLATIONS.add(translation);
+                TRANSLATIONS.add((Translation) object);
             }
             walk.close();
         } catch (Exception exp) {
@@ -86,11 +84,21 @@ public final class Translation {
     }
 
     @Serialize
-    private final String code = "";
+    private final String code;
     @Serialize
-    private final String name = "";
+    private final String name;
     @Serialize
     private final HashMap<String, String> keys = new HashMap<>();
+
+    private Translation() {
+        name = null;
+        code = null;
+    }
+
+    private Translation(Object ignore) {
+        this.code = "";
+        this.name = "";
+    }
 
     public String translate(String text) {
         int count = 0;
@@ -102,6 +110,35 @@ public final class Translation {
             count++;
         }
         return count == 0 ? text : translate(text);
+    }
+
+    public String translate(String text, String... placeholders) {
+        String output = translate(text);
+        int changes = 0;
+        for (int index = 0; index < placeholders.length; index++) {
+            String key = "$" + index;
+            if (!output.contains(key)) {
+                continue;
+            }
+            output = output.replace(key, placeholders[index]);
+            changes++;
+        }
+        return changes == 0 ? output : translate(output, placeholders);
+    }
+
+    public String translate(String text, String[]... placeholders) {
+        String output = translate(text);
+        int changes = 0;
+        for (int index = 0; index < placeholders.length; index++) {
+            String[] data = placeholders[index];
+            String key = '$' + data[0];
+            if (!output.contains(key)) {
+                continue;
+            }
+            output = output.replace(key, data[1]);
+            changes++;
+        }
+        return changes == 0 ? output : translate(output, placeholders);
     }
 
     public String getName() {

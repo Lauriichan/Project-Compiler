@@ -11,7 +11,7 @@ import me.lauriichan.school.compile.window.ui.util.ColorCache;
 public final class DebugView extends View<BasicPane> {
 
     public DebugView() {
-        super("Debug Konsole", new BasicPane());
+        super("ui.view.debug", new BasicPane());
     }
 
     @Override

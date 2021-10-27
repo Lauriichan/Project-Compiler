@@ -15,7 +15,7 @@ public final class ConsoleView extends View<BasicPane> {
     public static final Container<LogDisplay> APP_LOG = Container.of();
 
     public ConsoleView() {
-        super("Konsole", new BasicPane());
+        super("ui.view.console", new BasicPane());
     }
 
     @Override
