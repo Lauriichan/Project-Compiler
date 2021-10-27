@@ -82,10 +82,10 @@ public final class Main {
 
     public static void main(String[] args) {
         Runtime.getRuntime().addShutdownHook(new Thread(Main::shutdown));
+        initLogger();
         registerConverters();
         loadData();
         initSingletons();
-        initLogger();
         try {
             buildUi();
         } catch (Exception exp) {

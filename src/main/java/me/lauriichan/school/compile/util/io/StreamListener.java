@@ -5,12 +5,14 @@ import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.function.Consumer;
 
 public final class StreamListener implements Closeable {
 
     private Consumer<String> delegate;
+    private ArrayList<String> cache = new ArrayList<>();
 
     private final PrintStream stream;
 
@@ -48,6 +50,7 @@ public final class StreamListener implements Closeable {
                     continue;
                 }
                 if (delegate == null) {
+                    cache.add(line);
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
@@ -64,6 +67,12 @@ public final class StreamListener implements Closeable {
 
     public void setDelegate(Consumer<String> delegate) {
         this.delegate = delegate;
+        if(delegate != null) {
+            for(String string : cache) {
+                delegate.accept(string);
+            }
+            cache.clear();
+        }
     }
 
     public boolean isClosed() {

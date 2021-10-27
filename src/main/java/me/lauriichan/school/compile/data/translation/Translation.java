@@ -5,7 +5,9 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -14,6 +16,7 @@ import java.util.stream.Stream;
 import org.apache.commons.io.file.PathUtils;
 
 import com.syntaxphoenix.syntaxapi.json.JsonValue;
+import com.syntaxphoenix.syntaxapi.utils.java.Exceptions;
 import com.syntaxphoenix.syntaxapi.utils.java.Streams;
 
 import me.lauriichan.school.compile.Main;
@@ -29,14 +32,15 @@ public final class Translation {
     public static void load() {
         try {
             URI uri = Main.class.getResource("/translation").toURI();
-            Path root = uri.getScheme().equals("jar") ? FileSystems.getFileSystem(uri).getPath("/translation") : Paths.get(uri);
+            Path root = uri.getScheme().equals("jar") ? FileSystems.newFileSystem(uri, Collections.emptyMap()).getPath("/translation")
+                : Paths.get(uri);
             Stream<Path> walk = Files.walk(root, 1);
             for (Iterator<Path> iterator = walk.iterator(); iterator.hasNext();) {
                 Path path = iterator.next();
                 if (PathUtils.isDirectory(path)) {
                     continue;
                 }
-                String content = Streams.toString(path.toUri().toURL().openStream());
+                String content = Streams.toString(path.getFileSystem().provider().newInputStream(path, StandardOpenOption.READ));
                 JsonValue<?> value = JsonIO.PARSER.fromString(content);
                 Object object = JsonIO.toObject(value, Translation.class);
                 if (object == null || !(object instanceof Translation)) {
@@ -47,7 +51,7 @@ public final class Translation {
             walk.close();
         } catch (Exception exp) {
             System.err.println("Failed to load translations");
-            System.err.println(exp);
+            System.err.println(Exceptions.stackTraceToString(exp));
         }
     }
 
