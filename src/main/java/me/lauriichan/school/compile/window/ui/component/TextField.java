@@ -41,7 +41,7 @@ public final class TextField extends Component {
     private boolean valid = true;
 
     private int limit = -1;
-    private int cursor = 0;
+    private int cursor = -1;
 
     private Color background = Color.BLACK;
     private Color invalidBackground = Color.BLACK;
@@ -127,6 +127,9 @@ public final class TextField extends Component {
         }
         buffer.append(content);
         cursor = content.length() - 1;
+        if(cursor < -1) {
+            cursor = -1;
+        }
         validate();
     }
 
