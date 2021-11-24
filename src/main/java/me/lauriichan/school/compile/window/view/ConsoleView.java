@@ -27,6 +27,8 @@ public final class ConsoleView extends View<BasicPane> {
         display.setHeight(height - 60);
         display.setBarFill(Color.GREEN);
         display.setHistorySize(500);
+        display.setScrollMaxSpeed(1500);
+        display.setScrollSpeed(16);
         APP_LOG.replace(display);
         pane.addChild(display);
 

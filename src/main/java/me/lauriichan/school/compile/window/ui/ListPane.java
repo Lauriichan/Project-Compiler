@@ -54,15 +54,11 @@ public class ListPane extends BasicPane {
         return true;
     }
 
-    @Override
-    public void clear() {
-        super.clear();
-        currentY = 0;
-        updateScrollY();
-    }
-
     private void updateScrollY() {
         scrollY = currentY - getHeight() + componentOffset;
+        if(scroll > scrollY) {
+            scroll = scrollY > 2 * componentOffset ? -scrollY - 2 * componentOffset : 0;
+        }
     }
 
     @Override

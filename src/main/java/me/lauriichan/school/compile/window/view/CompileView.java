@@ -32,8 +32,8 @@ public final class CompileView extends View<ListPane> {
     protected void onSetup(ListPane pane, int width, int height) {
         pane.setComponentOffset(8);
         pane.setComponentHeight(120);
-        pane.setScrollMaxSpeed(1200);
-        pane.setScrollSpeed(11);
+        pane.setScrollMaxSpeed(3200);
+        pane.setScrollSpeed(32);
         colorMap.put(Kind.ERROR, color("#A11E0D"));
         colorMap.put(Kind.WARNING, color("#F19E2E"));
         colorMap.put(Kind.MANDATORY_WARNING, color("#E2CE29"));
@@ -80,7 +80,7 @@ public final class CompileView extends View<ListPane> {
         Label file = new Label();
         file.setX(10);
         file.setY(24);
-        file.setText(diagnostic.getSource().getName() + ".java in Zeile " + diagnostic.getLineNumber() + " Position "
+        file.setText(diagnostic.getSource().getName() + " in Zeile " + diagnostic.getLineNumber() + " Position "
             + diagnostic.getColumnNumber());
         file.setSize(base.getWidth(), file.getFontSize() * 2);
         base.addChild(file);

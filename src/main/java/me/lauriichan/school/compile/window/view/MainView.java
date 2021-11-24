@@ -45,6 +45,8 @@ public final class MainView extends View<BasicPane> {
         list.setY(10);
         list.setComponentOffset(10);
         list.setComponentHeight(64);
+        list.setScrollMaxSpeed(980);
+        list.setScrollSpeed(10.5);
         list.setWidth(((width / 3) * 2) - list.getX() * 2);
         list.setHeight(height - (list.getY() * 2));
         list.setBackground(color("#6D6D6D"));

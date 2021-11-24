@@ -153,7 +153,11 @@ public class RadioList extends Component {
     }
 
     private void updateScrollY() {
-        scrollY = currentY - getHeight() + componentHeight - ((componentHeight / 2) + componentOffset * 2) + (lineThickness * 2);
+        int offset = componentHeight - ((componentHeight / 2) + componentOffset * 2) + (lineThickness * 2);
+        scrollY = currentY - getHeight() + offset;
+        if (scroll > scrollY) {
+            scroll = scrollY > 2 * offset ? -scrollY - 2 * offset : 0;
+        }
     }
 
     @Override
