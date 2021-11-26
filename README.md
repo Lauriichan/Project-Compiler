@@ -85,6 +85,8 @@ As long as you don't tell people that you wrote them its fine for me ^^
 
 * [SyntaxApi](https://github.com/SyntaxPhoenix/syntaxapi)
 * [JNAFileChooser](https://github.com/steos/jnafilechooser)
+* [FastUtil](https://github.com/vigna/fastutil)
+* [Apache Commons IO](https://github.com/apache/commons-io)
 
 
 <!-- GETTING STARTED -->
