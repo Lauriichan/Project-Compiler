@@ -130,7 +130,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Discord - Lauriichan#1515
+Discord Link: [https://discord.gg/m9vjsj6ScJ](https://discord.gg/m9vjsj6ScJ)
 
 Project Link: [https://github.com/Lauriichan/Project-Compiler](https://github.com/Lauriichan/Project-Compiler)
 
