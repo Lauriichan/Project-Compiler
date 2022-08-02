@@ -187,10 +187,14 @@ public final class MainView extends View<BasicPane> {
         chooser.setMultiSelectionEnabled(false);
         chooser.addFilter("Zip Archive (*.zip)", "zip");
         chooser.showSaveDialog(pane.getInput().getPanel().getFrame());
-        File file = chooser.getSelectedFile();
-        if (file == null) {
+        File tmpFile = chooser.getSelectedFile();
+        if (tmpFile == null) {
             return;
         }
+        if(!tmpFile.getName().endsWith(".zip")) {
+            tmpFile = new File(tmpFile.getParent(), tmpFile.getName() + ".zip");
+        }
+        File file = tmpFile;
         Executor.execute(() -> {
             try {
                 File folder = java.nio.file.Files.createTempDirectory(Keys.generateKey(24) + "-" + Keys.generateKey(16)).toFile();

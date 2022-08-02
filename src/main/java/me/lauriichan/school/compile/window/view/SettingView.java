@@ -19,6 +19,8 @@ import me.lauriichan.school.compile.window.ui.BasicPane;
 import me.lauriichan.school.compile.window.ui.component.Button;
 import me.lauriichan.school.compile.window.ui.component.CheckButton;
 import me.lauriichan.school.compile.window.ui.component.Label;
+import me.lauriichan.school.compile.window.ui.component.RadioButton;
+import me.lauriichan.school.compile.window.ui.component.RadioList;
 import me.lauriichan.school.compile.window.ui.component.TextField;
 import me.lauriichan.school.compile.window.ui.component.goemetry.LineSeperator;
 import me.lauriichan.school.compile.window.ui.util.BoxRenderers;
@@ -54,6 +56,21 @@ public final class SettingView extends View<BasicPane> {
                 return translation.getCode().isEmpty() ? Translation.getDefaultCode() : translation.getName();
             }, 
             string -> UserSettings.setString("language", Translation.get(string).getCode()));
+        addListOptions(210, "ui.setting.language (key.restart.required)", list -> {
+            Translation[] translations = Translation.getAll();
+            for(Translation translation : translations) {
+                RadioButton btn = new RadioButton();
+                btn.setX(5);
+                btn.setWidth(list.getX() - 10);
+                btn.setHeight(32);
+                btn.setFontSize(14);
+                btn.setFontColor(Color.LIGHT_GRAY);
+                btn.setTextCentered(true);
+                btn.setText(translation.getName() + " (" + translation.getCode() + ")");
+                btn.setAction(() -> Translation.setDefault(translation));
+                list.addChild(btn);
+            }
+        });
         seperator(260);
         addOption(290, "ui.setting.debug", () -> UserSettings.getBoolean("debug"), state -> {
             UserSettings.setBoolean("debug", state);
@@ -75,6 +92,25 @@ public final class SettingView extends View<BasicPane> {
         seperator.setWidth(pane.getWidth() - seperator.getX() * 2);
         seperator.setHeight(16);
         pane.addChild(seperator);
+    }
+    
+    private void addListOptions(int y, String label, Consumer<RadioList> constructor) {
+        RadioList list = new RadioList();
+        list.setX(10);
+        list.setY(y);
+        list.setWidth(pane.getWidth() - list.getX() * 2);
+        list.setHeight(48);
+        list.setLine(color("#353737"));
+        list.setBackground(color("#6D6D6D"));
+        
+        constructor.accept(list);
+        
+        Label listLabel = new Label();
+        listLabel.setText(Translation.getDefault().translate(label));
+        listLabel.setY(list.getY() - 26);
+        listLabel.setX(list.getX());
+        listLabel.setHeight(32);
+        listLabel.setWidth(120);
     }
 
     private void addOption(int y, String label, Supplier<Boolean> current, Consumer<Boolean> listener) {

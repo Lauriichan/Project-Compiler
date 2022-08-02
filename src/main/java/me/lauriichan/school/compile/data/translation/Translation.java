@@ -82,6 +82,10 @@ public final class Translation {
         }
         return null;
     }
+    
+    public static Translation[] getAll() {
+        return TRANSLATIONS.toArray(new Translation[TRANSLATIONS.size()]);
+    }
 
     public static boolean has(String name) {
         return get(name) != null;
